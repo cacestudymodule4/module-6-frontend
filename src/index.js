@@ -7,7 +7,9 @@ import {BrowserRouter, Route, Routes} from "react-router-dom";
 import {ToastContainer} from "react-toastify";
 import store from "./redux/store";
 import {Provider} from "react-redux";
-import Login from "./component/login";
+import Login from "./components/login";
+import Logout from "./components/logout";
+import ChangePassword from "./components/changePassword";
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
@@ -17,6 +19,8 @@ root.render(
             <ToastContainer/>
             <Routes>
                 <Route path="/" element={<Login/>}/>
+                <Route path="/logout" element={<Logout/>}/>
+                <Route path="/change-password" element={<ChangePassword/>}/>
             </Routes>
         </BrowserRouter>
     </Provider>

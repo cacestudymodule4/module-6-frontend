@@ -1,0 +1,39 @@
+{
+  "message": "Request failed with status code 400",
+  "name": "AxiosError",
+  "stack": "AxiosError: Request failed with status code 400\n    at settle (http://localhost:3000/static/js/bundle.js:73123:12)\n    at XMLHttpRequest.onloadend (http://localhost:3000/static/js/bundle.js:71774:66)\n    at Axios.request (http://localhost:3000/static/js/bundle.js:72273:41)",
+  "config": {
+    "transitional": {
+      "silentJSONParsing": true,
+      "forcedJSONParsing": true,
+      "clarifyTimeoutError": false
+    },
+    "adapter": [
+      "xhr",
+      "http",
+      "fetch"
+    ],
+    "transformRequest": [
+      null
+    ],
+    "transformResponse": [
+      null
+    ],
+    "timeout": 0,
+    "xsrfCookieName": "XSRF-TOKEN",
+    "xsrfHeaderName": "X-XSRF-TOKEN",
+    "maxContentLength": -1,
+    "maxBodyLength": -1,
+    "env": {},
+    "headers": {
+      "Accept": "application/json, text/plain, */*",
+      "Content-Type": "application/json",
+      "Authorization": "Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJwaGFtdmFubWFuQGdtYWlsLmNvbSIsImlhdCI6MTczMDk2Mzc0NiwiZXhwIjo4ODEzMDk2Mzc0Nn0.K2RACh3Wl_9hyNwCFrKPO8o6U-z7dI5OQm9WFUz6bTI"
+    },
+    "method": "put",
+    "url": "http://localhost:8080/api/change-password",
+    "data": "{\"currentPassword\":\"123\",\"newPassword\":\"123456\"}"
+  },
+  "code": "ERR_BAD_REQUEST",
+  "status": 400
+}
