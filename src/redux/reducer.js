@@ -1,17 +1,15 @@
-import {DELETE_SUCCESS, FETCH_USER_SUCCESS, LOGIN_SUCCESS} from "./action";
+import {LOGIN_FAILED, LOGIN_SUCCESS} from "./action";
 
 const initialState = {
-    users: [],
-    userlogined: {}
+    userLogin: {},
+    error: {}
 };
 const rootReducer = (state = initialState, action) => {
     switch (action.type) {
         case LOGIN_SUCCESS:
-            return {...state, userlogined: action.payload};
-        case FETCH_USER_SUCCESS:
-            return {...state, users: action.payload};
-        case DELETE_SUCCESS:
-            return {...state, users: action.payload};
+            return {...state, userLogin: action.payload};
+        case LOGIN_FAILED:
+            return {...state, error: action.payload};
         default:
             return state;
     }
