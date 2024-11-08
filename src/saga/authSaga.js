@@ -8,7 +8,7 @@ import {
     LOGIN_FAILED, LOGIN_REQUEST,
     LOGIN_SUCCESS,
     LOGOUT,
-    LOGOUT_SUCCESS
+    LOGOUT_SUCCESS, USER_INFO_FAILED, USER_INFO_REQUEST, USER_INFO_SUCCESS
 } from "../redux/actions";
 
 const BaseURL = "http://localhost:8080";
@@ -52,8 +52,20 @@ function* changePasswordSaga(action) {
     }
 }
 
+function* userInfo(action) {
+    try {
+        const response = yield call(axios.get, BaseURL + '/api/user-detail', {
+            headers: {Authorization: `Bearer ${localStorage.getItem('jwtToken')}`}
+        });
+        yield put({type: USER_INFO_SUCCESS, payload: response.data});
+    } catch (error) {
+        yield put({type: USER_INFO_FAILED, payload: "Nguười dùng chưa đăng nhập"});
+    }
+}
+
 export default function* rootSaga() {
     yield takeLatest(LOGIN, loginSaga);
     yield takeLatest(LOGOUT, logoutSaga);
     yield takeLatest(CHANGE_PASSWORD, changePasswordSaga);
+    yield takeLatest(USER_INFO_REQUEST, userInfo);
 }

@@ -12,6 +12,7 @@ const Login = () => {
     const navigate = useNavigate();
     const dispatch = useDispatch();
     const {isAuthenticated, error, isLoggingIn} = useSelector(state => state.auth);
+    const token = localStorage.getItem('jwtToken');
     const initialValues = {
         email: '',
         password: ''
@@ -24,8 +25,11 @@ const Login = () => {
         dispatch({type: LOGIN, payload: values});
     };
     useEffect(() => {
+        if (token) {
+            navigate("/home");
+        }
         if (isAuthenticated) {
-            navigate("/");
+            navigate("/home");
             toast.success("Đăng nhập thành công", {position: "top-right", autoClose: 3000});
         } else if (error) {
             toast.error(error, {position: "top-right", autoClose: 3000});
@@ -85,7 +89,7 @@ const Login = () => {
                 </div>
             </div>
             {
-                isAuthenticated && <Link to={"/logout"}>Đăng xuất</Link>
+                token && <Link to={"/logout"}>Đăng xuất</Link>
             }
         </section>
     );
