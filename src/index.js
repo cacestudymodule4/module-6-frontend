@@ -1,11 +1,12 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import './index.css';
+import Home from './components/uncommon/Home';
 import reportWebVitals from './reportWebVitals';
-import {BrowserRouter, Route, Routes} from "react-router-dom";
-import {ToastContainer} from "react-toastify";
+import { BrowserRouter, Route, Routes } from "react-router-dom";
+import { ToastContainer } from "react-toastify";
 import store from "./redux/store";
-import {Provider} from "react-redux";
+import { Provider } from "react-redux";
 import Login from "./components/login";
 import Logout from "./components/logout";
 import UserInfo from "./components/userDetail";
@@ -15,10 +16,11 @@ root.render(
     // <React.StrictMode>
     <Provider store={store}>
         <BrowserRouter>
-            <ToastContainer/>
+            <ToastContainer />
             <Routes>
                 <Route path="/login" element={<Login/>}/>
                 <Route path="/logout" element={<Logout/>}/>
+                <Route path="/home" element={<Home />} />
                 <Route path="/user-detail" element={<UserInfo/>}/>
             </Routes>
         </BrowserRouter>
