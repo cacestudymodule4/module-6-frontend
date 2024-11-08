@@ -1,0 +1,81 @@
+.contact {
+    background-image: url('https://quanlychungcuhaiphong.vn/assets/images/contact-section-bg.jpg');
+    background-position: 50% -61.0594px;
+    background-size: cover;
+    position: relative;
+}
+
+.contact::before {
+    content: "";
+    background-color: rgba(0, 51, 22, 0.95);
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    left: 0;
+    top: 0;
+    z-index: 1;
+    /* Đảm bảo phần này không đè lên form */
+}
+
+.contact-section {
+    position: relative;
+    /* Đảm bảo container không bị đè */
+    z-index: 2;
+    /* Đảm bảo form ở trên */
+}
+
+.contact-content {
+    position: relative;
+    /* Đảm bảo nội dung không bị đè */
+    z-index: 3;
+    /* Đảm bảo form content nằm trên */
+}
+
+.contact-content form {
+    position: relative;
+    /* Đảm bảo form cũng không bị đè */
+    z-index: 4;
+    /* Đảm bảo form ở trên các phần khác */
+}
+
+.contact-box {
+    border: 2px solid #009e39;
+    padding-top: 5%;
+}
+
+.building-carousel {
+    margin-top: 50px;
+    text-align: center;
+}
+
+.building-carousel h2 {
+    color: #2c3e50;
+    font-size: 24px;
+    font-weight: bold;
+}
+
+.building-carousel p {
+    color: #7f8c8d;
+    font-size: 16px;
+    margin-bottom: 30px;
+}
+
+.building-carousel .building-card {
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    overflow: hidden;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.building-carousel .building-card img {
+    height: 200px;
+    object-fit: cover;
+}
+
+.building-carousel .carousel-caption {
+    background-color: rgba(0, 0, 0, 0.5);
+    color: white;
+    padding: 10px;
+    position: relative;
+    bottom: 0;
+}
