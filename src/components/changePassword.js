@@ -5,10 +5,13 @@ import {Formik, Form, Field, ErrorMessage} from 'formik';
 import * as Yup from 'yup';
 import {toast} from "react-toastify";
 import 'react-toastify/dist/ReactToastify.css';
+import {useNavigate} from "react-router-dom";
 
 const ChangePassword = () => {
+    const token = localStorage.getItem('jwtToken');
     const dispatch = useDispatch();
     const {error, success, isSubmitting} = useSelector(state => state.passwordChange);
+    const navigate = useNavigate();
     const validationSchema = Yup.object({
         currentPassword: Yup.string()
             .required("Mật khẩu hiện tại là bắt buộc"),
@@ -20,6 +23,9 @@ const ChangePassword = () => {
             .required("Xác nhận mật khẩu là bắt buộc")
     });
     useEffect(() => {
+        if (!token) {
+            navigate("/login")
+        }
         if (success) {
             toast.success("Đổi mật khẩu thành công", {position: "top-right", autoClose: 3000});
         } else if (error) {

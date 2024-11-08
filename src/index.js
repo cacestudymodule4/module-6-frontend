@@ -9,7 +9,7 @@ import store from "./redux/store";
 import { Provider } from "react-redux";
 import Login from "./components/login";
 import Logout from "./components/logout";
-import ChangePassword from "./components/changePassword";
+import UserInfo from "./components/userDetail";
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
@@ -18,10 +18,10 @@ root.render(
         <BrowserRouter>
             <ToastContainer />
             <Routes>
-                <Route path="/" element={<Login />} />
+                <Route path="/login" element={<Login/>}/>
+                <Route path="/logout" element={<Logout/>}/>
                 <Route path="/home" element={<Home />} />
-                <Route path="/logout" element={<Logout />} />
-                <Route path="/change-password" element={<ChangePassword />} />
+                <Route path="/user-detail" element={<UserInfo/>}/>
             </Routes>
         </BrowserRouter>
     </Provider>
