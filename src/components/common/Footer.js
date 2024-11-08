@@ -1,8 +1,16 @@
 import React from 'react';
-import { Container, Row, Col, Image, Button } from 'react-bootstrap';
+import {Container, Row, Col, Image, Button} from 'react-bootstrap';
 import '../../assets/css/footer.css';
-import { FaPhoneAlt, FaEnvelope, FaMapMarkerAlt, FaFacebookF, FaInstagram, FaTelegramPlane, FaLinkedinIn, FaTwitter } from 'react-icons/fa';
-
+import {
+    FaPhoneAlt,
+    FaEnvelope,
+    FaMapMarkerAlt,
+    FaFacebookF,
+    FaInstagram,
+    FaTelegramPlane,
+    FaLinkedinIn,
+    FaTwitter
+} from 'react-icons/fa';
 
 const Footer = () => {
     return (
@@ -20,42 +28,44 @@ const Footer = () => {
                             <Row className='text-start ms-5'>
                                 <Col>
                                     <h3 className='fw-bold'>Liên hệ</h3>
-                                    <p><FaMapMarkerAlt /> 293 Nguyễn Tất Thành, Đà Nẵng</p>
-                                    <p><FaPhoneAlt /> 0225.3736.686</p>
-                                    <p><FaPhoneAlt /> 0906.182.555</p>
-                                    <p><FaEnvelope /> thuydung.lexico@gmail.com</p></Col>
+                                    <p><FaMapMarkerAlt/> 293 Nguyễn Tất Thành, Đà Nẵng</p>
+                                    <p><FaPhoneAlt/> 0225.3736.686</p>
+                                    <p><FaPhoneAlt/> 0906.182.555</p>
+                                    <p><FaEnvelope/> thuydung.lexico@gmail.com</p></Col>
                             </Row>
                         </div>
                     </Col>
                     <Col md={4}>
                         <h3 className='fw-bold'>Useful Links</h3>
                         <div className="links">
-                            <Button variant="link" href="#" style={{ color: 'white', fontWeight: 'bold' }}>Home</Button>
-                            <br />
-                            <Button variant="link" href="#" style={{ color: 'white', fontWeight: 'bold' }}>About</Button>
-                            <br />
-                            <Button variant="link" href="#" style={{ color: 'white', fontWeight: 'bold' }}>Services</Button>
-                            <br />
-                            <Button variant="link" href="#" style={{ color: 'white', fontWeight: 'bold' }}>Contact</Button>
+                            <Button variant="link" href="#" style={{color: 'white', fontWeight: 'bold'}}>Home</Button>
+                            <br/>
+                            <Button variant="link" href="#" style={{color: 'white', fontWeight: 'bold'}}>About</Button>
+                            <br/>
+                            <Button variant="link" href="#"
+                                    style={{color: 'white', fontWeight: 'bold'}}>Services</Button>
+                            <br/>
+                            <Button variant="link" href="#"
+                                    style={{color: 'white', fontWeight: 'bold'}}>Contact</Button>
                         </div>
                     </Col>
                     <Col md={4}>
                         <h3 className='fw-bold'>Follow Us</h3>
                         <div style={iconContainerStyle}>
                             <a href="https://facebook.com" target="_blank" rel="noopener noreferrer" style={iconStyle}>
-                                <FaFacebookF />
+                                <FaFacebookF/>
                             </a>
                             <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" style={iconStyle}>
-                                <FaInstagram />
+                                <FaInstagram/>
                             </a>
                             <a href="https://telegram.org" target="_blank" rel="noopener noreferrer" style={iconStyle}>
-                                <FaTelegramPlane />
+                                <FaTelegramPlane/>
                             </a>
                             <a href="https://linkedin.com" target="_blank" rel="noopener noreferrer" style={iconStyle}>
-                                <FaLinkedinIn />
+                                <FaLinkedinIn/>
                             </a>
                             <a href="https://twitter.com" target="_blank" rel="noopener noreferrer" style={iconStyle}>
-                                <FaTwitter />
+                                <FaTwitter/>
                             </a>
                         </div>
                     </Col>
@@ -69,28 +79,23 @@ const Footer = () => {
         </footer>
     );
 };
-
 const footerStyle = {
     textAlign: 'center',
     padding: '20px',
     backgroundColor: '#333',
     color: '#fff',
 };
-
 const headingStyle = {
     marginBottom: '10px',
 };
-
 const iconContainerStyle = {
     display: 'flex',
     justifyContent: 'center',
     gap: '20px',
 };
-
 const iconStyle = {
     color: '#fff',
     fontSize: '24px',
     textDecoration: 'none',
 };
-
 export default Footer;
