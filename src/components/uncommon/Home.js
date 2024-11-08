@@ -1,25 +1,24 @@
-import logo from './assets/img/logo.png';
-import './App.css';
 import React, { useEffect, useState } from 'react';
 import { Container, Form, Row, Col, Card, Button, Carousel, Image, Stack } from 'react-bootstrap';
-import { NavbarApp } from './components/common/Navbar';
-import slide1 from './assets/img/bat-dong-san-1-35.png';
-import slide2 from './assets/img/bat-dong-san-19.png';
-import './assets/css/home.css';
+import { NavbarApp } from '../common/Navbar';
+import slide1 from '../../assets/img/bat-dong-san-1-35.png';
+import slide2 from '../../assets/img/bat-dong-san-19.png';
+import '../../assets/css/home.css';
 import { FaPhoneAlt, FaEnvelope, FaMapMarkerAlt, FaFacebook, FaPhone } from 'react-icons/fa';
-import Footer from './components/common/Footer';
+import Footer from '../common/Footer';
 import axios from 'axios';
 
 function App() {
   const [building, setBuilding] = useState({});
 
+  const token = localStorage.getItem("jwtToken");
+
   const getBuildings = async () => {
     try {
       let config = {
-        headers: { Authorization: `Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJob2FuZ2xpbmhwaGFuMTZAZ21haWwuY29tIiwiaWF0IjoxNzMxMDMwNTg4LCJleHAiOjg4MTMxMDMwNTg4fQ.g8MhyldHcwJqmb8Ys9AxBHn1qGwqPixwIGWttCF-544` }
+        headers: { Authorization: `Bearer ${token}` }
       }
       const res = await axios.get(`http://localhost:8080/api/building`, config);
-      console.log(res);
 
       if (res.status === 200) {
         setBuilding(res.data[0]);
