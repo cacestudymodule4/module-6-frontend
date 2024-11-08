@@ -24,7 +24,7 @@ function* authSagaFun(action) {
     }
 }
 
-function logOut(action) {
+function* logOut(action) {
     try {
         const user = action.payload;
         localStorage.removeItem("jwtToken");

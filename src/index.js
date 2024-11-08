@@ -8,6 +8,7 @@ import {ToastContainer} from "react-toastify";
 import store from "./redux/store";
 import {Provider} from "react-redux";
 import Login from "./component/login";
+import Staff from "./component/staff";
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
@@ -17,6 +18,7 @@ root.render(
             <ToastContainer/>
             <Routes>
                 <Route path="/" element={<Login/>}/>
+                <Route path="/staff" element={<Staff/>}/>
             </Routes>
         </BrowserRouter>
     </Provider>
