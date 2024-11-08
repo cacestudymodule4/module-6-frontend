@@ -1,14 +1,16 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import './index.css';
-import App from './App';
+import Home from './components/uncommon/Home';
 import reportWebVitals from './reportWebVitals';
 import {BrowserRouter, Route, Routes} from "react-router-dom";
 import {ToastContainer} from "react-toastify";
 import store from "./redux/store";
 import {Provider} from "react-redux";
-import Login from "./component/login";
-import Staff from "./component/staff";
+import Staff from "./components/staff";
+import Login from "./components/login";
+import Logout from "./components/logout";
+import UserInfo from "./components/userDetail";
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
@@ -17,8 +19,11 @@ root.render(
         <BrowserRouter>
             <ToastContainer/>
             <Routes>
-                <Route path="/" element={<Login/>}/>
                 <Route path="/staff" element={<Staff/>}/>
+                <Route path="/login" element={<Login/>}/>
+                <Route path="/logout" element={<Logout/>}/>
+                <Route path="/home" element={<Home/>}/>
+                <Route path="/user-detail" element={<UserInfo/>}/>
             </Routes>
         </BrowserRouter>
     </Provider>
