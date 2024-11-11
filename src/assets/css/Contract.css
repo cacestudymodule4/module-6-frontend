@@ -1,0 +1,30 @@
+.custom-table{
+    background-color: black !important;
+    color: white !important;
+}
+.custom-checkbox{
+    width: 20px;
+    height: 20px;
+    transform: scale(1.3);
+    margin-top: 10px;
+}
+.custom-search{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+::placeholder{
+    font-size: small;
+}
+.search{
+    border-radius: 50%;
+    margin-top: 13px;
+}
+.small-label{
+    font-size: small;
+    font-weight: bold;
+    color: #6d757d !important;
+}
+select option.small-text {
+    font-size: 12px; /* Làm chữ nhỏ lại */
+}
