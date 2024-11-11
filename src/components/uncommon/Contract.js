@@ -31,14 +31,14 @@ function Contract() {
 
         getContract();
     }, [shouldRefresh]);
-const handleReload =() =>{
-    setShouldRefresh(prev => !prev)
-}
+    const handleReload = () => {
+        setShouldRefresh(prev => !prev)
+    }
     const handleSearch = async (value) => {
         try {
             const data = {
-                taxCode:`%${value.taxCode}%`,
-                nameCustomer:`%${value.nameCustomer}%`,
+                taxCode: `%${value.taxCode}%`,
+                nameCustomer: `%${value.nameCustomer}%`,
                 startDateStr: value.startDate,
                 endDateStr: value.endDate
             }
@@ -55,9 +55,9 @@ const handleReload =() =>{
             console.log(err);
         }
     }
-const handleAddContract = () => {
+    const handleAddContract = () => {
         navigate('/contract/add')
-}
+    }
     const isContractActive = (dayend) => {
         const currentDate = new Date();
         const contractEndDate = new Date(dayend);
@@ -136,7 +136,7 @@ const handleAddContract = () => {
                         </FormikForm>
                     )}
                 </Formik>
-                <Button variant={"success"} className={"mb-2"} onClick={handleAddContract} >Thêm mới</Button>
+                <Button variant={"success"} className={"mb-2"} onClick={handleAddContract}>Thêm mới</Button>
                 <Button variant="secondary" className={"mb-2 ms-2"} onClick={handleReload}>
                     <FaRedo/>
                 </Button>
@@ -167,7 +167,7 @@ const handleAddContract = () => {
                             </td>
                             <td className="text-center">
                                 <Button variant="info" type="submit"
-                                        onClick={() => navigate(`/contract/detail/${contract.id}`, { state: { contract } })}
+                                        onClick={() => navigate(`/contract/detail/${contract.id}`, {state: {contract}})}
                                 >
                                     Chi tiết
                                 </Button>
@@ -206,4 +206,5 @@ const handleAddContract = () => {
         </>
     );
 }
+
 export default Contract;

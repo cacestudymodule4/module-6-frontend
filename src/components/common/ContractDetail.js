@@ -16,7 +16,6 @@ function ContractDetail() {
     const handleClick = () => {
         navigate('/contract/list');
     };
-
     return (
         <div className="container mt-5">
             <h2 className="text-center mb-5" style={{color: "#6d757d"}}>Chi tiết hợp đồng</h2>
@@ -47,7 +46,6 @@ function ContractDetail() {
                                     />
                                 </Form.Group>
                             </Col>
-
                             <Col md={4}>
                                 <Form.Group controlId="customerPhone">
                                     <Form.Label>Địa chỉ</Form.Label>
@@ -59,7 +57,6 @@ function ContractDetail() {
                                 </Form.Group>
                             </Col>
                         </Row>
-
                         <Row>
                             <Col md={4}>
                                 <Form.Group controlId="customerEmail">
@@ -81,7 +78,6 @@ function ContractDetail() {
                                     />
                                 </Form.Group>
                             </Col>
-
                             <Col md={4}>
                                 <Form.Group controlId="customerAddress">
                                     <Form.Label>Số điện thoại khách hàng</Form.Label>
@@ -122,7 +118,6 @@ function ContractDetail() {
                                     />
                                 </Form.Group>
                             </Col>
-
                             <Col md={4}>
                                 <Form.Group controlId="groundName">
                                     <Form.Label>Mã mặt bằng</Form.Label>
@@ -134,7 +129,6 @@ function ContractDetail() {
                                 </Form.Group>
                             </Col>
                         </Row>
-
                         <Row>
                             <Col md={4}>
                                 <Form.Group controlId="contractId">
@@ -156,7 +150,6 @@ function ContractDetail() {
                                     />
                                 </Form.Group>
                             </Col>
-
                             <Col md={4}>
                                 <Form.Group controlId="endDate">
                                     <Form.Label>Ngày kết thúc</Form.Label>
@@ -168,7 +161,6 @@ function ContractDetail() {
                                 </Form.Group>
                             </Col>
                         </Row>
-
                         <Row>
                             <Col md={4}>
                                 <Form.Group controlId="deposit">
