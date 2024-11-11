@@ -59,7 +59,6 @@ function ContractDetail() {
                                 </Form.Group>
                             </Col>
                         </Row>
-
                         <Row>
                             <Col md={4}>
                                 <Form.Group controlId="customerEmail">
@@ -81,7 +80,6 @@ function ContractDetail() {
                                     />
                                 </Form.Group>
                             </Col>
-
                             <Col md={4}>
                                 <Form.Group controlId="customerAddress">
                                     <Form.Label>Số điện thoại khách hàng</Form.Label>
@@ -122,7 +120,6 @@ function ContractDetail() {
                                     />
                                 </Form.Group>
                             </Col>
-
                             <Col md={4}>
                                 <Form.Group controlId="groundName">
                                     <Form.Label>Mã mặt bằng</Form.Label>
@@ -156,7 +153,6 @@ function ContractDetail() {
                                     />
                                 </Form.Group>
                             </Col>
-
                             <Col md={4}>
                                 <Form.Group controlId="endDate">
                                     <Form.Label>Ngày kết thúc</Form.Label>
@@ -168,7 +164,6 @@ function ContractDetail() {
                                 </Form.Group>
                             </Col>
                         </Row>
-
                         <Row>
                             <Col md={4}>
                                 <Form.Group controlId="deposit">
