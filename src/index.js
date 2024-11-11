@@ -32,6 +32,7 @@ root.render(
                 <Route path="/user/detail" element={<UserInfo/>}/>
                 <Route path="/salary" element={<Salary/>}/>
                 <Route path="/report" element={<Chart8Component/>}/>
+                <Route path="/*" element={<Login/>}/>
             </Routes>
         </BrowserRouter>
     </Provider>

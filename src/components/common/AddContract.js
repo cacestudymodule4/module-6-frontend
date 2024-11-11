@@ -5,7 +5,7 @@ import axios from "axios";
 import {toast} from "react-toastify";
 import * as Yup from "yup";
 import {useNavigate} from "react-router-dom";
-import '../css/Contract.css';
+import '../../assets/css/Contract.css';
 
 function AddContract() {
     const navigate = useNavigate();
@@ -329,7 +329,7 @@ function AddContract() {
                             </Col>
                             <Col md={3}>
                                 <Form.Group className="mb-3">
-                                    <Form.Label>Tiền cọc</Form.Label>
+                                    <Form.Label>Tiền cọc(VNĐ)</Form.Label>
                                     <Field
                                         as={Form.Control}
                                         type="text"

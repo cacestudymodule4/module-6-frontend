@@ -6,7 +6,7 @@ import {Table, Modal, Button, Form, Navbar} from 'react-bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import {toast} from "react-toastify";
 import {Formik, Field, Form as FormikForm, ErrorMessage} from "formik";
-import '../css/Contract.css';
+import '../../assets/css/Contract.css';
 
 function Contract() {
     const navigate = useNavigate();
@@ -140,22 +140,23 @@ const handleAddContract = () => {
                 <Button variant="secondary" className={"mb-2 ms-2"} onClick={handleReload}>
                     <FaRedo/>
                 </Button>
-                <Table striped bordered hover>
+                {listContract.length ===0 ? ( <h1 className={"text-center mt-5"}>Danh sách trống </h1> ):
+                    <Table striped bordered hover>
                     <thead className={"custom-table text-white text-center"}>
                     <tr>
                         <th>ID</th>
                         <th>Tên khách hàng</th>
                         <th>Tên mặt bằng</th>
-                        <th>Đang thuê</th>
+                        <th className="text-center">Đang thuê</th>
                         <th colSpan="3" className="text-center">Hành động</th>
                     </tr>
                     </thead>
                     <tbody>
                     {listContract.map((contract, index) => (
                         <tr key={contract.id}>
-                            <td className="text-center">CT{contract.id}</td>
-                            <td className="text-center">{contract.customer.name}</td>
-                            <td className="text-center">{contract.ground.name}</td>
+                            <td>CT{contract.id}</td>
+                            <td>{contract.customer.name}</td>
+                            <td>{contract.ground.name}</td>
                             <td className="text-center">
                                 <input
                                     type="checkbox"
@@ -184,7 +185,8 @@ const handleAddContract = () => {
                         </tr>
                     ))}
                     </tbody>
-                </Table>
+                </Table>}
+
                 <Modal show={showDeleteModal}>
                     <Modal.Header closeButton>
                         <Modal.Title>Xác Nhận</Modal.Title>
