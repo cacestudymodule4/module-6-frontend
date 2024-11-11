@@ -18,7 +18,6 @@ function AddContract() {
     const [startDay, setStartDay] = useState('');
     const [endDay, setEndDay] = useState('');
     const [term, setTerm] = useState('');
-
     useEffect(() => {
         async function getStaff() {
             try {
@@ -77,37 +76,30 @@ function AddContract() {
             if (res.status === 200) {
                 navigate('/contract/list')
                 toast.success("Thêm mới thành công");
-
             }
         } catch (error) {
             toast.error("Thêm thất bại");
             console.log(error);
         }
-
     }
     const calculateEndDate = (startDate, months) => {
         if (!startDate || !months) return '';
-
         const start = new Date(startDate);
         start.setMonth(start.getMonth() + parseInt(months));
         return start.toISOString().split('T')[0];  // Định dạng lại thành "YYYY-MM-DD"
     };
-
-
     const handleTermChange = (event) => {
         const termValue = event.target.value;
         setTerm(termValue);
         const calculatedEndDate = calculateEndDate(startDay, termValue);
         setEndDay(calculatedEndDate);
     };
-
     const handleStartDayChange = (event) => {
         const startDate = event.target.value;
         setStartDay(startDate);
         const calculatedEndDate = calculateEndDate(startDate, term);
         setEndDay(calculatedEndDate);
     };
-
     const initialValues = {
         cmd: '',
         staffId: '',
@@ -142,7 +134,6 @@ function AddContract() {
             .required('Ngày bắt đầu là bắt buộc')
             .min(new Date(), 'Ngày bắt đầu không được nhỏ hơn ngày hiện tại'),
     });
-
     const handleIdentificationChange = (event) => {
         const selectedId = event.target.value;
         const selectedCustomer = customer.find(cus => cus.identification === selectedId);
@@ -152,7 +143,6 @@ function AddContract() {
             setCustomerName('');
         }
     };
-
     const handleStaffChange = (event) => {
         const selectedIdStaff = event.target.value;
         const selectedStaff = staff.find(st => st.id === Number(selectedIdStaff));
@@ -160,10 +150,8 @@ function AddContract() {
             setNameStaff(selectedStaff.name);
         } else {
             setCustomerName('');
-
         }
     };
-
     const handlePriceChange = (event) => {
         const selectedCode = event.target.value;
         const selectedGround = ground.find(grd => grd.id === Number(selectedCode));
@@ -174,7 +162,6 @@ function AddContract() {
             toast.error("Không tìm thấy mặt bằng với mã đã chọn!");
         }
     };
-
     return (
         <div className="container mt-5">
             <h2 className="text-center mb-5" style={{color: "#6d757d"}}>Thêm mới hợp đồng</h2>
@@ -415,4 +402,5 @@ function AddContract() {
         </div>
     );
 }
+
 export default AddContract;
