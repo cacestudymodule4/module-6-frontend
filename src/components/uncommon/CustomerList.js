@@ -1,12 +1,11 @@
-import React, { useState, useEffect } from 'react';
+import React, {useState, useEffect} from 'react';
 import axios from 'axios';
-import './CustomerList.css';
+import '../../assets/css/CustomerList.css';
 import Modal from 'react-modal';
-import { useNavigate } from "react-router-dom";
+import {useNavigate} from "react-router-dom";
 import * as Yup from 'yup';
 
 Modal.setAppElement('#root');
-
 const customerSchema = Yup.object().shape({
     name: Yup.string().required("Tên khách hàng là bắt buộc"),
     birthday: Yup.date().required("Ngày sinh là bắt buộc"),
@@ -30,27 +29,23 @@ function CustomerList() {
     const [editingCustomer, setEditingCustomer] = useState(null);
     const [editedCustomer, setEditedCustomer] = useState({});
     const [errors, setErrors] = useState({});
-
     useEffect(() => {
         fetchCustomers();
     }, []);
-
     const fetchCustomers = async () => {
         try {
             const response = await axios.get('http://localhost:8080/api/customers', {
-                headers: { Authorization: `Bearer ${localStorage.getItem('jwtToken')}` }
+                headers: {Authorization: `Bearer ${localStorage.getItem('jwtToken')}`}
             });
             setCustomers(response.data);
         } catch (error) {
             console.error('Có lỗi khi lấy danh sách khách hàng:', error);
         }
     };
-
     const navigate = useNavigate();
     const handleNavigateToAddCustomer = () => {
         navigate('/customer/add');
     };
-
     const handleDeleteCustomer = async () => {
         try {
             await axios.delete(`http://localhost:8080/api/customers/delete/${customerToDelete.id}`, {
@@ -64,39 +59,34 @@ function CustomerList() {
             console.error('Có lỗi khi xóa khách hàng:', error);
         }
     };
-
     const handleOpenModal = (customer) => {
         setCustomerToDelete(customer);
         setIsModalOpen(true);
     };
-
     const closeModal = () => {
         setIsModalOpen(false);
         setCustomerToDelete(null);
     };
-
     const handleEditClick = (customer) => {
         setEditingCustomer(customer.id);
         setEditedCustomer(customer);
     };
-
     const handleEditChange = (e) => {
-        const { name, value } = e.target;
+        const {name, value} = e.target;
         setEditedCustomer({
             ...editedCustomer,
             [name]: value
         });
     };
-
     const handleSaveEdit = async () => {
         try {
-            await customerSchema.validate(editedCustomer, { abortEarly: false });
+            await customerSchema.validate(editedCustomer, {abortEarly: false});
 
             const response = await axios.put(
                 `http://localhost:8080/api/customers/update/${editingCustomer}`,
                 editedCustomer,
                 {
-                    headers: { Authorization: `Bearer ${localStorage.getItem('jwtToken')}` }
+                    headers: {Authorization: `Bearer ${localStorage.getItem('jwtToken')}`}
                 }
             );
 
@@ -115,19 +105,17 @@ function CustomerList() {
                 setErrors(newErrors);
             } else if (error.response && error.response.status === 400) {
                 // Lỗi từ backend (vd: email hoặc CMND đã tồn tại)
-                setErrors({ api: error.response.data });
+                setErrors({api: error.response.data});
             } else {
                 console.error('Có lỗi khi cập nhật khách hàng:', error);
             }
         }
     };
-
     const handleCancelEdit = () => {
         setEditingCustomer(null);
         setEditedCustomer({});
         setErrors({});
     };
-
     return (
         <div className="customer-list">
             <div className="customer-list-title">
@@ -240,7 +228,8 @@ function CustomerList() {
                                         <button className="edit" onClick={() => handleEditClick(customer)}>Sửa</button>
                                     </td>
                                     <td>
-                                        <button className="delete" onClick={() => handleOpenModal(customer)}>Xóa</button>
+                                        <button className="delete" onClick={() => handleOpenModal(customer)}>Xóa
+                                        </button>
                                     </td>
                                 </>
                             )}
@@ -249,17 +238,15 @@ function CustomerList() {
                     </tbody>
                 </table>
             </div>
-
             {/* Modal Confirm Delete */}
             <Modal isOpen={isModalOpen} onRequestClose={closeModal} contentLabel="Xác nhận xóa khách hàng">
                 <h2>Xác nhận xóa</h2>
                 <p>Bạn có chắc chắn muốn xóa khách hàng {customerToDelete?.name}?</p>
                 <div>
-                    <button onClick={handleDeleteCustomer} style={{ background: 'red', color: 'white' }}>Xóa</button>
+                    <button onClick={handleDeleteCustomer} style={{background: 'red', color: 'white'}}>Xóa</button>
                     <button onClick={closeModal}>Hủy</button>
                 </div>
             </Modal>
-
             {/* Hiển thị lỗi từ server nếu có */}
             {errors.api && <div className="api-error">{errors.api}</div>}
         </div>

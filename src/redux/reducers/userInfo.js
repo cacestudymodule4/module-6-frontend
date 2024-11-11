@@ -1,7 +1,7 @@
 import {
     USER_INFO_FAILED,
     USER_INFO_SUCCESS
-} from "./actions";
+} from "../actions";
 
 const initialState = {
     userInfo: null,

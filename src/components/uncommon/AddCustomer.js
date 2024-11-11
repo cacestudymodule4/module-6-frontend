@@ -3,13 +3,11 @@ import axios from 'axios';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import { toast } from 'react-toastify';
-import './AddCustomer.css';
+import '../../assets/css/AddCustomer.css';
 
 function AddCustomer() {
     const [successMessage, setSuccessMessage] = useState(null);
     const [error, setError] = useState(null);
-
-    // Khởi tạo formik với các trường và kiểm tra hợp lệ với Yup
     const formik = useFormik({
         initialValues: {
             name: '',
@@ -36,7 +34,6 @@ function AddCustomer() {
                 const response = await axios.post('http://localhost:8080/api/customers', values, {
                     headers: { Authorization: `Bearer ${localStorage.getItem('jwtToken')}` }
                 });
-
                 if (response.status === 200) {
                     toast.success('Khách hàng đã được thêm thành công!');
                     setError(null);
@@ -46,7 +43,6 @@ function AddCustomer() {
                 if (error.response) {
                     const errorMessage = error.response.data;
                     console.error('Có lỗi khi thêm khách hàng:', errorMessage);
-
                     if (error.response.status === 400) {
                         if (errorMessage.includes('Duplicate Email')) {
                             setError('Email đã tồn tại. Vui lòng chọn email khác.');
@@ -65,7 +61,6 @@ function AddCustomer() {
             }
         }
     });
-
     return (
         <div className="add-customer-background">
             <div className="add-customer-page">
@@ -84,7 +79,6 @@ function AddCustomer() {
                     {formik.touched.name && formik.errors.name ? (
                         <p className="error-message">{formik.errors.name}</p>
                     ) : null}
-
                     <label>Ngày sinh:</label>
                     <input
                         type="date"
@@ -96,7 +90,6 @@ function AddCustomer() {
                     {formik.touched.birthday && formik.errors.birthday ? (
                         <p className="error-message">{formik.errors.birthday}</p>
                     ) : null}
-
                     <label>Số chứng minh thư:</label>
                     <input
                         type="text"
@@ -108,7 +101,6 @@ function AddCustomer() {
                     {formik.touched.identification && formik.errors.identification ? (
                         <p className="error-message">{formik.errors.identification}</p>
                     ) : null}
-
                     <label>Địa chỉ:</label>
                     <input
                         type="text"
@@ -120,7 +112,6 @@ function AddCustomer() {
                     {formik.touched.address && formik.errors.address ? (
                         <p className="error-message">{formik.errors.address}</p>
                     ) : null}
-
                     <label>Số điện thoại:</label>
                     <input
                         type="text"
@@ -132,7 +123,6 @@ function AddCustomer() {
                     {formik.touched.phone && formik.errors.phone ? (
                         <p className="error-message">{formik.errors.phone}</p>
                     ) : null}
-
                     <label>Email:</label>
                     <input
                         type="email"
@@ -144,7 +134,6 @@ function AddCustomer() {
                     {formik.touched.email && formik.errors.email ? (
                         <p className="error-message">{formik.errors.email}</p>
                     ) : null}
-
                     <label>Website:</label>
                     <input
                         type="text"
@@ -156,7 +145,6 @@ function AddCustomer() {
                     {formik.touched.website && formik.errors.website ? (
                         <p className="error-message">{formik.errors.website}</p>
                     ) : null}
-
                     <label>Tên công ty:</label>
                     <input
                         type="text"
@@ -168,7 +156,6 @@ function AddCustomer() {
                     {formik.touched.company && formik.errors.company ? (
                         <p className="error-message">{formik.errors.company}</p>
                     ) : null}
-
                     <button type="submit">Lưu</button>
                 </form>
             </div>
