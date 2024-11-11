@@ -141,3 +141,22 @@ button:hover {
     padding: 20px; /* Khoảng cách giữa nội dung và các cạnh */
     margin: auto; /* Căn giữa modal */
 }
+
+.error {
+    color: red;
+    font-size: 14px;
+    margin-top: 5px;
+}
+
+.api-error {
+    color: white;
+    background-color: red;
+    padding: 10px;
+    margin-top: 20px;
+    text-align: center;
+    font-size: 20px;
+    border-radius: 5px;
+}
+.save{
+    background-color: blue;
+}

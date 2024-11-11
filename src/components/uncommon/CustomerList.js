@@ -10,7 +10,7 @@ const customerSchema = Yup.object().shape({
     name: Yup.string().required("Tên khách hàng là bắt buộc"),
     birthday: Yup.date().required("Ngày sinh là bắt buộc"),
     identification: Yup.string()
-        // .matches(/^[0-9]{9,12}$/, "CMND phải chứa 9-12 chữ số")
+        .matches(/^[0-9]{9,12}$/, "CMND phải chứa 9-12 chữ số")
         .required("CMND là bắt buộc"),
     address: Yup.string().required("Địa chỉ là bắt buộc"),
     phone: Yup.string()
