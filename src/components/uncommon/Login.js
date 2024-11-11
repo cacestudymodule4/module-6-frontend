@@ -7,6 +7,7 @@ import {useDispatch, useSelector} from "react-redux";
 import {LOGIN} from "../../redux/actions";
 import {toast} from "react-toastify";
 import 'react-toastify/dist/ReactToastify.css';
+import Footer from "../common/Footer";
 
 const Login = () => {
     const navigate = useNavigate();
@@ -36,50 +37,54 @@ const Login = () => {
         }
     }, [isAuthenticated, error, navigate]);
     return (
-        <section className="bg-light p-3 p-md-4 p-xl-5">
-            <div className="container">
-                <div className="row justify-content-center">
-                    <div className="col-12 col-xxl-11">
-                        <div className="card border-light-subtle shadow-sm">
-                            <div className="row g-0">
-                                <div className="col-12 col-md-6">
-                                    <img className="img-fluid rounded-start w-100 h-100 object-fit-cover"
-                                         loading="lazy" src="/94b420d6ca60cf5ea8cd5f312752759b.jpg"
-                                         alt="Chào mừng trở lại! Bạn đã được nhớ đến!"/>
-                                </div>
-                                <div className="col-12 col-md-6 d-flex align-items-center justify-content-center">
-                                    <div className="col-12 col-lg-11 col-xl-10">
-                                        <div className="card-body p-3 p-md-4 p-xl-5">
-                                            <h2 className="h4 text-center">Đăng nhập</h2>
-                                            <Formik initialValues={initialValues} validationSchema={validationSchema}
-                                                    onSubmit={handleSubmit}>
-                                                {({isValid}) => (
-                                                    <Form>
-                                                        <div className="form-floating mb-3">
-                                                            <Field type="email" name="email" className="form-control"
-                                                                   placeholder="name@example.com"/>
-                                                            <label htmlFor="email">Email</label>
-                                                            <ErrorMessage name="email" component="div"
-                                                                          className="text-danger"/>
-                                                        </div>
-                                                        <div className="form-floating mb-3">
-                                                            <Field type="password" name="password"
-                                                                   className="form-control" placeholder="Mật khẩu"/>
-                                                            <label htmlFor="password">Mật khẩu</label>
-                                                            <ErrorMessage name="password" component="div"
-                                                                          className="text-danger"/>
-                                                        </div>
-                                                        <button
-                                                            className="btn btn-dark btn-lg w-100"
-                                                            type="submit"
-                                                            disabled={!isValid || isLoggingIn}
-                                                        >
-                                                            {isLoggingIn ? 'Đang tải...' : 'Đăng nhập'}
-                                                        </button>
-                                                    </Form>
-                                                )}
-                                            </Formik>
-                                            <p className="mt-5 text-secondary text-center">Đã có tài khoản?</p>
+        <>
+            <section className="bg-light p-3 p-md-4 p-xl-5">
+                <div className="container">
+                    <div className="row justify-content-center">
+                        <div className="col-12 col-xxl-11">
+                            <div className="card border-light-subtle shadow-sm">
+                                <div className="row g-0">
+                                    <div className="col-12 col-md-6">
+                                        <img className="img-fluid rounded-start w-100 h-100 object-fit-cover"
+                                             loading="lazy" src="/94b420d6ca60cf5ea8cd5f312752759b.jpg"
+                                             alt="Chào mừng trở lại! Bạn đã được nhớ đến!"/>
+                                    </div>
+                                    <div className="col-12 col-md-6 d-flex align-items-center justify-content-center">
+                                        <div className="col-12 col-lg-11 col-xl-10">
+                                            <div className="card-body p-3 p-md-4 p-xl-5">
+                                                <h2 className="h4 text-center">Đăng nhập</h2>
+                                                <Formik initialValues={initialValues}
+                                                        validationSchema={validationSchema}
+                                                        onSubmit={handleSubmit}>
+                                                    {({isValid}) => (
+                                                        <Form>
+                                                            <div className="form-floating mb-3">
+                                                                <Field type="email" name="email"
+                                                                       className="form-control"
+                                                                       placeholder="name@example.com"/>
+                                                                <label htmlFor="email">Email</label>
+                                                                <ErrorMessage name="email" component="div"
+                                                                              className="text-danger"/>
+                                                            </div>
+                                                            <div className="form-floating mb-3">
+                                                                <Field type="password" name="password"
+                                                                       className="form-control" placeholder="Mật khẩu"/>
+                                                                <label htmlFor="password">Mật khẩu</label>
+                                                                <ErrorMessage name="password" component="div"
+                                                                              className="text-danger"/>
+                                                            </div>
+                                                            <button
+                                                                className="btn btn-dark btn-lg w-100"
+                                                                type="submit"
+                                                                disabled={!isValid || isLoggingIn}
+                                                            >
+                                                                {isLoggingIn ? 'Đang tải...' : 'Đăng nhập'}
+                                                            </button>
+                                                        </Form>
+                                                    )}
+                                                </Formik>
+                                                <p className="mt-5 text-secondary text-center">Đã có tài khoản?</p>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
@@ -87,8 +92,9 @@ const Login = () => {
                         </div>
                     </div>
                 </div>
-            </div>
-        </section>
+            </section>
+            <Footer></Footer>
+        </>
     );
 };
 export default Login;

@@ -81,7 +81,6 @@ function CustomerList() {
     const handleSaveEdit = async () => {
         try {
             await customerSchema.validate(editedCustomer, {abortEarly: false});
-
             const response = await axios.put(
                 `http://localhost:8080/api/customers/update/${editingCustomer}`,
                 editedCustomer,
@@ -89,7 +88,6 @@ function CustomerList() {
                     headers: {Authorization: `Bearer ${localStorage.getItem('jwtToken')}`}
                 }
             );
-
             if (response.status === 200) {
                 setCustomers(customers.map(customer => customer.id === editingCustomer ? response.data : customer));
                 setEditingCustomer(null);

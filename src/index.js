@@ -17,6 +17,8 @@ import Salary from "./components/uncommon/Salary";
 import Chart8Component from "./components/uncommon/Report";
 import CustomerList from "./components/uncommon/CustomerList";
 import AddCustomer from "./components/uncommon/AddCustomer";
+import {NavbarApp} from "./components/common/Navbar";
+import Footer from "./components/common/Footer";
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
