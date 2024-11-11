@@ -1,0 +1,162 @@
+.customer-list {
+    padding: 20px;
+    font-family: Arial, sans-serif;
+}
+
+.input-container {
+    margin-top: 60px;
+    margin-left: 250px;
+    margin-bottom: 60px;
+    display: flex;
+    gap: 20px;
+    /*align-items: center;*/
+
+}
+
+.input-container input {
+    padding: 5px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    height: 30px;
+
+}
+
+.input-container p {
+    margin-right: 10px;
+    height: 20px;
+}
+
+.customer-info {
+    display: flex;
+}
+
+.customer-info input {
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    width: 400px;
+}
+
+.table-container {
+    overflow-x: auto;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    background-color: #f9f9f9;
+}
+
+thead {
+    background-color: #333333;
+    color: #fff;
+}
+
+th, td {
+
+    padding: 10px;
+    text-align: center;
+    border: 1px solid #ddd;
+}
+
+th {
+    font-weight: bold;
+}
+
+button {
+    height: 30px;
+    padding: 5px 10px;
+    margin: 2px;
+    background-color: grey;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+button:hover {
+    background-color: #00FFFF;
+}
+
+.pagination {
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
+}
+
+.pagination button {
+    padding: 5px 10px;
+    margin: 2px;
+    border: 1px solid #ddd;
+    background-color: whitesmoke;
+    color: black;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.pagination button:hover {
+    background-color: #007bff;
+    color: white;
+}
+
+.add-customer button {
+    display: flex;
+    background: #66CC00;
+    color: #f9f9f9;
+    height: 35px;
+    font-size: 17px;
+}
+
+.add-customer {
+    display: flex;
+}
+
+.customer-list-title {
+    background-color: #333399;
+    color: white;
+    padding: 10px;
+    text-align: center;
+    font-size: 24px;
+    font-weight: normal;
+    border-radius: 5px;
+    height: 100px;
+}
+
+.detail {
+    background-color: #6495ED;
+}
+
+.edit {
+    background-color: #FFD700;
+}
+
+.delete {
+    background-color: red;
+}
+
+.ReactModal__Content {
+    width: 500px; /* Đặt chiều rộng của modal */
+    height: 200px; /* Chiều cao tự động */
+    max-width: 90%; /* Giới hạn chiều rộng tối đa của modal */
+    max-height: 80%; /* Giới hạn chiều cao tối đa */
+    padding: 20px; /* Khoảng cách giữa nội dung và các cạnh */
+    margin: auto; /* Căn giữa modal */
+}
+
+.error {
+    color: red;
+    font-size: 14px;
+    margin-top: 5px;
+}
+
+.api-error {
+    color: white;
+    background-color: red;
+    padding: 10px;
+    margin-top: 20px;
+    text-align: center;
+    font-size: 20px;
+    border-radius: 5px;
+}
+.save{
+    background-color: blue;
+}

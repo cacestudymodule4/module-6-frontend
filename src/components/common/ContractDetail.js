@@ -16,7 +16,6 @@ function ContractDetail() {
     const handleClick = () => {
         navigate('/contract/list');
     };
-
     return (
         <div className="container mt-5">
             <h2 className="text-center mb-5" style={{color: "#6d757d"}}>Chi tiết hợp đồng</h2>
@@ -47,7 +46,6 @@ function ContractDetail() {
                                     />
                                 </Form.Group>
                             </Col>
-
                             <Col md={4}>
                                 <Form.Group controlId="customerPhone">
                                     <Form.Label>Địa chỉ</Form.Label>
@@ -131,7 +129,6 @@ function ContractDetail() {
                                 </Form.Group>
                             </Col>
                         </Row>
-
                         <Row>
                             <Col md={4}>
                                 <Form.Group controlId="contractId">
