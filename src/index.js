@@ -7,6 +7,9 @@ import {BrowserRouter, Route, Routes} from "react-router-dom";
 import {ToastContainer} from "react-toastify";
 import store from "./redux/store";
 import {Provider} from "react-redux";
+import Contract from "./components/uncommon/Contract";
+import ContractDetail from "./components/common/ContractDetail";
+import AddContract from "./components/common/AddContract";
 import Login from "./components/uncommon/Login";
 import Logout from "./components/common/Logout";
 import UserInfo from "./components/uncommon/UserDetail";
@@ -23,6 +26,9 @@ root.render(
                 <Route path="/login" element={<Login/>}/>
                 <Route path="/logout" element={<Logout/>}/>
                 <Route path="/home" element={<Home/>}/>
+                <Route path="/contract/add" element={<AddContract/>}/>
+                <Route path="/contract/list" element={<Contract/>}/>
+                <Route path="/contract/detail/:id" element={<ContractDetail/>}/>
                 <Route path="/user/detail" element={<UserInfo/>}/>
                 <Route path="/salary" element={<Salary/>}/>
                 <Route path="/report" element={<Chart8Component/>}/>
