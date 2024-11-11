@@ -10,7 +10,6 @@
     display: flex;
     gap: 20px;
     /*align-items: center;*/
-
 }
 
 .input-container input {
@@ -18,7 +17,6 @@
     border: 1px solid #ddd;
     border-radius: 4px;
     height: 30px;
-
 }
 
 .input-container p {
@@ -52,7 +50,6 @@ thead {
 }
 
 th, td {
-
     padding: 10px;
     text-align: center;
     border: 1px solid #ddd;
@@ -63,7 +60,7 @@ th {
 }
 
 button {
-    height: 30px;
+    /*height: 30px;*/
     padding: 5px 10px;
     margin: 2px;
     background-color: grey;

@@ -1,6 +1,6 @@
 /* Thêm ảnh nền chỉ cho trang AddCustomer */
 .add-customer-background {
-    background-image: url('/src/components/images/building.jpg'); /* Đặt đường dẫn tới ảnh nền */
+    background-image: url('/src/assets/img/building.jpg'); /* Đặt đường dẫn tới ảnh nền */
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;

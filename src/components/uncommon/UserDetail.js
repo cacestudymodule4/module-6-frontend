@@ -5,6 +5,8 @@ import 'react-toastify/dist/ReactToastify.css';
 import {USER_INFO_REQUEST} from "../../redux/actions";
 import {useNavigate} from "react-router-dom";
 import ChangePassword from '../common/ChangePassword';
+import {NavbarApp} from "../common/Navbar";
+import Footer from "../common/Footer";
 
 const MyDialogComponent = ({isOpen, onClose}) => {
     const dialogRef = useRef(null);
@@ -43,89 +45,93 @@ const UserInfo = () => {
     const openDialog = () => setIsDialogOpen(true);
     const closeDialog = () => setIsDialogOpen(false);
     return (
-        <section className="bg-light p-3 p-md-4 p-xl-5">
-            <div className="container">
-                <div className="row justify-content-center">
-                    <div className="col-12 col-xxl-8">
-                        <div className="card border-light-subtle shadow-sm">
-                            <div className="card-body p-3 p-md-4 p-xl-5">
-                                <h2 className="h4 text-center">Thông Tin Người Dùng</h2>
-                                <div className="row">
-                                    <div className="col-md-6 mb-3">
-                                        <div className="form-floating">
-                                            <input
-                                                type="text"
-                                                className="form-control"
-                                                value={userInfo?.fullName || ''}
-                                                disabled
-                                            />
-                                            <label>Họ và tên</label>
+        <><NavbarApp></NavbarApp>
+            <section className="bg-light p-3 p-md-4 p-xl-5">
+                <div className="container">
+                    <div className="row justify-content-center">
+                        <div className="col-12 col-xxl-8">
+                            <div className="card border-light-subtle shadow-sm">
+                                <div className="card-body p-3 p-md-4 p-xl-5">
+                                    <h2 className="h4 text-center">Thông Tin Người Dùng</h2>
+                                    <div className="row">
+                                        <div className="col-md-6 mb-3">
+                                            <div className="form-floating">
+                                                <input
+                                                    type="text"
+                                                    className="form-control"
+                                                    value={userInfo?.fullName || ''}
+                                                    disabled
+                                                />
+                                                <label>Họ và tên</label>
+                                            </div>
+                                        </div>
+                                        <div className="col-md-6 mb-3">
+                                            <div className="form-floating">
+                                                <input
+                                                    type="text"
+                                                    className="form-control"
+                                                    value={userInfo?.email || ''}
+                                                    disabled
+                                                />
+                                                <label>Email</label>
+                                            </div>
+                                        </div>
+                                        <div className="col-md-6 mb-3">
+                                            <div className="form-floating">
+                                                <input
+                                                    type="text"
+                                                    className="form-control"
+                                                    value={userInfo?.phone || ''}
+                                                    disabled
+                                                />
+                                                <label>Số điện thoại</label>
+                                            </div>
+                                        </div>
+                                        <div className="col-md-6 mb-3">
+                                            <div className="form-floating">
+                                                <input
+                                                    type="text"
+                                                    className="form-control"
+                                                    value={userInfo?.identification || ''}
+                                                    disabled
+                                                />
+                                                <label>CMND/CCCD</label>
+                                            </div>
+                                        </div>
+                                        <div className="col-md-6 mb-3">
+                                            <div className="form-floating">
+                                                <input
+                                                    type="text"
+                                                    className="form-control"
+                                                    value={userInfo?.gender ? 'Nam' : 'Nữ'}
+                                                    disabled
+                                                />
+                                                <label>Giới tính</label>
+                                            </div>
+                                        </div>
+                                        <div className="col-md-6 mb-3">
+                                            <div className="form-floating">
+                                                <input
+                                                    type="text"
+                                                    className="form-control"
+                                                    value={userInfo?.id || ''}
+                                                    disabled
+                                                />
+                                                <label>ID</label>
+                                            </div>
                                         </div>
                                     </div>
-                                    <div className="col-md-6 mb-3">
-                                        <div className="form-floating">
-                                            <input
-                                                type="text"
-                                                className="form-control"
-                                                value={userInfo?.email || ''}
-                                                disabled
-                                            />
-                                            <label>Email</label>
-                                        </div>
-                                    </div>
-                                    <div className="col-md-6 mb-3">
-                                        <div className="form-floating">
-                                            <input
-                                                type="text"
-                                                className="form-control"
-                                                value={userInfo?.phone || ''}
-                                                disabled
-                                            />
-                                            <label>Số điện thoại</label>
-                                        </div>
-                                    </div>
-                                    <div className="col-md-6 mb-3">
-                                        <div className="form-floating">
-                                            <input
-                                                type="text"
-                                                className="form-control"
-                                                value={userInfo?.identification || ''}
-                                                disabled
-                                            />
-                                            <label>CMND/CCCD</label>
-                                        </div>
-                                    </div>
-                                    <div className="col-md-6 mb-3">
-                                        <div className="form-floating">
-                                            <input
-                                                type="text"
-                                                className="form-control"
-                                                value={userInfo?.gender ? 'Nam' : 'Nữ'}
-                                                disabled
-                                            />
-                                            <label>Giới tính</label>
-                                        </div>
-                                    </div>
-                                    <div className="col-md-6 mb-3">
-                                        <div className="form-floating">
-                                            <input
-                                                type="text"
-                                                className="form-control"
-                                                value={userInfo?.id || ''}
-                                                disabled
-                                            />
-                                            <label>ID</label>
-                                        </div>
-                                    </div>
+                                    <button onClick={openDialog} className="btn btn-dark btn-lg w-100">Đổi Mật Khẩu
+                                    </button>
+                                    <MyDialogComponent isOpen={isDialogOpen} onClose={closeDialog}/>
                                 </div>
-                                <button onClick={openDialog} className="btn btn-dark btn-lg w-100">Đổi Mật Khẩu</button>
-                                <MyDialogComponent isOpen={isDialogOpen} onClose={closeDialog}/>
                             </div>
                         </div>
                     </div>
                 </div>
-            </div>
-        </section>
+            </section>
+            <Footer></Footer>
+        </>
     );
 };
 export default UserInfo;
