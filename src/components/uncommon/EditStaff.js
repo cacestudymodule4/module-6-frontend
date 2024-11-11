@@ -1,14 +1,13 @@
-import React, {useState, useEffect} from 'react';
-import axios from 'axios';
-import {FaSearch} from 'react-icons/fa';
-import {ToastContainer, toast} from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
+import React, {useState} from "react";
+import {toast} from "react-toastify";
+import axios from "axios";
 
-function Staff() {
-    const [staffList, setStaffList] = useState([]);
-    const [searchName, setSearchName] = useState('');
-    const [filteredStaffList, setFilteredStaffList] = useState([]);
+
+function EditStaff() {
+
     const [selectedEmployee, setSelectedEmployee] = useState(null);
+    const [searchName, setSearchName] = useState('');
+    const [staffList, setStaffList] = useState([]);
     const [updatedEmployee, setUpdatedEmployee] = useState({
         name: '',
         gender: true,
@@ -19,51 +18,7 @@ function Staff() {
         startDate: ''
     });
 
-    useEffect(() => {
-        axios.get('http://localhost:8080/api/staff', {
-            headers: {Authorization: `Bearer ${localStorage.getItem('jwtToken')}`}
-        })
-            .then(response => {
-                setStaffList(response.data);
-                setFilteredStaffList(response.data);
-            })
-            .catch(error => toast.error("Lỗi khi tải danh sách nhân viên"));
-    }, [staffList]);
-
-    const deleteEmployee = async (id) => {
-        try {
-            await axios.delete(`http://localhost:8080/api/staff/delete/${id}`, {
-                headers: {Authorization: `Bearer ${localStorage.getItem('jwtToken')}`}
-            });
-            setStaffList(prevEmployees => prevEmployees.filter(emp => emp.id !== id));
-            toast.success("Nhân viên đã được xóa thành công!");
-        } catch (error) {
-            toast.error("Có lỗi xảy ra khi xóa nhân viên");
-            console.error("Error deleting employee:", error);
-        }
-    };
-
-    const handleSearch = async () => {
-            try {
-                const response = await axios.get('http://localhost:8080/api/staff/search', {
-                    params: {keyword: searchName},
-                    headers: {Authorization: `Bearer ${localStorage.getItem('jwtToken')}`}
-                });
-                setFilteredStaffList(response.data);
-            } catch (error) {
-                toast.error("lỗi rồi ")
-            }
-        };
-
-    const handleInputChange = (e) => {
-        const {name, value} = e.target;
-        setUpdatedEmployee(prevState => ({
-            ...prevState,
-            [name]: value
-        }));
-    };
-
-    const handleUpdate = () => {
+    const handleEdit = () => {
         if (!updatedEmployee.name || !updatedEmployee.email) {
             toast.error("Vui lòng điền đầy đủ thông tin!");
             return;
@@ -98,23 +53,16 @@ function Staff() {
         });
     };
 
+    const handleInputChange = (e) => {
+        const {name, value} = e.target;
+        setUpdatedEmployee(prevState => ({
+            ...prevState,
+            [name]: value
+        }));
+    };
+
     return (
-        <div className="container mt-5 p-5 rounded shadow bg-light">
-            <h3 className="text-center text-white py-3 bg-success rounded">Danh sách nhân viên văn phòng</h3>
-
-            <div className="d-flex mb-4">
-                <input
-                    type="text"
-                    placeholder="Tìm kiếm theo tên nhân viên..."
-                    className="form-control me-3 border-success"
-                    value={searchName}
-                    onChange={(e) => setSearchName(e.target.value)}
-                />
-                <button className="btn btn-success px-4" onClick={handleSearch}>
-                    <FaSearch/>
-                </button>
-            </div>
-
+        <div>
             {selectedEmployee && (
                 <div className="modal fade show" id="updateModal" style={{display: 'block'}} aria-hidden="true"
                      tabIndex="-1">
@@ -217,52 +165,6 @@ function Staff() {
                         </div>
                     </div>
                 </div>
-            )}
-
-            <table className="table table-hover table-bordered border-success">
-                <thead className="table-success">
-                <tr>
-                    <th>Mã nhân viên</th>
-                    <th>Họ tên</th>
-                    <th>Ngày sinh</th>
-                    <th>Giới tính</th>
-                    <th>Địa chỉ</th>
-                    <th>Điện thoại</th>
-                    <th>Email</th>
-                    <th>Lương</th>
-                    <th>Ngày làm việc</th>
-                    <th>Hành động</th>
-                </tr>
-                </thead>
-                <tbody>
-                {filteredStaffList.map(staff => (
-                    <tr key={staff.id}>
-                        <td>{staff.id}</td>
-                        <td>{staff.name}</td>
-                        <td>{staff.birthDate}</td>
-                        <td>{staff.gender ? 'Nam' : 'Nữ'}</td>
-                        <td>{staff.address}</td>
-                        <td>{staff.phone}</td>
-                        <td>{staff.email}</td>
-                        <td>{staff.salary}</td>
-                        <td>{staff.startDate}</td>
-                        <td>
-                            <button className="btn btn-info btn-sm me-1">Xem</button>
-                            <button className="btn btn-warning btn-sm me-1"
-                                    onClick={() => handleEditClick(staff)}>Cập
-                                nhật
-                            </button>
-                            <button className="btn btn-danger btn-sm" onClick={() => deleteEmployee(staff.id)}>Xóa
-                            </button>
-                        </td>
-                    </tr>
-                ))}
-                </tbody>
-            </table>
-
-            <ToastContainer position="top-right" autoClose={5000}/>
-        </div>
-    );
-}
-
-export default Staff;
+                </div>
+                )
+            }

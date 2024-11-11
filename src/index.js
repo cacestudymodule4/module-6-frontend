@@ -7,7 +7,7 @@ import {BrowserRouter, Route, Routes} from "react-router-dom";
 import {ToastContainer} from "react-toastify";
 import store from "./redux/store";
 import {Provider} from "react-redux";
-import Staff from "./components/staff";
+import Staff from "./components/common/Staff";
 import Contract from "./components/uncommon/Contract";
 import ContractDetail from "./components/common/ContractDetail";
 import AddContract from "./components/common/AddContract";
@@ -18,6 +18,7 @@ import Salary from "./components/uncommon/Salary";
 import Chart8Component from "./components/uncommon/Report";
 import CustomerList from "./components/uncommon/CustomerList";
 import AddCustomer from "./components/uncommon/AddCustomer";
+import AddStaff from "./components/uncommon/AddStaff";
 
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
@@ -27,7 +28,8 @@ root.render(
         <BrowserRouter>
             <ToastContainer/>
             <Routes>
-                <Route path="/staff" element={<Staff/>}/>
+                <Route path="/staff/list" element={<Staff/>}/>
+                <Route path="/staff/list/add" element={<AddStaff/>}/>
                 <Route path="/login" element={<Login/>}/>
                 <Route path="/logout" element={<Logout/>}/>
                 <Route path="/user/detail" element={<UserInfo/>}/>

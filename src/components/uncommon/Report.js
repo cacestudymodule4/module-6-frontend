@@ -3,6 +3,8 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap-icons/font/bootstrap-icons.css';
 import ApexCharts from 'apexcharts';
 import axios from "axios";
+import {NavbarApp} from "../common/Navbar";
+import Footer from "../common/Footer";
 
 const Chart8Component = () => {
     const [chart, setChart] = useState(null);
