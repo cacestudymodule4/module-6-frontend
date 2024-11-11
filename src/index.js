@@ -20,7 +20,6 @@ import CustomerList from "./components/uncommon/CustomerList";
 import AddCustomer from "./components/uncommon/AddCustomer";
 import AddStaff from "./components/uncommon/AddStaff";
 
-
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
     // <React.StrictMode>
