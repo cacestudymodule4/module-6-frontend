@@ -3,7 +3,7 @@ import {Container, Form, Row, Col, Card, Button, Carousel, Image, Stack} from 'r
 import {NavbarApp} from '../common/Navbar';
 import slide1 from '../../assets/img/bat-dong-san-1-35.png';
 import slide2 from '../../assets/img/bat-dong-san-19.png';
-import '../../assets/css/home.module.css';
+import '../../assets/css/home.css';
 import {FaPhoneAlt, FaEnvelope, FaMapMarkerAlt, FaFacebook, FaPhone} from 'react-icons/fa';
 import Footer from '../common/Footer';
 import axios from 'axios';

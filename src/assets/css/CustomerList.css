@@ -22,6 +22,9 @@
     height: 40px;
     width: 8%;
     font-size: 21px;
+    border-radius: 5px;
+    border: 2px;
+    align-items: center;
 }
 
 .customer-list__table-container {
@@ -36,7 +39,7 @@
 
 .customer-list__thead {
     background-color: #333333;
-    color: #fff;
+    color: black;
 }
 
 .customer-list__table th {
@@ -59,24 +62,11 @@
     margin-top: 20px;
 }
 
-.customer-list__pagination button {
-    padding: 5px 10px;
-    margin: 2px;
-    border: 1px solid #ddd;
-    background-color: whitesmoke;
-    color: black;
-    border-radius: 4px;
-    cursor: pointer;
-}
-
-.customer-list__pagination button:hover {
-    background-color: #007bff;
-    color: white;
-}
-
 .customer-list__edit-btn {
     background-color: #FFD700;
     color: white;
+    border-radius: 5px;
+    border: 2px
 }
 
 .customer-list__edit-btn:hover {
@@ -86,6 +76,8 @@
 .customer-list__delete-btn {
     background-color: red;
     color: white;
+    border-radius: 5px;
+    border: 2px
 }
 
 .customer-list__delete-btn:hover {

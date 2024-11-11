@@ -6,7 +6,7 @@ import {Table, Modal, Button, Form, Navbar} from 'react-bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import {toast} from "react-toastify";
 import {Formik, Field, Form as FormikForm, ErrorMessage} from "formik";
-import '../../assets/css/Contract.module.css';
+import '../../assets/css/Contract.css';
 
 function Contract() {
     const navigate = useNavigate();
