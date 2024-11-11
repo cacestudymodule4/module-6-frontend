@@ -1,6 +1,6 @@
 import React from 'react';
 import {Container, Row, Col, Image, Button} from 'react-bootstrap';
-import '../../assets/css/footer.css';
+import '../../assets/css/footer.module.css';
 import {
     FaPhoneAlt,
     FaEnvelope,

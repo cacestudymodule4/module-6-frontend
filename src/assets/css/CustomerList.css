@@ -3,24 +3,6 @@
     font-family: Arial, sans-serif;
 }
 
-.input-container {
-    margin-top: 60px;
-    margin-left: 250px;
-    margin-bottom: 60px;
-    display: flex;
-    gap: 20px;
-    /*align-items: center;*/
-
-}
-
-.input-container input {
-    padding: 5px;
-    border: 1px solid #ddd;
-    border-radius: 4px;
-    height: 30px;
-
-}
-
 .input-container p {
     margin-right: 10px;
     height: 20px;
@@ -50,7 +32,9 @@ thead {
     background-color: #333333;
     color: #fff;
 }
-
+.table-container th{
+    background-color: lightgrey;
+}
 th, td {
 
     padding: 10px;
@@ -60,21 +44,6 @@ th, td {
 
 th {
     font-weight: bold;
-}
-
-button {
-    height: 30px;
-    padding: 5px 10px;
-    margin: 2px;
-    background-color: grey;
-    color: white;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-}
-
-button:hover {
-    background-color: #00FFFF;
 }
 
 .pagination {
@@ -102,11 +71,14 @@ button:hover {
     display: flex;
     background: #66CC00;
     color: #f9f9f9;
-    height: 35px;
-    font-size: 17px;
+    height: 40px;
+    width: 8%;
+    font-size: 21px;
+
 }
 
 .add-customer {
+    align-items: center;
     display: flex;
 }
 
@@ -127,12 +99,18 @@ button:hover {
 
 .edit {
     background-color: #FFD700;
+    color: white;
 }
-
+.edit:hover{
+    background-color: #61dafb;
+}
 .delete {
     background-color: red;
+    color: white;
 }
-
+.delete:hover{
+    background-color: #61dafb;
+}
 .ReactModal__Content {
     width: 500px; /* Đặt chiều rộng của modal */
     height: 200px; /* Chiều cao tự động */
@@ -157,6 +135,7 @@ button:hover {
     font-size: 20px;
     border-radius: 5px;
 }
-.save{
+
+.save {
     background-color: blue;
 }
