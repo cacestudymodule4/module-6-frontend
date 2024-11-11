@@ -5,7 +5,7 @@ import axios from "axios";
 import {toast} from "react-toastify";
 import * as Yup from "yup";
 import {useNavigate} from "react-router-dom";
-import '../css/Contract.css';
+import '../../assets/css/AddCustomer.css';
 
 function AddContract() {
     const navigate = useNavigate();

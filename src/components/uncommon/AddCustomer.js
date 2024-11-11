@@ -1,8 +1,8 @@
-import React, { useState } from 'react';
+import React, {useState} from 'react';
 import axios from 'axios';
-import { useFormik } from 'formik';
+import {useFormik} from 'formik';
 import * as Yup from 'yup';
-import { toast } from 'react-toastify';
+import {toast} from 'react-toastify';
 import '../../assets/css/AddCustomer.css';
 
 function AddCustomer() {
@@ -22,17 +22,19 @@ function AddCustomer() {
         validationSchema: Yup.object({
             name: Yup.string().required('Tên khách hàng là bắt buộc'),
             birthday: Yup.date().required('Ngày sinh là bắt buộc'),
-            identification: Yup.string().required('Số chứng minh thư là bắt buộc'),
+            identification: Yup.string().required('Số chứng minh thư là bắt buộc')
+                .matches(/^[0-9]{9,12}$/, "CMND phải chứa 9-12 chữ số"),
             address: Yup.string().required('Địa chỉ là bắt buộc'),
-            phone: Yup.string().required('Số điện thoại là bắt buộc'),
+            phone: Yup.string().required('Số điện thoại là bắt buộc')
+                .matches(/^[0-9]{10}$/, "Số điện thoại phải chứa 10 chữ số"),
             email: Yup.string().email('Email không hợp lệ').required('Email là bắt buộc'),
             company: Yup.string().required('Tên công ty là bắt buộc'),
             website: Yup.string()
         }),
-        onSubmit: async (values, { resetForm }) => {
+        onSubmit: async (values, {resetForm}) => {
             try {
                 const response = await axios.post('http://localhost:8080/api/customers', values, {
-                    headers: { Authorization: `Bearer ${localStorage.getItem('jwtToken')}` }
+                    headers: {Authorization: `Bearer ${localStorage.getItem('jwtToken')}`}
                 });
                 if (response.status === 200) {
                     toast.success('Khách hàng đã được thêm thành công!');
