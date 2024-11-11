@@ -9,7 +9,7 @@ import {
     LOGIN_SUCCESS,
     LOGOUT,
     LOGOUT_SUCCESS, USER_INFO_FAILED, USER_INFO_REQUEST, USER_INFO_SUCCESS
-} from "../redux/actions";
+} from "./actions";
 
 const BaseURL = "http://localhost:8080";
 
@@ -24,8 +24,8 @@ function* loginSaga(action) {
         yield put({type: LOGIN_SUCCESS, payload: response.data});
     } catch (error) {
         console.error("Đăng nhập thất bại", error);
-        const errorMessage = error.response ? error.response.data : "Thông tin đăng nhập không chính xác";
-        yield put({type: LOGIN_FAILED, payload: "Thông tin đăng nhập không chính xác"});
+        const errorMessage = error.response.data
+        yield put({type: LOGIN_FAILED, payload: errorMessage});
     }
 }
 
@@ -46,20 +46,20 @@ function* changePasswordSaga(action) {
         });
         yield put({type: CHANGE_PASSWORD_SUCCESS, payload: response.data});
     } catch (error) {
-        const errorMessage = error.response && error.response.data ? error.response.data : "Đổi mật khẩu thất bại";
-        console.log(errorMessage);
-        yield put({type: CHANGE_PASSWORD_FAILURE, payload: "Nguười dùng chưa đăng nhập"});
+        const errorMessage = error.response.data
+        yield put({type: CHANGE_PASSWORD_FAILURE, payload: errorMessage});
     }
 }
 
-function* userInfo(action) {
+function* userInfoSaga(action) {
     try {
-        const response = yield call(axios.get, BaseURL + '/api/user-detail', {
+        const response = yield call(axios.get, BaseURL + '/api/user/detail', {
             headers: {Authorization: `Bearer ${localStorage.getItem('jwtToken')}`}
         });
         yield put({type: USER_INFO_SUCCESS, payload: response.data});
     } catch (error) {
-        yield put({type: USER_INFO_FAILED, payload: "Nguười dùng chưa đăng nhập"});
+        const errorMessage = error.response.data
+        yield put({type: USER_INFO_FAILED, payload: errorMessage});
     }
 }
 
@@ -67,5 +67,5 @@ export default function* rootSaga() {
     yield takeLatest(LOGIN, loginSaga);
     yield takeLatest(LOGOUT, logoutSaga);
     yield takeLatest(CHANGE_PASSWORD, changePasswordSaga);
-    yield takeLatest(USER_INFO_REQUEST, userInfo);
+    yield takeLatest(USER_INFO_REQUEST, userInfoSaga);
 }

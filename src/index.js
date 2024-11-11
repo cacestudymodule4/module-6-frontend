@@ -7,9 +7,11 @@ import {BrowserRouter, Route, Routes} from "react-router-dom";
 import {ToastContainer} from "react-toastify";
 import store from "./redux/store";
 import {Provider} from "react-redux";
-import Login from "./components/login";
-import Logout from "./components/logout";
-import UserInfo from "./components/userDetail";
+import Login from "./components/uncommon/Login";
+import Logout from "./components/common/Logout";
+import UserInfo from "./components/uncommon/UserDetail";
+import Salary from "./components/uncommon/Salary";
+import Chart8Component from "./components/uncommon/Report";
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
@@ -21,7 +23,9 @@ root.render(
                 <Route path="/login" element={<Login/>}/>
                 <Route path="/logout" element={<Logout/>}/>
                 <Route path="/home" element={<Home/>}/>
-                <Route path="/user-detail" element={<UserInfo/>}/>
+                <Route path="/user/detail" element={<UserInfo/>}/>
+                <Route path="/salary" element={<Salary/>}/>
+                <Route path="/report" element={<Chart8Component/>}/>
             </Routes>
         </BrowserRouter>
     </Provider>

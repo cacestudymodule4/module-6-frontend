@@ -1,6 +1,6 @@
 import "bootstrap/dist/css/bootstrap.css";
 import {useDispatch} from "react-redux";
-import {LOGOUT} from "../redux/actions";
+import {LOGOUT} from "../../redux/actions";
 import {useNavigate} from "react-router-dom";
 import {useEffect} from "react";
 
