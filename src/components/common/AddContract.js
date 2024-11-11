@@ -9,7 +9,6 @@ import '../css/Contract.css';
 
 function AddContract() {
     const navigate = useNavigate();
-
     const [ground, setGround] = useState([]);
     const [staff, setStaff] = useState([]);
     const [nameStaff, setNameStaff] = useState('');
@@ -84,7 +83,6 @@ function AddContract() {
             toast.error("Thêm thất bại");
             console.log(error);
         }
-
 
     }
     const calculateEndDate = (startDate, months) => {
