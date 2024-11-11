@@ -10,7 +10,9 @@ import {Provider} from "react-redux";
 import Login from "./components/login";
 import Logout from "./components/logout";
 import UserInfo from "./components/userDetail";
-
+import Contract from "./components/Contract";
+import ContractDetail from "./components/ContractDetail";
+import AddContract from "./components/AddContract";
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
     // <React.StrictMode>
@@ -22,6 +24,9 @@ root.render(
                 <Route path="/logout" element={<Logout/>}/>
                 <Route path="/home" element={<Home/>}/>
                 <Route path="/user-detail" element={<UserInfo/>}/>
+                <Route path="/contract/add" element={<AddContract/>}/>
+                <Route path="/contract/list" element={<Contract/>}/>
+                <Route path="/contract/detail/:id" element={<ContractDetail />} />
             </Routes>
         </BrowserRouter>
     </Provider>
