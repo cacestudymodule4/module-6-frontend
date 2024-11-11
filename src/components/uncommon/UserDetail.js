@@ -2,9 +2,9 @@ import React, {useEffect, useRef, useState} from 'react';
 import {useDispatch, useSelector} from 'react-redux';
 import {toast} from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import {USER_INFO_REQUEST} from "../redux/actions";
+import {USER_INFO_REQUEST} from "../../redux/actions";
 import {useNavigate} from "react-router-dom";
-import ChangePassword from './changePassword';
+import ChangePassword from '../common/ChangePassword';
 
 const MyDialogComponent = ({isOpen, onClose}) => {
     const dialogRef = useRef(null);

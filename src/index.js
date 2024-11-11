@@ -8,9 +8,15 @@ import {ToastContainer} from "react-toastify";
 import store from "./redux/store";
 import {Provider} from "react-redux";
 import Staff from "./components/staff";
-import Login from "./components/login";
-import Logout from "./components/logout";
-import UserInfo from "./components/userDetail";
+import Contract from "./components/uncommon/Contract";
+import ContractDetail from "./components/common/ContractDetail";
+import AddContract from "./components/common/AddContract";
+import Login from "./components/uncommon/Login";
+import Logout from "./components/common/Logout";
+import UserInfo from "./components/uncommon/UserDetail";
+import Salary from "./components/uncommon/Salary";
+import Chart8Component from "./components/uncommon/Report";
+
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
@@ -23,7 +29,12 @@ root.render(
                 <Route path="/login" element={<Login/>}/>
                 <Route path="/logout" element={<Logout/>}/>
                 <Route path="/home" element={<Home/>}/>
-                <Route path="/user-detail" element={<UserInfo/>}/>
+                <Route path="/contract/add" element={<AddContract/>}/>
+                <Route path="/contract/list" element={<Contract/>}/>
+                <Route path="/contract/detail/:id" element={<ContractDetail/>}/>
+                <Route path="/user/detail" element={<UserInfo/>}/>
+                <Route path="/salary" element={<Salary/>}/>
+                <Route path="/report" element={<Chart8Component/>}/>
             </Routes>
         </BrowserRouter>
     </Provider>

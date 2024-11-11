@@ -1,4 +1,4 @@
-import {CHANGE_PASSWORD_FAILURE, CHANGE_PASSWORD_REQUEST, CHANGE_PASSWORD_SUCCESS} from "./actions";
+import {CHANGE_PASSWORD_FAILURE, CHANGE_PASSWORD_REQUEST, CHANGE_PASSWORD_SUCCESS} from "../actions";
 
 const initialPasswordChangeState = {
     success: false,

@@ -2,9 +2,9 @@ import "bootstrap/dist/css/bootstrap.css";
 import React, {useEffect} from 'react';
 import {Formik, Form, Field, ErrorMessage} from 'formik';
 import * as Yup from "yup";
-import {Link, useNavigate} from "react-router-dom";
+import {useNavigate} from "react-router-dom";
 import {useDispatch, useSelector} from "react-redux";
-import {LOGIN} from "../redux/actions";
+import {LOGIN} from "../../redux/actions";
 import {toast} from "react-toastify";
 import 'react-toastify/dist/ReactToastify.css';
 
@@ -44,7 +44,7 @@ const Login = () => {
                             <div className="row g-0">
                                 <div className="col-12 col-md-6">
                                     <img className="img-fluid rounded-start w-100 h-100 object-fit-cover"
-                                         loading="lazy" src="/408330421c91e9d8d7418d045fe1b649.jpg"
+                                         loading="lazy" src="/94b420d6ca60cf5ea8cd5f312752759b.jpg"
                                          alt="Chào mừng trở lại! Bạn đã được nhớ đến!"/>
                                 </div>
                                 <div className="col-12 col-md-6 d-flex align-items-center justify-content-center">
@@ -88,9 +88,6 @@ const Login = () => {
                     </div>
                 </div>
             </div>
-            {
-                token && <Link to={"/logout"}>Đăng xuất</Link>
-            }
         </section>
     );
 };
