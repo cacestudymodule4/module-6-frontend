@@ -1,6 +1,6 @@
 import React, {useEffect} from 'react';
 import {useDispatch, useSelector} from 'react-redux';
-import {CHANGE_PASSWORD} from '../redux/actions';
+import {CHANGE_PASSWORD} from '../../redux/actions';
 import {Formik, Form, Field, ErrorMessage} from 'formik';
 import * as Yup from 'yup';
 import {toast} from "react-toastify";

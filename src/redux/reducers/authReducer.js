@@ -1,4 +1,4 @@
-import {LOGIN_FAILED, LOGIN_REQUEST, LOGIN_SUCCESS, LOGOUT_SUCCESS} from "./actions";
+import {LOGIN_FAILED, LOGIN_REQUEST, LOGIN_SUCCESS, LOGOUT_SUCCESS} from "../actions";
 
 const initialState = {
     user: null,
