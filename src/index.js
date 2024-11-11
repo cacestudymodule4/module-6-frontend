@@ -11,6 +11,7 @@ import Login from "./components/login";
 import Logout from "./components/logout";
 import UserInfo from "./components/userDetail";
 import CustomerList from "./components/customer/CustomerList";
+import AddCustomer from "./components/customer/AddCustomer";
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
@@ -23,7 +24,8 @@ root.render(
                 <Route path="/logout" element={<Logout/>}/>
                 <Route path="/home" element={<Home />} />
                 <Route path="/user/detail" element={<UserInfo/>}/>
-                <Route path="/customer/list" element={<CustomerList />}/>
+                <Route path="/customer/list" element={<CustomerList/>}/>
+                <Route path="/customer/add" element={<AddCustomer/>}/>
             </Routes>
         </BrowserRouter>
     </Provider>
