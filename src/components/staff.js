@@ -43,12 +43,17 @@ function Staff() {
         }
     };
 
-    const handleSearch = () => {
-        const filteredList = staffList.filter(staff =>
-            staff.name.toLowerCase().includes(searchName.toLowerCase())
-        );
-        setFilteredStaffList(filteredList);
-    };
+    const handleSearch = async () => {
+            try {
+                const response = await axios.get('http://localhost:8080/api/staff/search', {
+                    params: {keyword: searchName},
+                    headers: {Authorization: `Bearer ${localStorage.getItem('jwtToken')}`}
+                });
+                setFilteredStaffList(response.data);
+            } catch (error) {
+                toast.error("lỗi rồi ")
+            }
+        };
 
     const handleInputChange = (e) => {
         const {name, value} = e.target;
@@ -117,7 +122,8 @@ function Staff() {
                         <div className="modal-content">
                             <div className="modal-header">
                                 <h5 className="modal-title">Cập nhật thông tin nhân viên</h5>
-                                <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"
+                                <button type="button" className="btn-close" data-bs-dismiss="modal"
+                                        aria-label="Close"
                                         onClick={() => setSelectedEmployee(null)}></button>
                             </div>
                             <div className="modal-body">
@@ -242,7 +248,8 @@ function Staff() {
                         <td>{staff.startDate}</td>
                         <td>
                             <button className="btn btn-info btn-sm me-1">Xem</button>
-                            <button className="btn btn-warning btn-sm me-1" onClick={() => handleEditClick(staff)}>Cập
+                            <button className="btn btn-warning btn-sm me-1"
+                                    onClick={() => handleEditClick(staff)}>Cập
                                 nhật
                             </button>
                             <button className="btn btn-danger btn-sm" onClick={() => deleteEmployee(staff.id)}>Xóa
