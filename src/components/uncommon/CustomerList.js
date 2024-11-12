@@ -116,117 +116,124 @@ function CustomerList() {
     };
     return (
         <div className="customer-list">
-            <div className="customer-list-title">
+            <div className="customer-list__title">
                 DANH SÁCH KHÁCH HÀNG
             </div>
-            <div className="add-customer">
+            <div className="customer-list__add-btn">
                 <button onClick={handleNavigateToAddCustomer}>Thêm mới</button>
             </div>
-            <div className="table-container">
-                <table>
-                    <thead>
+            <div className="customer-list__table-container">
+                <table className="customer-list__table">
+                    <thead className="customer-list__thead">
                     <tr>
-                        <th>STT</th>
-                        <th>Tên Khách Hàng</th>
-                        <th>Ngày sinh</th>
-                        <th>Số chứng minh thư</th>
-                        <th>Địa chỉ</th>
-                        <th>Số điện thoại</th>
-                        <th>Email</th>
-                        <th>Công ty</th>
-                        <th colSpan={2}>Hành Động</th>
+                        <th className="customer-list__th">STT</th>
+                        <th className="customer-list__th">Tên Khách Hàng</th>
+                        <th className="customer-list__th">Ngày sinh</th>
+                        <th className="customer-list__th">Số chứng minh thư</th>
+                        <th className="customer-list__th">Địa chỉ</th>
+                        <th className="customer-list__th">Số điện thoại</th>
+                        <th className="customer-list__th">Email</th>
+                        <th className="customer-list__th">Công ty</th>
+                        <th colSpan={2} className="customer-list__th">Hành Động</th>
                     </tr>
                     </thead>
                     <tbody>
                     {customers.map((customer, index) => (
                         <tr key={customer.id}>
-                            <td>{index + 1}</td>
+                            <td className="customer-list__td">{index + 1}</td>
                             {editingCustomer === customer.id ? (
                                 <>
-                                    <td>
+                                    <td className="customer-list__td">
                                         <input
                                             type="text"
                                             name="name"
                                             value={editedCustomer.name}
                                             onChange={handleEditChange}
                                         />
-                                        {errors.name && <div className="error">{errors.name}</div>}
+                                        {errors.name && <div className="customer-list__error">{errors.name}</div>}
                                     </td>
-                                    <td>
+                                    <td className="customer-list__td">
                                         <input
                                             type="date"
                                             name="birthday"
                                             value={editedCustomer.birthday}
                                             onChange={handleEditChange}
                                         />
-                                        {errors.birthday && <div className="error">{errors.birthday}</div>}
+                                        {errors.birthday &&
+                                            <div className="customer-list__error">{errors.birthday}</div>}
                                     </td>
-                                    <td>
+                                    <td className="customer-list__td">
                                         <input
                                             type="text"
                                             name="identification"
                                             value={editedCustomer.identification}
                                             onChange={handleEditChange}
                                         />
-                                        {errors.identification && <div className="error">{errors.identification}</div>}
+                                        {errors.identification &&
+                                            <div className="customer-list__error">{errors.identification}</div>}
                                     </td>
-                                    <td>
+                                    <td className="customer-list__td">
                                         <input
                                             type="text"
                                             name="address"
                                             value={editedCustomer.address}
                                             onChange={handleEditChange}
                                         />
-                                        {errors.address && <div className="error">{errors.address}</div>}
+                                        {errors.address && <div className="customer-list__error">{errors.address}</div>}
                                     </td>
-                                    <td>
+                                    <td className="customer-list__td">
                                         <input
                                             type="text"
                                             name="phone"
                                             value={editedCustomer.phone}
                                             onChange={handleEditChange}
                                         />
-                                        {errors.phone && <div className="error">{errors.phone}</div>}
+                                        {errors.phone && <div className="customer-list__error">{errors.phone}</div>}
                                     </td>
-                                    <td>
+                                    <td className="customer-list__td">
                                         <input
                                             type="email"
                                             name="email"
                                             value={editedCustomer.email}
                                             onChange={handleEditChange}
                                         />
-                                        {errors.email && <div className="error">{errors.email}</div>}
+                                        {errors.email && <div className="customer-list__error">{errors.email}</div>}
                                     </td>
-                                    <td>
+                                    <td className="customer-list__td">
                                         <input
                                             type="text"
                                             name="company"
                                             value={editedCustomer.company}
                                             onChange={handleEditChange}
                                         />
-                                        {errors.company && <div className="error">{errors.company}</div>}
+                                        {errors.company && <div className="customer-list__error">{errors.company}</div>}
                                     </td>
-                                    <td>
-                                        <button className="save" onClick={handleSaveEdit}>Lưu</button>
+                                    <td className="customer-list__td">
+                                        <button className="customer-list__save-btn" onClick={handleSaveEdit}>Lưu
+                                        </button>
                                     </td>
-                                    <td>
-                                        <button className="cancel" onClick={handleCancelEdit}>Hủy</button>
+                                    <td className="customer-list__td">
+                                        <button className="customer-list__cancel-btn" onClick={handleCancelEdit}>Hủy
+                                        </button>
                                     </td>
                                 </>
                             ) : (
                                 <>
-                                    <td>{customer.name}</td>
-                                    <td>{customer.birthday}</td>
-                                    <td>{customer.identification}</td>
-                                    <td>{customer.address}</td>
-                                    <td>{customer.phone}</td>
-                                    <td>{customer.email}</td>
-                                    <td>{customer.company}</td>
-                                    <td>
-                                        <button className="edit" onClick={() => handleEditClick(customer)}>Sửa</button>
+                                    <td className="customer-list__td">{customer.name}</td>
+                                    <td className="customer-list__td">{customer.birthday}</td>
+                                    <td className="customer-list__td">{customer.identification}</td>
+                                    <td className="customer-list__td">{customer.address}</td>
+                                    <td className="customer-list__td">{customer.phone}</td>
+                                    <td className="customer-list__td">{customer.email}</td>
+                                    <td className="customer-list__td">{customer.company}</td>
+                                    <td className="customer-list__td">
+                                        <button className="customer-list__edit-btn"
+                                                onClick={() => handleEditClick(customer)}>Sửa
+                                        </button>
                                     </td>
-                                    <td>
-                                        <button className="delete" onClick={() => handleOpenModal(customer)}>Xóa
+                                    <td className="customer-list__td">
+                                        <button className="customer-list__delete-btn"
+                                                onClick={() => handleOpenModal(customer)}>Xóa
                                         </button>
                                     </td>
                                 </>
@@ -246,7 +253,7 @@ function CustomerList() {
                 </div>
             </Modal>
             {/* Hiển thị lỗi từ server nếu có */}
-            {errors.api && <div className="api-error">{errors.api}</div>}
+            {errors.api && <div className="customer-list__api-error">{errors.api}</div>}
         </div>
     );
 }

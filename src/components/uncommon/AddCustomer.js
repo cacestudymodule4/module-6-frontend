@@ -4,6 +4,7 @@ import {useFormik} from 'formik';
 import * as Yup from 'yup';
 import {toast} from 'react-toastify';
 import '../../assets/css/AddCustomer.css';
+import { useNavigate } from 'react-router-dom';
 
 function AddCustomer() {
     const [successMessage, setSuccessMessage] = useState(null);
@@ -63,6 +64,10 @@ function AddCustomer() {
             }
         }
     });
+    const navigate = useNavigate();
+    const handleRedirect = () => {
+        navigate('/customer/list');
+    };
     return (
         <div className="add-customer-background">
             <div className="add-customer-page">
@@ -159,6 +164,7 @@ function AddCustomer() {
                         <p className="error-message">{formik.errors.company}</p>
                     ) : null}
                     <button type="submit">Lưu</button>
+                    <button type="submit" onClick={handleRedirect}>Quay lại</button>
                 </form>
             </div>
         </div>

@@ -18,6 +18,7 @@ import Salary from "./components/uncommon/Salary";
 import Chart8Component from "./components/uncommon/Report";
 import CustomerList from "./components/uncommon/CustomerList";
 import AddCustomer from "./components/uncommon/AddCustomer";
+import ServiceList from "./components/common/ServiceList";
 import AddStaff from "./components/uncommon/AddStaff";
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
@@ -42,6 +43,7 @@ root.render(
                 <Route path="/salary" element={<Salary/>}/>
                 <Route path="/report" element={<Chart8Component/>}/>
                 <Route path="/*" element={<Login/>}/>
+                <Route path="/service/list" element={<ServiceList/>}/>
             </Routes>
         </BrowserRouter>
     </Provider>
