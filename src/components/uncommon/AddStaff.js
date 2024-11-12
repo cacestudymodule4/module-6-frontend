@@ -1,7 +1,7 @@
 import {ToastContainer, toast} from "react-toastify";
-import 'react-toastify/dist/ReactToastify.css';
+import "react-toastify/dist/ReactToastify.css";
 import axios from "axios";
-import React, {useState} from "react";
+import React, {useEffect, useState} from "react";
 import * as Yup from "yup";
 import {Formik, Field, Form as FormikForm, ErrorMessage} from "formik";
 import {useNavigate} from "react-router-dom";
@@ -11,17 +11,29 @@ import {NavbarApp} from "../common/Navbar";
 const AddStaff = () => {
     const navigate = useNavigate();
     const [staffList, setStaffList] = useState([]);
-    const [isAddModalOpen, setIsAddModalOpen] = useState(false);
+    const [isAddModalOpen, setIsAddModalOpen] = useState(true);
+    const [filteredStaffList, setFilteredStaffList] = useState([]);
 
     const initialValues = {
-        name: '',
+        name: "",
         gender: true,
-        address: '',
-        phone: '',
-        email: '',
-        salary: '',
-        startDate: ''
+        address: "",
+        phone: "",
+        email: "",
+        salary: "",
+        startDate: ""
     };
+
+    useEffect(() => {
+        axios.get('http://localhost:8080/api/staff/list', {
+            headers: {Authorization: `Bearer ${localStorage.getItem('jwtToken')}`}
+        })
+            .then(response => {
+                setStaffList(response.data);
+                setFilteredStaffList(response.data);
+            })
+            .catch(error => toast.error("Lỗi khi tải danh sách nhân viên"));
+    }, []);
 
     const validationSchema = Yup.object({
         name: Yup.string()
@@ -54,16 +66,14 @@ const AddStaff = () => {
 
         startDate: Yup.date()
             .required("Ngày bắt đầu là bắt buộc")
-            .max(new Date(), "Ngày bắt đầu không được ở tương lai"),
+            .max(new Date(), "Ngày bắt đầu không được ở tương lai")
     });
-
 
     const addEmployee = async (values, {resetForm}) => {
         try {
             const response = await axios.post('http://localhost:8080/api/staff/add', values, {
                 headers: {Authorization: `Bearer ${localStorage.getItem('jwtToken')}`}
             });
-            setStaffList([...staffList, response.data]);
             navigate('/staff/list')
             toast.success("Nhân viên mới đã được thêm thành công!");
             setIsAddModalOpen(false);
@@ -75,80 +85,88 @@ const AddStaff = () => {
 
     return (
         <>
-            <NavbarApp></NavbarApp>
+            <NavbarApp/>
             <div>
-                <div className="modal fade show" style={{display: 'block'}} aria-hidden="true">
-                    <div className="modal-dialog modal-lg">
-                        <div className="modal-content">
-                            <div className="modal-header">
-                                <h5 className="modal-title">Thêm nhân viên mới</h5>
-                                <button type="button" className="btn-close"
-                                        onClick={() => setIsAddModalOpen(false)}></button>
+                {isAddModalOpen && (
+                    <div className="modal fade show" style={{display: "block"}} aria-hidden="true">
+                        <div className="modal-dialog modal-lg">
+                            <div className="modal-content">
+                                <div className="modal-header">
+                                    <h5 className="modal-title">Thêm nhân viên mới</h5>
+                                    <button
+                                        type="button"
+                                        className="btn-close"
+                                        onClick={() => setIsAddModalOpen(false)}
+                                    ></button>
+                                </div>
+                                <Formik
+                                    initialValues={initialValues}
+                                    validationSchema={validationSchema}
+                                    onSubmit={addEmployee}
+                                >
+                                    <FormikForm>
+                                        <div className="modal-body">
+                                            <div className="mb-3">
+                                                <label>Tên</label>
+                                                <Field type="text" name="name" className="form-control"/>
+                                                <ErrorMessage name="name" component="div" className="text-danger"/>
+                                            </div>
+                                            <div className="mb-3">
+                                                <label>Giới tính</label>
+                                                <Field as="select" name="gender" className="form-select">
+                                                    <option value={true}>Nam</option>
+                                                    <option value={false}>Nữ</option>
+                                                </Field>
+                                            </div>
+                                            <div className="mb-3">
+                                                <label>Địa chỉ</label>
+                                                <Field type="text" name="address" className="form-control"/>
+                                                <ErrorMessage name="address" component="div" className="text-danger"/>
+                                            </div>
+                                            <div className="mb-3">
+                                                <label>Số điện thoại</label>
+                                                <Field type="text" name="phone" className="form-control"/>
+                                                <ErrorMessage name="phone" component="div" className="text-danger"/>
+                                            </div>
+                                            <div className="mb-3">
+                                                <label>Email</label>
+                                                <Field type="email" name="email" className="form-control"/>
+                                                <ErrorMessage name="email" component="div" className="text-danger"/>
+                                            </div>
+                                            <div className="mb-3">
+                                                <label>Lương</label>
+                                                <Field type="number" name="salary" className="form-control"/>
+                                                <ErrorMessage name="salary" component="div" className="text-danger"/>
+                                            </div>
+                                            <div className="mb-3">
+                                                <label>Ngày bắt đầu</label>
+                                                <Field type="date" name="startDate" className="form-control"/>
+                                                <ErrorMessage name="startDate" component="div" className="text-danger"/>
+                                            </div>
+                                        </div>
+                                        <div className="modal-footer">
+                                            <button
+                                                type="button"
+                                                className="btn btn-secondary"
+                                                onClick={() => navigate("/staff/list")}
+                                            >
+                                                Đóng
+                                            </button>
+                                            <button type="submit" className="btn btn-primary">
+                                                Thêm
+                                            </button>
+                                        </div>
+                                    </FormikForm>
+                                </Formik>
                             </div>
-                            <Formik
-                                initialValues={initialValues}
-                                validationSchema={validationSchema}
-                                onSubmit={addEmployee}
-                            >
-                                <FormikForm>
-                                    <div className="modal-body">
-                                        <div className="mb-3">
-                                            <label>Tên</label>
-                                            <Field type="text" name="name" className="form-control"/>
-                                            <ErrorMessage name="name" component="div" className="text-danger"/>
-                                        </div>
-                                        <div className="mb-3">
-                                            <label>Giới tính</label>
-                                            <Field as="select" name="gender" className="form-select">
-                                                <option value={true}>Nam</option>
-                                                <option value={false}>Nữ</option>
-                                            </Field>
-                                        </div>
-                                        <div className="mb-3">
-                                            <label>Địa chỉ</label>
-                                            <Field type="text" name="address" className="form-control"/>
-                                            <ErrorMessage name="address" component="div" className="text-danger"/>
-                                        </div>
-                                        <div className="mb-3">
-                                            <label>Số điện thoại</label>
-                                            <Field type="text" name="phone" className="form-control"/>
-                                            <ErrorMessage name="phone" component="div" className="text-danger"/>
-                                        </div>
-                                        <div className="mb-3">
-                                            <label>Email</label>
-                                            <Field type="email" name="email" className="form-control"/>
-                                            <ErrorMessage name="email" component="div" className="text-danger"/>
-                                        </div>
-                                        <div className="mb-3">
-                                            <label>Lương</label>
-                                            <Field type="number" name="salary" className="form-control"/>
-                                            <ErrorMessage name="salary" component="div" className="text-danger"/>
-                                        </div>
-                                        <div className="mb-3">
-                                            <label>Ngày bắt đầu</label>
-                                            <Field type="date" name="startDate" className="form-control"/>
-                                            <ErrorMessage name="startDate" component="div" className="text-danger"/>
-                                        </div>
-                                    </div>
-                                    <div className="modal-footer">
-                                        <button type="button" className="btn btn-secondary"
-                                                onClick={() => navigate('/staff/list')}>
-                                            Đóng
-                                        </button>
-                                        <button type="submit" className="btn btn-primary">
-                                            Thêm
-                                        </button>
-                                    </div>
-                                </FormikForm>
-                            </Formik>
                         </div>
                     </div>
-                </div>
+                )}
                 <ToastContainer position="top-right" autoClose={5000}/>
             </div>
-            <Footer></Footer>
+            <Footer/>
         </>
     );
-}
+};
 
 export default AddStaff;

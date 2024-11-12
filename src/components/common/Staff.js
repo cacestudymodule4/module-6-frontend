@@ -80,9 +80,9 @@ function Staff() {
 
     return (
         <>
-            <NavbarApp></NavbarApp>
-            <div className="container mt-5 rounded col-lg-10 mx-auto">
-                <h3 className="text-center text-white py-3 bg-success rounded" style={{fontSize: '1.75rem'}}>
+            <NavbarApp/>
+            <div className="container my-5 rounded mx-auto p-4">
+                <h3 className="text-center text-white py-3 bg-success rounded" style={{fontSize: '2.25rem'}}>
                     Danh sách nhân viên văn phòng
                 </h3>
 
@@ -96,15 +96,20 @@ function Staff() {
                             onChange={(e) => setSearchName(e.target.value)}
                             style={{fontSize: '1.1rem', padding: '0.75rem'}}
                         />
-                        <button className="btn btn-success d-flex align-items-center justify-content-center"
-                                onClick={handleSearch}
-                                style={{fontSize: '1.1rem', padding: '0.75rem 1.25rem'}}>
+                        <button
+                            className="btn btn-success d-flex align-items-center justify-content-center"
+                            onClick={handleSearch}
+                            style={{fontSize: '1.1rem', padding: '0.75rem 1.25rem'}}
+                        >
                             <FaSearch/>
                         </button>
                     </div>
 
-                    <Button variant="success" onClick={handleAddStaff}
-                            style={{fontSize: '1.1rem', padding: '0.75rem 1.5rem'}}>
+                    <Button
+                        variant="success"
+                        onClick={handleAddStaff}
+                        style={{fontSize: '1.1rem', padding: '0.75rem 1.5rem'}}
+                    >
                         Thêm mới nhân viên
                     </Button>
                 </div>
@@ -140,8 +145,12 @@ function Staff() {
                                 <button className="btn btn-info btn-sm me-2" style={{fontSize: '0.9rem'}}>Xem</button>
                                 <button className="btn btn-warning btn-sm me-2" style={{fontSize: '0.9rem'}}>Cập nhật
                                 </button>
-                                <button className="btn btn-danger btn-sm" onClick={() => handleOpenModal(staff)}
-                                        style={{fontSize: '0.9rem'}}>Xóa
+                                <button
+                                    className="btn btn-danger btn-sm"
+                                    onClick={() => handleOpenModal(staff)}
+                                    style={{fontSize: '0.9rem'}}
+                                >
+                                    Xóa
                                 </button>
                             </td>
                         </tr>
@@ -164,7 +173,7 @@ function Staff() {
                     </Modal.Footer>
                 </Modal>
             </div>
-            <Footer></Footer>
+            <Footer/>
         </>
     );
 }
