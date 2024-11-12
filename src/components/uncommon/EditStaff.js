@@ -1,13 +1,9 @@
-import React, {useState} from "react";
-import {toast} from "react-toastify";
+import React, { useState } from "react";
+import { toast } from "react-toastify";
 import axios from "axios";
 
-
 function EditStaff() {
-
     const [selectedEmployee, setSelectedEmployee] = useState(null);
-    const [searchName, setSearchName] = useState('');
-    const [staffList, setStaffList] = useState([]);
     const [updatedEmployee, setUpdatedEmployee] = useState({
         name: '',
         gender: true,
@@ -18,21 +14,17 @@ function EditStaff() {
         startDate: ''
     });
 
-    const handleEdit = () => {
+    const handleUpdate = () => {
         if (!updatedEmployee.name || !updatedEmployee.email) {
             toast.error("Vui lòng điền đầy đủ thông tin!");
             return;
         }
         axios.put(`http://localhost:8080/api/staff/update/${updatedEmployee.id}`, updatedEmployee, {
-            headers: {Authorization: `Bearer ${localStorage.getItem('jwtToken')}`}
+            headers: { Authorization: `Bearer ${localStorage.getItem('jwtToken')}` }
         })
             .then(response => {
                 toast.success("Cập nhật thành công!");
-                setStaffList(prevStaffList => prevStaffList.map(staff =>
-                    staff.id === response.data.id ? response.data : staff
-                ));
                 setSelectedEmployee(null);
-                setSearchName('');
             })
             .catch(error => {
                 toast.error("Lỗi khi cập nhật thông tin nhân viên");
@@ -54,7 +46,7 @@ function EditStaff() {
     };
 
     const handleInputChange = (e) => {
-        const {name, value} = e.target;
+        const { name, value } = e.target;
         setUpdatedEmployee(prevState => ({
             ...prevState,
             [name]: value
@@ -64,15 +56,16 @@ function EditStaff() {
     return (
         <div>
             {selectedEmployee && (
-                <div className="modal fade show" id="updateModal" style={{display: 'block'}} aria-hidden="true"
-                     tabIndex="-1">
+                <div className="modal show" style={{ display: 'block' }} aria-hidden="true">
                     <div className="modal-dialog modal-lg">
                         <div className="modal-content">
                             <div className="modal-header">
                                 <h5 className="modal-title">Cập nhật thông tin nhân viên</h5>
-                                <button type="button" className="btn-close" data-bs-dismiss="modal"
-                                        aria-label="Close"
-                                        onClick={() => setSelectedEmployee(null)}></button>
+                                <button
+                                    type="button"
+                                    className="btn-close"
+                                    onClick={() => setSelectedEmployee(null)}
+                                ></button>
                             </div>
                             <div className="modal-body">
                                 <div className="mb-3">
@@ -156,15 +149,27 @@ function EditStaff() {
                                 </div>
                             </div>
                             <div className="modal-footer">
-                                <button type="button" className="btn btn-secondary" data-bs-dismiss="modal"
-                                        onClick={() => setSelectedEmployee(null)}>Đóng
+                                <button
+                                    type="button"
+                                    className="btn btn-secondary"
+                                    onClick={() => setSelectedEmployee(null)}
+                                >
+                                    Đóng
                                 </button>
-                                <button type="button" className="btn btn-success" onClick={handleUpdate}>Cập nhật
+                                <button
+                                    type="button"
+                                    className="btn btn-success"
+                                    onClick={handleUpdate}
+                                >
+                                    Cập nhật
                                 </button>
                             </div>
                         </div>
                     </div>
                 </div>
-                </div>
-                )
-            }
+            )}
+        </div>
+    );
+}
+
+export default EditStaff;
