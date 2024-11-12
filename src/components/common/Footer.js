@@ -1,8 +1,16 @@
 import React from 'react';
 import { Container, Row, Col, Image, Button } from 'react-bootstrap';
 import '../../assets/css/footer.css';
-import { FaPhoneAlt, FaEnvelope, FaMapMarkerAlt, FaFacebookF, FaInstagram, FaTelegramPlane, FaLinkedinIn, FaTwitter } from 'react-icons/fa';
-
+import {
+    FaPhoneAlt,
+    FaEnvelope,
+    FaMapMarkerAlt,
+    FaFacebookF,
+    FaInstagram,
+    FaTelegramPlane,
+    FaLinkedinIn,
+    FaTwitter
+} from 'react-icons/fa';
 
 const Footer = () => {
     return (
@@ -34,9 +42,11 @@ const Footer = () => {
                             <br />
                             <Button variant="link" href="#" style={{ color: 'white', fontWeight: 'bold' }}>About</Button>
                             <br />
-                            <Button variant="link" href="#" style={{ color: 'white', fontWeight: 'bold' }}>Services</Button>
+                            <Button variant="link" href="#"
+                                style={{ color: 'white', fontWeight: 'bold' }}>Services</Button>
                             <br />
-                            <Button variant="link" href="#" style={{ color: 'white', fontWeight: 'bold' }}>Contact</Button>
+                            <Button variant="link" href="#"
+                                style={{ color: 'white', fontWeight: 'bold' }}>Contact</Button>
                         </div>
                     </Col>
                     <Col md={4}>
@@ -70,22 +80,13 @@ const Footer = () => {
     );
 };
 
-const footerStyle = {
-    textAlign: 'center',
-    padding: '20px',
-    backgroundColor: '#333',
-    color: '#fff',
-};
-
 const headingStyle = {
     marginBottom: '10px',
 };
-
 const iconContainerStyle = {
     display: 'flex',
     gap: '20px',
 };
-
 const iconStyle = {
     color: '#fff',
     fontSize: '24px',

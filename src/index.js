@@ -7,9 +7,20 @@ import { BrowserRouter, Route, Routes } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
 import store from "./redux/store";
 import { Provider } from "react-redux";
-import Login from "./components/login";
-import Logout from "./components/logout";
-import ChangePassword from "./components/changePassword";
+import Staff from "./components/common/Staff";
+import Contract from "./components/uncommon/Contract";
+import ContractDetail from "./components/common/ContractDetail";
+import AddContract from "./components/common/AddContract";
+import Login from "./components/uncommon/Login";
+import Logout from "./components/common/Logout";
+import UserInfo from "./components/uncommon/UserDetail";
+import Salary from "./components/uncommon/Salary";
+import Chart8Component from "./components/uncommon/Report";
+import CustomerList from "./components/uncommon/CustomerList";
+import AddCustomer from "./components/uncommon/AddCustomer";
+import ServiceList from "./components/common/ServiceList";
+import AddStaff from "./components/uncommon/AddStaff";
+import './assets/css/styles.css';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
@@ -18,10 +29,22 @@ root.render(
         <BrowserRouter>
             <ToastContainer />
             <Routes>
-                <Route path="/" element={<Login />} />
-                <Route path="/home" element={<Home />} />
+                <Route path="/staff/list" element={<Staff />} />
+                <Route path="/staff/list/add" element={<AddStaff />} />
+                <Route path="/login" element={<Login />} />
                 <Route path="/logout" element={<Logout />} />
-                <Route path="/change-password" element={<ChangePassword />} />
+                <Route path="/user/detail" element={<UserInfo />} />
+                <Route path="/customer/list" element={<CustomerList />} />
+                <Route path="/customer/add" element={<AddCustomer />} />
+                <Route path="/home" element={<Home />} />
+                <Route path="/contract/add" element={<AddContract />} />
+                <Route path="/contract/list" element={<Contract />} />
+                <Route path="/contract/detail/:id" element={<ContractDetail />} />
+                <Route path="/user/detail" element={<UserInfo />} />
+                <Route path="/salary" element={<Salary />} />
+                <Route path="/report" element={<Chart8Component />} />
+                <Route path="/*" element={<Login />} />
+                <Route path="/service/list" element={<ServiceList />} />
             </Routes>
         </BrowserRouter>
     </Provider>

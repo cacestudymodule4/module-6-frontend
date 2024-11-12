@@ -1,6 +1,6 @@
 import "bootstrap/dist/css/bootstrap.css";
 import {useDispatch} from "react-redux";
-import {LOGOUT} from "../redux/actions";
+import {LOGOUT} from "../../redux/actions";
 import {useNavigate} from "react-router-dom";
 import {useEffect} from "react";
 
@@ -9,7 +9,7 @@ const Logout = () => {
     const navigate = useNavigate();
     useEffect(() => {
         dispatch({type: LOGOUT});
-        navigate("/");
+        navigate("/login");
     }, [dispatch, navigate]);
     return null;
 };

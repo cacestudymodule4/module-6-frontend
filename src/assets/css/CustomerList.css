@@ -1,0 +1,116 @@
+/* Customer List Styles */
+.customer-list {
+    padding: 20px;
+    font-family: Arial, sans-serif;
+}
+
+.customer-list__title {
+    background-color: #333399;
+    color: white;
+    padding: 10px;
+    text-align: center;
+    font-size: 24px;
+    font-weight: normal;
+    border-radius: 5px;
+    height: 100px;
+}
+
+.customer-list__add-btn button {
+    display: flex;
+    background: #66CC00;
+    color: #f9f9f9;
+    height: 40px;
+    width: 8%;
+    font-size: 21px;
+    border-radius: 5px;
+    border: 2px;
+    align-items: center;
+}
+
+.customer-list__table-container {
+    overflow-x: auto;
+}
+
+.customer-list__table {
+    width: 100%;
+    border-collapse: collapse;
+    background-color: #f9f9f9;
+}
+
+.customer-list__thead {
+    background-color: #333333;
+    color: black;
+}
+
+.customer-list__table th {
+    background-color: lightgrey;
+}
+
+.customer-list__th, .customer-list__td {
+    padding: 10px;
+    text-align: center;
+    border: 1px solid #ddd;
+}
+
+.customer-list__th {
+    font-weight: bold;
+}
+
+.customer-list__pagination {
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
+}
+
+.customer-list__edit-btn {
+    background-color: #FFD700;
+    color: white;
+    border-radius: 5px;
+    border: 2px
+}
+
+.customer-list__edit-btn:hover {
+    background-color: #61dafb;
+}
+
+.customer-list__delete-btn {
+    background-color: red;
+    color: white;
+    border-radius: 5px;
+    border: 2px
+}
+
+.customer-list__delete-btn:hover {
+    background-color: #61dafb;
+}
+
+/* Modal Styles */
+.modal-content {
+    width: 500px;
+    height: 200px;
+    max-width: 90%;
+    max-height: 80%;
+    padding: 20px;
+    margin: auto;
+}
+
+/* Error Styles */
+.customer-list__error {
+    color: red;
+    font-size: 14px;
+    margin-top: 5px;
+}
+
+.customer-list__api-error {
+    color: white;
+    background-color: red;
+    padding: 10px;
+    margin-top: 20px;
+    text-align: center;
+    font-size: 20px;
+    border-radius: 5px;
+}
+
+.customer-list__save-btn {
+    background-color: blue;
+}
