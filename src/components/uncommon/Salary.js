@@ -59,7 +59,7 @@ const Salary = () => {
                                                                     {value.name}
                                                                 </td>
                                                                 <td className="salary-td">
-                                                                    Sell
+                                                                    {value.startDate}
                                                                 </td>
                                                                 <td className="text-end">{value.salary} VND</td>
                                                             </tr>))}

@@ -4,7 +4,7 @@ import {toast} from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import {USER_INFO_REQUEST} from "../../redux/actions";
 import {useNavigate} from "react-router-dom";
-import ChangePassword from '../common/ChangePassword';
+import ChangePassword from './ChangePassword';
 import {NavbarApp} from "../common/Navbar";
 import Footer from "../common/Footer";
 

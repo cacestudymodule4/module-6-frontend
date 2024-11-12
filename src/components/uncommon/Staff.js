@@ -6,14 +6,13 @@ import 'react-toastify/dist/ReactToastify.css';
 import moment from 'moment';
 import {useNavigate} from "react-router-dom";
 import {Button, Form, Modal} from "react-bootstrap";
-import {NavbarApp} from "./Navbar";
-import Footer from "./Footer";
 import {Form as FormikForm, Formik, Field} from "formik";
+import {NavbarApp} from "../common/Navbar";
+import Footer from "../common/Footer";
 
 function Staff() {
     const navigate = useNavigate();
     const [staffList, setStaffList] = useState([]);
-    const [searchName, setSearchName] = useState('');
     const [filteredStaffList, setFilteredStaffList] = useState([]);
     const [staffDelete, setStaffDelete] = useState(null);
     const [isModalOpen, setIsModalOpen] = useState(false);
@@ -99,8 +98,7 @@ function Staff() {
                         name: "",
                         position: "",
                     }}
-                    onSubmit={(values) => handleSearch(values)}
-                >
+                    onSubmit={(values) => handleSearch(values)}>
                     {() => (
                         <FormikForm className="mb-3 custom-search">
                             <Form.Group className="mb-3" controlId="formSearch">
@@ -151,8 +149,7 @@ function Staff() {
                         padding: '0.75rem 2rem',
                         marginTop: '1rem' ,
                     }}
-                    className='mb-4'
-                >
+                    className='mb-4'>
                     Thêm mới nhân viên
                 </Button>
 
@@ -229,5 +226,4 @@ function Staff() {
         </>
     );
 }
-
 export default Staff;

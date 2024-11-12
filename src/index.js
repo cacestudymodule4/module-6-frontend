@@ -7,20 +7,22 @@ import {BrowserRouter, Route, Routes} from "react-router-dom";
 import {ToastContainer} from "react-toastify";
 import store from "./redux/store";
 import {Provider} from "react-redux";
-import Staff from "./components/common/Staff";
+import Staff from "./components/uncommon/Staff";
 import Contract from "./components/uncommon/Contract";
-import ContractDetail from "./components/common/ContractDetail";
-import AddContract from "./components/common/AddContract";
+import ContractDetail from "./components/uncommon/ContractDetail";
+import AddContract from "./components/uncommon/AddContract";
 import Login from "./components/uncommon/Login";
-import Logout from "./components/common/Logout";
+import Logout from "./components/uncommon/Logout";
 import UserInfo from "./components/uncommon/UserDetail";
 import Salary from "./components/uncommon/Salary";
 import Chart8Component from "./components/uncommon/Report";
 import CustomerList from "./components/uncommon/CustomerList";
 import AddCustomer from "./components/uncommon/AddCustomer";
-import ServiceList from "./components/common/ServiceList";
+import EditContract from "./components/uncommon/EditContract";
+import ServiceList from "./components/uncommon/ServiceList";
 import AddStaff from "./components/uncommon/AddStaff";
 import EditStaff from "./components/uncommon/EditStaff";
+
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
@@ -41,6 +43,7 @@ root.render(
                 <Route path="/contract/add" element={<AddContract/>}/>
                 <Route path="/contract/list" element={<Contract/>}/>
                 <Route path="/contract/detail/:id" element={<ContractDetail/>}/>
+                <Route path="/contract/edit/" element={<EditContract/>}/>
                 <Route path="/user/detail" element={<UserInfo/>}/>
                 <Route path="/salary" element={<Salary/>}/>
                 <Route path="/report" element={<Chart8Component/>}/>
