@@ -1,116 +1,10 @@
+/* Customer List Styles */
 .customer-list {
     padding: 20px;
     font-family: Arial, sans-serif;
 }
 
-.input-container {
-    margin-top: 60px;
-    margin-left: 250px;
-    margin-bottom: 60px;
-    display: flex;
-    gap: 20px;
-    /*align-items: center;*/
-
-}
-
-.input-container input {
-    padding: 5px;
-    border: 1px solid #ddd;
-    border-radius: 4px;
-    height: 30px;
-
-}
-
-.input-container p {
-    margin-right: 10px;
-    height: 20px;
-}
-
-.customer-info {
-    display: flex;
-}
-
-.customer-info input {
-    border: 1px solid #ddd;
-    border-radius: 4px;
-    width: 400px;
-}
-
-.table-container {
-    overflow-x: auto;
-}
-
-table {
-    width: 100%;
-    border-collapse: collapse;
-    background-color: #f9f9f9;
-}
-
-thead {
-    background-color: #333333;
-    color: #fff;
-}
-
-th, td {
-
-    padding: 10px;
-    text-align: center;
-    border: 1px solid #ddd;
-}
-
-th {
-    font-weight: bold;
-}
-
-button {
-    height: 30px;
-    padding: 5px 10px;
-    margin: 2px;
-    background-color: grey;
-    color: white;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-}
-
-button:hover {
-    background-color: #00FFFF;
-}
-
-.pagination {
-    display: flex;
-    justify-content: center;
-    margin-top: 20px;
-}
-
-.pagination button {
-    padding: 5px 10px;
-    margin: 2px;
-    border: 1px solid #ddd;
-    background-color: whitesmoke;
-    color: black;
-    border-radius: 4px;
-    cursor: pointer;
-}
-
-.pagination button:hover {
-    background-color: #007bff;
-    color: white;
-}
-
-.add-customer button {
-    display: flex;
-    background: #66CC00;
-    color: #f9f9f9;
-    height: 35px;
-    font-size: 17px;
-}
-
-.add-customer {
-    display: flex;
-}
-
-.customer-list-title {
+.customer-list__title {
     background-color: #333399;
     color: white;
     padding: 10px;
@@ -121,34 +15,93 @@ button:hover {
     height: 100px;
 }
 
-.detail {
-    background-color: #6495ED;
+.customer-list__add-btn button {
+    display: flex;
+    background: #66CC00;
+    color: #f9f9f9;
+    height: 40px;
+    width: 8%;
+    font-size: 21px;
+    border-radius: 5px;
+    border: 2px;
+    align-items: center;
 }
 
-.edit {
+.customer-list__table-container {
+    overflow-x: auto;
+}
+
+.customer-list__table {
+    width: 100%;
+    border-collapse: collapse;
+    background-color: #f9f9f9;
+}
+
+.customer-list__thead {
+    background-color: #333333;
+    color: black;
+}
+
+.customer-list__table th {
+    background-color: lightgrey;
+}
+
+.customer-list__th, .customer-list__td {
+    padding: 10px;
+    text-align: center;
+    border: 1px solid #ddd;
+}
+
+.customer-list__th {
+    font-weight: bold;
+}
+
+.customer-list__pagination {
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
+}
+
+.customer-list__edit-btn {
     background-color: #FFD700;
+    color: white;
+    border-radius: 5px;
+    border: 2px
 }
 
-.delete {
+.customer-list__edit-btn:hover {
+    background-color: #61dafb;
+}
+
+.customer-list__delete-btn {
     background-color: red;
+    color: white;
+    border-radius: 5px;
+    border: 2px
 }
 
-.ReactModal__Content {
-    width: 500px; /* Đặt chiều rộng của modal */
-    height: 200px; /* Chiều cao tự động */
-    max-width: 90%; /* Giới hạn chiều rộng tối đa của modal */
-    max-height: 80%; /* Giới hạn chiều cao tối đa */
-    padding: 20px; /* Khoảng cách giữa nội dung và các cạnh */
-    margin: auto; /* Căn giữa modal */
+.customer-list__delete-btn:hover {
+    background-color: #61dafb;
 }
 
-.error {
+/* Modal Styles */
+.modal-content {
+    width: 500px;
+    height: 200px;
+    max-width: 90%;
+    max-height: 80%;
+    padding: 20px;
+    margin: auto;
+}
+
+/* Error Styles */
+.customer-list__error {
     color: red;
     font-size: 14px;
     margin-top: 5px;
 }
 
-.api-error {
+.customer-list__api-error {
     color: white;
     background-color: red;
     padding: 10px;
@@ -157,6 +110,7 @@ button:hover {
     font-size: 20px;
     border-radius: 5px;
 }
-.save{
+
+.customer-list__save-btn {
     background-color: blue;
 }

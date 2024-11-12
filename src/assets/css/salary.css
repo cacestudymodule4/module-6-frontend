@@ -1,14 +1,15 @@
-.table th, .table td {
+/* Tối ưu lại các lớp CSS */
+.salary-table th, .salary-table td {
     vertical-align: middle;
 }
 
-.table th {
+.salary-table th {
     font-weight: bold;
     text-transform: uppercase;
 }
 
-.container {
-    max-width: 900px; /* Giới hạn chiều rộng tối đa */
+.container-salary {
+    max-width: 1400px; /* Giới hạn chiều rộng tối đa */
     margin: 20px auto; /* Căn giữa container */
     padding: 20px; /* Thêm khoảng cách bên trong */
     border: 1px solid #e0e0e0; /* Đường viền nhẹ */
@@ -17,96 +18,75 @@
     background-color: #fff; /* Nền trắng cho container */
 }
 
-h2 {
+.salary-header {
     margin-bottom: 15px; /* Khoảng cách dưới tiêu đề */
     color: #333; /* Màu chữ cho tiêu đề */
 }
 
-p {
-    margin-bottom: 20px; /* Khoảng cách dưới đoạn văn */
-    color: #555; /* Màu chữ cho đoạn văn */
-}
-
-input[type="text"] {
-    border: 1px solid #ccc; /* Đường viền cho input */
-    border-radius: 5px; /* Bo góc cho input */
-    width: 100%; /* Chiều rộng 100% */
-    padding: 10px; /* Padding cho input */
-    box-sizing: border-box; /* Bao gồm padding và border trong kích thước */
-}
-
-table {
+.salary-table-responsive {
     width: 100%; /* Chiều rộng 100% cho bảng */
     border-collapse: collapse; /* Xóa khoảng cách giữa các ô */
     margin-top: 20px; /* Khoảng cách trên bảng */
 }
 
-th, td {
+.salary-th, .salary-td {
     padding: 12px; /* Khoảng cách bên trong các ô */
     text-align: left; /* Căn trái cho nội dung */
     border-bottom: 1px solid #e0e0e0; /* Đường viền dưới cho ô */
 }
 
-th {
+.salary-th {
     background-color: #f8f8f8; /* Màu nền cho tiêu đề bảng */
     color: #333; /* Màu chữ cho tiêu đề */
 }
 
-tr:hover {
+.salary-tr:hover {
     background-color: #f1f1f1; /* Màu nền khi hover qua hàng */
 }
 
-button {
-    border: none; /* Xóa đường viền */
-    padding: 8px 12px; /* Padding cho button */
-    border-radius: 5px; /* Bo góc cho button */
-    cursor: pointer; /* Thay đổi con trỏ khi hover */
-    transition: background-color 0.3s; /* Hiệu ứng chuyển màu */
-}
-
-.btn-danger {
+.btn-danger-custom {
     background-color: #dc3545; /* Màu nền đỏ */
     color: white; /* Màu chữ trắng */
 }
 
-.btn-danger:hover {
+.btn-danger-custom:hover {
     background-color: #c82333; /* Màu nền khi hover */
 }
 
-.btn-secondary {
+.btn-secondary-custom {
     background-color: #6c757d; /* Màu nền xám */
     color: white; /* Màu chữ trắng */
 }
 
-.btn-secondary:hover {
+.btn-secondary-custom:hover {
     background-color: #5a6268; /* Màu nền khi hover */
 }
 
-.bg-body-secondary {
+.bg-body-secondary-custom {
     background-color: #f0f0f0; /* Màu nền cho button thêm mới */
     color: #333; /* Màu chữ cho button */
 }
 
-.bg-body-secondary:hover {
+.bg-body-secondary-custom:hover {
     background-color: #e2e6ea; /* Màu nền khi hover */
 }
 
-.dialog {
+.dialog-custom {
     border-radius: 10px; /* Bo góc cho dialog */
     padding: 20px; /* Padding cho dialog */
 }
 
-.form-control {
+.form-control-custom {
     border: 1px solid #ced4da; /* Màu border mặc định */
     transition: border-color 0.3s ease; /* Hiệu ứng chuyển tiếp mượt mà */
 }
 
-.form-control:hover {
+.form-control-custom:hover {
     border-color: #80bdff; /* Màu border khi hover */
     box-shadow: 0 0 5px rgba(0, 123, 255, 0.5); /* Hiệu ứng bóng khi hover */
 }
 
-.form-control:focus {
+.form-control-custom:focus {
     border-color: #80bdff; /* Màu border khi focus */
     outline: none; /* Tắt outline mặc định */
     box-shadow: 0 0 5px rgba(0, 123, 255, 0.5); /* Hiệu ứng bóng khi focus */
