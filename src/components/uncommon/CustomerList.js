@@ -4,6 +4,8 @@ import '../../assets/css/CustomerList.css';
 import Modal from 'react-modal';
 import {useNavigate} from "react-router-dom";
 import * as Yup from 'yup';
+import {NavbarApp} from "../common/Navbar";
+import Footer from "../common/Footer";
 
 Modal.setAppElement('#root');
 const customerSchema = Yup.object().shape({
