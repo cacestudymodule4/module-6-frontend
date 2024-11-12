@@ -16,8 +16,8 @@
 ::placeholder{
     font-size: small;
 }
-.search{
-    border-radius: 50%;
+.search-contract-btn{
+    border-radius: 50% !important;
     margin-top: 13px;
 }
 .small-label{
@@ -27,4 +27,16 @@
 }
 select option.small-text {
     font-size: 12px; /* Làm chữ nhỏ lại */
+}
+.custom-date-input{
+    height: 45px !important;
+    border-color: rgba(0, 0, 0, 0.1) !important;
+    box-shadow: none !important;
+    cursor: default ;
+}
+.readonly-input:hover,
+.readonly-input:focus {
+    cursor: default !important;
+    box-shadow: none !important;
+    border-color: #ced4da !important;
 }

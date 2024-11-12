@@ -4,6 +4,8 @@ import '../../assets/css/CustomerList.css';
 import Modal from 'react-modal';
 import {useNavigate} from "react-router-dom";
 import * as Yup from 'yup';
+import {NavbarApp} from "../common/Navbar";
+import Footer from "../common/Footer";
 
 Modal.setAppElement('#root');
 const customerSchema = Yup.object().shape({
@@ -117,139 +119,142 @@ function CustomerList() {
         setErrors({});
     };
     return (
-        <div className="customer-list">
-            <div className="customer-list-title">
-                DANH SÁCH KHÁCH HÀNG
-            </div>
-            <div className="add-customer">
-                <button onClick={handleNavigateToAddCustomer}>Thêm mới</button>
-            </div>
-            <div className="table-container">
-                <table>
-                    <thead>
-                    <tr>
-                        <th>STT</th>
-                        <th>Tên Khách Hàng</th>
-                        <th>Ngày sinh</th>
-                        <th>Số chứng minh thư</th>
-                        <th>Địa chỉ</th>
-                        <th>Số điện thoại</th>
-                        <th>Email</th>
-                        <th>Công ty</th>
-                        <th colSpan={2}>Hành Động</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    {customers.map((customer, index) => (
-                        <tr key={customer.id}>
-                            <td>{index + 1}</td>
-                            {editingCustomer === customer.id ? (
-                                <>
-                                    <td>
-                                        <input
-                                            type="text"
-                                            name="name"
-                                            value={editedCustomer.name}
-                                            onChange={handleEditChange}
-                                        />
-                                        {errors.name && <div className="error">{errors.name}</div>}
-                                    </td>
-                                    <td>
-                                        <input
-                                            type="date"
-                                            name="birthday"
-                                            value={editedCustomer.birthday}
-                                            onChange={handleEditChange}
-                                        />
-                                        {errors.birthday && <div className="error">{errors.birthday}</div>}
-                                    </td>
-                                    <td>
-                                        <input
-                                            type="text"
-                                            name="identification"
-                                            value={editedCustomer.identification}
-                                            onChange={handleEditChange}
-                                        />
-                                        {errors.identification && <div className="error">{errors.identification}</div>}
-                                    </td>
-                                    <td>
-                                        <input
-                                            type="text"
-                                            name="address"
-                                            value={editedCustomer.address}
-                                            onChange={handleEditChange}
-                                        />
-                                        {errors.address && <div className="error">{errors.address}</div>}
-                                    </td>
-                                    <td>
-                                        <input
-                                            type="text"
-                                            name="phone"
-                                            value={editedCustomer.phone}
-                                            onChange={handleEditChange}
-                                        />
-                                        {errors.phone && <div className="error">{errors.phone}</div>}
-                                    </td>
-                                    <td>
-                                        <input
-                                            type="email"
-                                            name="email"
-                                            value={editedCustomer.email}
-                                            onChange={handleEditChange}
-                                        />
-                                        {errors.email && <div className="error">{errors.email}</div>}
-                                    </td>
-                                    <td>
-                                        <input
-                                            type="text"
-                                            name="company"
-                                            value={editedCustomer.company}
-                                            onChange={handleEditChange}
-                                        />
-                                        {errors.company && <div className="error">{errors.company}</div>}
-                                    </td>
-                                    <td>
-                                        <button className="save" onClick={handleSaveEdit}>Lưu</button>
-                                    </td>
-                                    <td>
-                                        <button className="cancel" onClick={handleCancelEdit}>Hủy</button>
-                                    </td>
-                                </>
-                            ) : (
-                                <>
-                                    <td>{customer.name}</td>
-                                    <td>{customer.birthday}</td>
-                                    <td>{customer.identification}</td>
-                                    <td>{customer.address}</td>
-                                    <td>{customer.phone}</td>
-                                    <td>{customer.email}</td>
-                                    <td>{customer.company}</td>
-                                    <td>
-                                        <button className="edit" onClick={() => handleEditClick(customer)}>Sửa</button>
-                                    </td>
-                                    <td>
-                                        <button className="delete" onClick={() => handleOpenModal(customer)}>Xóa
-                                        </button>
-                                    </td>
-                                </>
-                            )}
-                        </tr>
-                    ))}
-                    </tbody>
-                </table>
-            </div>
-            {/* Modal Confirm Delete */}
-            <Modal isOpen={isModalOpen} onRequestClose={closeModal} contentLabel="Xác nhận xóa khách hàng">
-                <h2>Xác nhận xóa</h2>
-                <p>Bạn có chắc chắn muốn xóa khách hàng {customerToDelete?.name}?</p>
-                <div>
-                    <button onClick={handleDeleteCustomer} style={{background: 'red', color: 'white'}}>Xóa</button>
-                    <button onClick={closeModal}>Hủy</button>
+            <div className="customer-list">
+                <div className="customer-list-title">
+                    DANH SÁCH KHÁCH HÀNG
                 </div>
-            </Modal>
-            {/* Hiển thị lỗi từ server nếu có */}
-            {errors.api && <div className="api-error">{errors.api}</div>}
-        </div>
+                <div className="add-customer">
+                    <button onClick={handleNavigateToAddCustomer}>Thêm mới</button>
+                </div>
+                <div className="table-container">
+                    <table>
+                        <thead>
+                        <tr>
+                            <th>STT</th>
+                            <th>Tên Khách Hàng</th>
+                            <th>Ngày sinh</th>
+                            <th>Số chứng minh thư</th>
+                            <th>Địa chỉ</th>
+                            <th>Số điện thoại</th>
+                            <th>Email</th>
+                            <th>Công ty</th>
+                            <th colSpan={2}>Hành Động</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {customers.map((customer, index) => (
+                            <tr key={customer.id}>
+                                <td>{index + 1}</td>
+                                {editingCustomer === customer.id ? (
+                                    <>
+                                        <td>
+                                            <input
+                                                type="text"
+                                                name="name"
+                                                value={editedCustomer.name}
+                                                onChange={handleEditChange}
+                                            />
+                                            {errors.name && <div className="error">{errors.name}</div>}
+                                        </td>
+                                        <td>
+                                            <input
+                                                type="date"
+                                                name="birthday"
+                                                value={editedCustomer.birthday}
+                                                onChange={handleEditChange}
+                                            />
+                                            {errors.birthday && <div className="error">{errors.birthday}</div>}
+                                        </td>
+                                        <td>
+                                            <input
+                                                type="text"
+                                                name="identification"
+                                                value={editedCustomer.identification}
+                                                onChange={handleEditChange}
+                                            />
+                                            {errors.identification &&
+                                                <div className="error">{errors.identification}</div>}
+                                        </td>
+                                        <td>
+                                            <input
+                                                type="text"
+                                                name="address"
+                                                value={editedCustomer.address}
+                                                onChange={handleEditChange}
+                                            />
+                                            {errors.address && <div className="error">{errors.address}</div>}
+                                        </td>
+                                        <td>
+                                            <input
+                                                type="text"
+                                                name="phone"
+                                                value={editedCustomer.phone}
+                                                onChange={handleEditChange}
+                                            />
+                                            {errors.phone && <div className="error">{errors.phone}</div>}
+                                        </td>
+                                        <td>
+                                            <input
+                                                type="email"
+                                                name="email"
+                                                value={editedCustomer.email}
+                                                onChange={handleEditChange}
+                                            />
+                                            {errors.email && <div className="error">{errors.email}</div>}
+                                        </td>
+                                        <td>
+                                            <input
+                                                type="text"
+                                                name="company"
+                                                value={editedCustomer.company}
+                                                onChange={handleEditChange}
+                                            />
+                                            {errors.company && <div className="error">{errors.company}</div>}
+                                        </td>
+                                        <td>
+                                            <button className="save" onClick={handleSaveEdit}>Lưu</button>
+                                        </td>
+                                        <td>
+                                            <button className="cancel" onClick={handleCancelEdit}>Hủy</button>
+                                        </td>
+                                    </>
+                                ) : (
+                                    <>
+                                        <td>{customer.name}</td>
+                                        <td>{customer.birthday}</td>
+                                        <td>{customer.identification}</td>
+                                        <td>{customer.address}</td>
+                                        <td>{customer.phone}</td>
+                                        <td>{customer.email}</td>
+                                        <td>{customer.company}</td>
+                                        <td>
+                                            <button className="edit" onClick={() => handleEditClick(customer)}>Sửa
+                                            </button>
+                                        </td>
+                                        <td>
+                                            <button className="delete" onClick={() => handleOpenModal(customer)}>Xóa
+                                            </button>
+                                        </td>
+                                    </>
+                                )}
+                            </tr>
+                        ))}
+                        </tbody>
+                    </table>
+                </div>
+                {/* Modal Confirm Delete */}
+                <Modal isOpen={isModalOpen} onRequestClose={closeModal} contentLabel="Xác nhận xóa khách hàng">
+                    <h2>Xác nhận xóa</h2>
+                    <p>Bạn có chắc chắn muốn xóa khách hàng {customerToDelete?.name}?</p>
+                    <div>
+                        <button onClick={handleDeleteCustomer} style={{background: 'red', color: 'white'}}>Xóa</button>
+                        <button onClick={closeModal}>Hủy</button>
+                    </div>
+                </Modal>
+                {/* Hiển thị lỗi từ server nếu có */}
+                {errors.api && <div className="api-error">{errors.api}</div>}
+            </div>
+
     );
 }
 

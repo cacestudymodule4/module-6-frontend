@@ -5,7 +5,9 @@ import axios from "axios";
 import {toast} from "react-toastify";
 import * as Yup from "yup";
 import {useNavigate} from "react-router-dom";
-import '../../assets/css/AddCustomer.css';
+import Footer from "./Footer";
+import {NavbarApp} from "./Navbar";
+
 function AddContract() {
     const navigate = useNavigate();
     const [ground, setGround] = useState([]);
@@ -17,6 +19,7 @@ function AddContract() {
     const [startDay, setStartDay] = useState('');
     const [endDay, setEndDay] = useState('');
     const [term, setTerm] = useState('');
+
     useEffect(() => {
         async function getStaff() {
             try {
@@ -55,7 +58,7 @@ function AddContract() {
         getGround();
         getStaff();
     }, []);
-    const handleAddContract = async (value) => {
+    const handleAddContract = async (value,{resetForm}) => {
         try {
             const data = {
                 cmd: value.cmd,
@@ -73,8 +76,13 @@ function AddContract() {
                 },
             )
             if (res.status === 200) {
-                navigate('/contract/list')
                 toast.success("Thêm mới thành công");
+                resetForm();
+                setEndDay("");
+                setCustomerName("");
+                setPriceGround("");
+                setNameStaff("");
+
             }
         } catch (error) {
             toast.error("Thêm thất bại");
@@ -162,243 +170,256 @@ function AddContract() {
         }
     };
     return (
-        <div className="container mt-5">
-            <h2 className="text-center mb-5" style={{color: "#6d757d"}}>Thêm mới hợp đồng</h2>
-            <Formik
-                initialValues={initialValues}
-                onSubmit={handleAddContract}
-                validationSchema={validationSchema}
-                validateOnBlur={true}
-            >
-                {({values, setFieldValue}) => (
-                    <FormikForm>
-                        <Row>
-                            <Col md={4}>
-                                <Form.Group className="mb-3">
-                                    <Form.Label>CMD khách hàng</Form.Label>
-                                    <Field as="select"
-                                           name="cmd"
-                                           className="form-control"
-                                           value={values.cmd}  // Đồng bộ hóa giá trị với Formik
-                                           onChange={(e) => {
-                                               handleIdentificationChange(e);
-                                               setFieldValue('cmd', e.target.value); // Cập nhật giá trị trong Formik state
-                                           }}
-                                    >
-                                        <option value="">Chọn CMD</option>
-                                        {customer.map((cus) => (
-                                            <option key={cus.id} value={cus.identification}>
-                                                {cus.identification}
-                                            </option>
-                                        ))}
-                                    </Field>
-                                    <ErrorMessage
-                                        name="cmd"
-                                        component="div"
-                                        className="error-message text-danger"
-                                    />
-                                </Form.Group>
-                            </Col>
-                            <Col md={4}>
-                                <Form.Group className="mb-3">
-                                    <Form.Label>Tên khách hàng</Form.Label>
-                                    <Field
-                                        as={Form.Control}
-                                        type="text"
-                                        name={"nameCus"}
-                                        value={customerName}
-                                        readOnly
-                                    />
-                                </Form.Group>
-                            </Col>
-                            <Col md={4}>
-                                <Form.Group className="mb-3">
-                                    <Form.Label>Mặt bằng</Form.Label>
-                                    <Field as="select" name="ground" className="form-control"
-                                           value={values.ground}
-                                           onChange={(e) => {
-                                               handlePriceChange(e);
-                                               setFieldValue('ground', e.target.value);
-                                           }}>
-                                        <option value=""> Chọn mã mặt bằng</option>
-                                        {ground.map((ground) => (
-                                            <option key={ground.id} value={ground.id}>
-                                                MB{ground.id}
-                                            </option>
-                                        ))}
-                                    </Field>
-                                    <ErrorMessage
-                                        name="ground"
-                                        component="div"
-                                        className="error-message text-danger"
-                                    />
-                                </Form.Group>
-                            </Col>
-                        </Row>
-                        <Row>
-                            <Col md={4}>
-                                <Form.Group className="mb-3">
-                                    <Form.Label>Kỳ hạng (tháng)</Form.Label>
-                                    <Field
-                                        as={Form.Control}
-                                        type="number"
-                                        name="term"
-                                        value={values.term}
-                                        onChange={(e) => {
-                                            setFieldValue('term', e.target.value);
-                                            handleTermChange(e);
-                                        }}
-                                    />
-                                    <ErrorMessage
-                                        name="term"
-                                        component="div"
-                                        className="error-message text-danger"
-                                    />
-                                </Form.Group>
-                            </Col>
-                            <Col md={4}>
-                                <Form.Group className="mb-3">
-                                    <Form.Label>Ngày bắt đầu thuê</Form.Label>
-                                    <Field
-                                        as={Form.Control}
-                                        type="date"
-                                        name="startDay"
-                                        value={values.startDay}
-                                        onChange={(e) => {
-                                            setFieldValue('startDay', e.target.value);
-                                            handleStartDayChange(e);
-                                        }}
-                                    />
-                                    <ErrorMessage
-                                        name="startDay"
-                                        component="div"
-                                        className="error-message text-danger"
-                                    />
-                                </Form.Group>
-                            </Col>
-                            <Col md={4}>
-                                <Form.Group className="mb-3">
-                                    <Form.Label>Ngày kết thúc</Form.Label>
-                                    <Field
-                                        as={Form.Control}
-                                        type="date"
-                                        name="endDay"
-                                        value={endDay}
-                                        readOnly ển thị ngày kết thúc tự động
-                                    />
-                                    <ErrorMessage
-                                        name="endDay"
-                                        component="div"
-                                        className="error-message text-danger"
-                                    />
-                                </Form.Group>
-                            </Col>
-                        </Row>
-                        <Row>
-                            <Col md={3}>
-                                <Form.Group className="mb-3">
-                                    <Form.Label>Giá tiền mỗi tháng (VNĐ)</Form.Label>
-                                    <Field
-                                        as={Form.Control}
-                                        type="number"
-                                        name="price"
-                                        value={priceGround}
-                                    />
-                                    <ErrorMessage
-                                        name="price"
-                                        component="div"
-                                        className="error-message text-danger"
-                                    />
-                                </Form.Group>
-                            </Col>
-                            <Col md={3}>
-                                <Form.Group className="mb-3">
-                                    <Form.Label>Tiền cọc(VNĐ)</Form.Label>
-                                    <Field
-                                        as={Form.Control}
-                                        type="text"
-                                        name="deposit"
-                                    />
-                                    <ErrorMessage
-                                        name="deposit"
-                                        component="div"
-                                        className="error-message text-danger"
-                                    />
-                                </Form.Group>
-                            </Col>
-                            <Col md={3}>
-                                <Form.Group className="mb-3">
-                                    <Form.Label>Mã nhân viên</Form.Label>
-                                    <Field as="select" name="staffId" className="form-control"
-                                           value={values.staffId}
-                                           onChange={(e) => {
-                                               handleStaffChange(e);
-                                               setFieldValue('staffId', e.target.value);
-                                           }}
-                                    >
-                                        <option value="">Chọn mã nhân viên</option>
-                                        {staff.map((staff) => (
-                                            <option key={staff.id} value={staff.id}>
-                                                NV{staff.id}
-                                            </option>
-                                        ))}
-                                    </Field>
-                                    <ErrorMessage
-                                        name="staffId"
-                                        component="div"
-                                        className="error-message text-danger"
-                                    />
-                                </Form.Group>
-                            </Col>
-                            <Col md={3}>
-                                <Form.Group className="mb-3">
-                                    <Form.Label>Tên Nhân viên</Form.Label>
-                                    <Field
-                                        as={Form.Control}
-                                        type="text"
-                                        placeholder=""
-                                        name="nameStaff"
-                                        value={nameStaff}
-                                    />
-                                    <ErrorMessage
-                                        name="nameStaff"
-                                        component="div"
-                                        className="error-message text-danger"
-                                    />
-                                </Form.Group>
-                            </Col>
-                        </Row>
-                        <Row>
-                            <Col md={12}>
-                                <Form.Group className="mb-3">
-                                    <Form.Label>Nội dung</Form.Label>
-                                    <Field
-                                        as={Form.Control}
-                                        as="textarea"
-                                        rows={4}
-                                        placeholder="Nhập nội dung hợp đồng"
-                                        name="content"
-                                        style={{width: '100%'}}
-                                    />
-                                    <ErrorMessage
-                                        name="content"
-                                        component="div"
-                                        className="error-message text-danger"
-                                    />
-                                </Form.Group>
-                            </Col>
-                        </Row>
-                        <Button variant="success" type="submit">
-                            Thêm hợp đồng
-                        </Button>
-                        <Button className={"ms-3"} variant="secondary" type="button"
-                                onClick={() => navigate('/contract/list')}>
-                            Quay lại
-                        </Button>
-                    </FormikForm>
-                )}
-            </Formik>
-        </div>
+        <>
+            <NavbarApp/>
+            <div className="container mt-5 mb-5">
+                <h2 className="text-center mb-5 bg-success align-content-center"
+                    style={{color: "white", height: "70px"}}>
+                    Thêm mới hợp đồng</h2>
+                <Formik
+                    initialValues={initialValues}
+                    onSubmit={handleAddContract}
+                    validationSchema={validationSchema}
+                    validateOnBlur={true}
+                >
+                    {({values, setFieldValue}) => (
+                        <FormikForm>
+                            <Row>
+                                <Col md={4}>
+                                    <Form.Group className="mb-3">
+                                        <Form.Label>CMND khách hàng</Form.Label>
+                                        <Field as="select"
+                                               name="cmd"
+                                               className="form-control custom-date-input"
+                                               value={values.cmd}  // Đồng bộ hóa giá trị với Formik
+                                               onChange={(e) => {
+                                                   handleIdentificationChange(e);
+                                                   setFieldValue('cmd', e.target.value); // Cập nhật giá trị trong Formik state
+                                               }}
+                                        >
+                                            <option value="">Chọn CMND</option>
+                                            {customer.map((cus) => (
+                                                <option key={cus.id} value={cus.identification}>
+                                                    {cus.identification}
+                                                </option>
+                                            ))}
+                                        </Field>
+                                        <ErrorMessage
+                                            name="cmd"
+                                            component="div"
+                                            className="error-message text-danger"
+                                        />
+                                    </Form.Group>
+                                </Col>
+                                <Col md={4}>
+                                    <Form.Group className="mb-3">
+                                        <Form.Label>Tên khách hàng</Form.Label>
+                                        <Field
+                                            as={Form.Control}
+                                            type="text"
+                                            className="form-control custom-date-input readonly-input "
+                                            name={"nameCus"}
+                                            value={customerName}
+                                            readOnly
+                                        />
+                                    </Form.Group>
+                                </Col>
+                                <Col md={4}>
+                                    <Form.Group className="mb-3">
+                                        <Form.Label>Mặt bằng</Form.Label>
+                                        <Field as="select" name="ground" className="form-control custom-date-input"
+                                               value={values.ground}
+                                               onChange={(e) => {
+                                                   handlePriceChange(e);
+                                                   setFieldValue('ground', e.target.value);
+                                               }}>
+                                            <option value=""> Chọn mã mặt bằng</option>
+                                            {ground.map((ground) => (
+                                                <option key={ground.id} value={ground.id}>
+                                                    MB{ground.id}
+                                                </option>
+                                            ))}
+                                        </Field>
+                                        <ErrorMessage
+                                            name="ground"
+                                            component="div"
+                                            className="error-message text-danger"
+                                        />
+                                    </Form.Group>
+                                </Col>
+                            </Row>
+                            <Row>
+                                <Col md={4}>
+                                    <Form.Group className="mb-3">
+                                        <Form.Label>Kỳ hạng (tháng)</Form.Label>
+                                        <Field
+                                            as={Form.Control}
+                                            type="number"
+                                            name="term"
+                                            className="custom-date-input"
+                                            value={values.term}
+                                            onChange={(e) => {
+                                                setFieldValue('term', e.target.value);
+                                                handleTermChange(e);
+                                            }}
+                                        />
+                                        <ErrorMessage
+                                            name="term"
+                                            component="div"
+                                            className="error-message text-danger"
+                                        />
+                                    </Form.Group>
+                                </Col>
+                                <Col md={4}>
+                                    <Form.Group className="mb-3">
+                                        <Form.Label>Ngày bắt đầu thuê</Form.Label>
+                                        <Field
+                                            as={Form.Control}
+                                            type="date"
+                                            name="startDay"
+                                            value={values.startDay}
+                                            className={"custom-date-input"}
+                                            onChange={(e) => {
+                                                setFieldValue('startDay', e.target.value);
+                                                handleStartDayChange(e);
+                                            }}
+                                        />
+                                        <ErrorMessage
+                                            name="startDay"
+                                            component="div"
+                                            className="error-message text-danger"
+                                        />
+                                    </Form.Group>
+                                </Col>
+                                <Col md={4}>
+                                    <Form.Group className="mb-3">
+                                        <Form.Label>Ngày kết thúc</Form.Label>
+                                        <Field
+                                            as={Form.Control}
+                                            type="date"
+                                            name="endDay"
+                                            value={endDay}
+                                            className={"custom-date-input readonly-input"}
+                                            readOnly
+                                        />
+                                        <ErrorMessage
+                                            name="endDay"
+                                            component="div"
+                                            className="error-message text-danger"
+                                        />
+                                    </Form.Group>
+                                </Col>
+                            </Row>
+                            <Row>
+                                <Col md={3}>
+                                    <Form.Group className="mb-3">
+                                        <Form.Label>Giá tiền mỗi tháng (VNĐ)</Form.Label>
+                                        <Field
+                                            as={Form.Control}
+                                            type="number"
+                                            name="price"
+                                            className={"custom-date-input readonly-input"}
+                                            value={priceGround}
+                                            readOnly/>
+                                        <ErrorMessage
+                                            name="price"
+                                            component="div"
+                                            className="error-message text-danger"
+                                        />
+                                    </Form.Group>
+                                </Col>
+                                <Col md={3}>
+                                    <Form.Group className="mb-3">
+                                        <Form.Label>Tiền cọc(VNĐ)</Form.Label>
+                                        <Field
+                                            as={Form.Control}
+                                            type="number"
+                                            className={"custom-date-input"}
+                                            name="deposit"
+                                        />
+                                        <ErrorMessage
+                                            name="deposit"
+                                            component="div"
+                                            className="error-message text-danger"
+                                        />
+                                    </Form.Group>
+                                </Col>
+                                <Col md={3}>
+                                    <Form.Group className="mb-3">
+                                        <Form.Label>Mã nhân viên</Form.Label>
+                                        <Field as="select" name="staffId" className="form-control custom-date-input"
+                                               value={values.staffId}
+                                               onChange={(e) => {
+                                                   handleStaffChange(e);
+                                                   setFieldValue('staffId', e.target.value);
+                                               }}
+                                        >
+                                            <option value="">Chọn mã nhân viên</option>
+                                            {staff.map((staff) => (
+                                                <option key={staff.id} value={staff.id}>
+                                                    NV{staff.id}
+                                                </option>
+                                            ))}
+                                        </Field>
+                                        <ErrorMessage
+                                            name="staffId"
+                                            component="div"
+                                            className="error-message text-danger"
+                                        />
+                                    </Form.Group>
+                                </Col>
+                                <Col md={3}>
+                                    <Form.Group className="mb-3">
+                                        <Form.Label>Tên Nhân viên</Form.Label>
+                                        <Field
+                                            as={Form.Control}
+                                            type="text"
+                                            placeholder=""
+                                            name="nameStaff"
+                                            className={"custom-date-input readonly-input "}
+                                            value={nameStaff}
+                                        />
+                                        <ErrorMessage
+                                            name="nameStaff"
+                                            component="div"
+                                            className="error-message text-danger"
+                                        />
+                                    </Form.Group>
+                                </Col>
+                            </Row>
+                            <Row>
+                                <Col md={12}>
+                                    <Form.Group className="mb-3">
+                                        <Form.Label>Nội dung</Form.Label>
+                                        <Field
+                                            as="textarea"
+                                            rows={4}
+                                            placeholder="Nhập nội dung hợp đồng"
+                                            name="content"
+                                            style={{width: '100%'}}
+                                        />
+                                        <ErrorMessage
+                                            name="content"
+                                            component="div"
+                                            className="error-message text-danger"
+                                        />
+                                    </Form.Group>
+                                </Col>
+                            </Row>
+                            <Button variant="success" type="submit">
+                                Thêm hợp đồng
+                            </Button>
+                            <Button className={"ms-3"} variant="secondary" type="button"
+                                    onClick={() => navigate('/contract/list')}>
+                                Quay lại
+                            </Button>
+                        </FormikForm>
+                    )}
+                </Formik>
+            </div>
+            <Footer/>
+        </>
+
     );
 }
 
