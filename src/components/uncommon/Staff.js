@@ -6,8 +6,8 @@ import 'react-toastify/dist/ReactToastify.css';
 import moment from 'moment';
 import {useNavigate} from "react-router-dom";
 import {Button, Modal} from "react-bootstrap";
-import {NavbarApp} from "./Navbar";
-import Footer from "./Footer";
+import {NavbarApp} from "../common/Navbar";
+import Footer from "../common/Footer";
 
 function Staff() {
     const navigate = useNavigate();

@@ -3,8 +3,8 @@ import {Form, Button, Row, Col, Card} from 'react-bootstrap';
 import {useLocation, useParams} from 'react-router-dom';
 import {useNavigate} from "react-router-dom";
 import '../../assets/css/Contract.css';
-import {NavbarApp} from "./Navbar";
-import Footer from "./Footer";
+import {NavbarApp} from "../common/Navbar";
+import Footer from "../common/Footer";
 
 function ContractDetail() {
     const navigate = useNavigate();
