@@ -20,6 +20,7 @@ import CustomerList from "./components/uncommon/CustomerList";
 import AddCustomer from "./components/uncommon/AddCustomer";
 import ServiceList from "./components/common/ServiceList";
 import AddStaff from "./components/uncommon/AddStaff";
+import EditStaff from "./components/uncommon/EditStaff";
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
@@ -30,6 +31,7 @@ root.render(
             <Routes>
                 <Route path="/staff/list" element={<Staff/>}/>
                 <Route path="/staff/list/add" element={<AddStaff/>}/>
+                <Route path="/staff/list/edit/:id" element={<EditStaff/>}/>
                 <Route path="/login" element={<Login/>}/>
                 <Route path="/logout" element={<Logout/>}/>
                 <Route path="/user/detail" element={<UserInfo/>}/>
