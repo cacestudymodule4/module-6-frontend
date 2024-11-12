@@ -1,156 +1,145 @@
-import React, { useState } from "react";
-import { toast } from "react-toastify";
+import React, {useState, useEffect} from "react";
+import {Formik, Field, Form as FormikForm, ErrorMessage} from "formik";
+import * as Yup from "yup";
 import axios from "axios";
+import {useNavigate, useParams} from "react-router-dom";
+import {ToastContainer, toast} from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import {NavbarApp} from "../common/Navbar";
+import Footer from "../common/Footer";
 
-function EditStaff() {
-    const [selectedEmployee, setSelectedEmployee] = useState(null);
-    const [updatedEmployee, setUpdatedEmployee] = useState({
-        name: '',
-        gender: true,
-        address: '',
-        phone: '',
-        email: '',
-        salary: '',
-        startDate: ''
+const EditStaff = () => {
+    const {id} = useParams();
+    const navigate = useNavigate();
+    const [staffData, setStaffData] = useState(null);
+
+    useEffect(() => {
+        axios
+            .get(`http://localhost:8080/api/staff/${id}`, {
+                headers: {Authorization: `Bearer ${localStorage.getItem('jwtToken')}`}
+            })
+            .then((response) => {
+                setStaffData(response.data);
+            })
+            .catch((error) => toast.error("Lỗi khi tải thông tin nhân viên"));
+    }, [id]);
+
+    const validationSchema = Yup.object({
+        name: Yup.string().required("Tên không được để trống"),
+        email: Yup.string()
+            .email("Email không hợp lệ")
+            .required("Email không được để trống"),
+        phone: Yup.string()
+            .matches(/^(09|08)[0-9]{8}$/, "Số điện thoại không hợp lệ")
+            .required("Số điện thoại không được để trống"),
+        address: Yup.string().required("Địa chỉ không được để trống"),
+        position: Yup.string().required("Vị trí không được để trống"),
+        salary: Yup.number().required("Lương không được để trống"),
+        birthDate: Yup.date().required("Ngày sinh không được để trống"),
+        startDate: Yup.date().required("Ngày làm việc không được để trống"),
     });
 
-    const handleUpdate = () => {
-        if (!updatedEmployee.name || !updatedEmployee.email) {
-            toast.error("Vui lòng điền đầy đủ thông tin!");
-            return;
-        }
-        axios.put(`http://localhost:8080/api/staff/update/${updatedEmployee.id}`, updatedEmployee, {
-            headers: { Authorization: `Bearer ${localStorage.getItem('jwtToken')}` }
-        })
-            .then(response => {
-                toast.success("Cập nhật thành công!");
-                setSelectedEmployee(null);
-            })
-            .catch(error => {
-                toast.error("Lỗi khi cập nhật thông tin nhân viên");
+    const handleSubmit = async (values) => {
+        try {
+            const response = await axios.put(`http://localhost:8080/api/staff/edit/${id}`, values, {
+                headers: {Authorization: `Bearer ${localStorage.getItem('jwtToken')}`}
             });
+            toast.success("Cập nhật nhân viên thành công!");
+            navigate("/staff/list");
+        } catch (error) {
+            toast.error("Cập nhật nhân viên thất bại!");
+        }
     };
 
-    const handleEditClick = (staff) => {
-        setSelectedEmployee(staff);
-        setUpdatedEmployee({
-            id: staff.id,
-            name: staff.name,
-            gender: staff.gender,
-            address: staff.address,
-            phone: staff.phone,
-            email: staff.email,
-            salary: staff.salary,
-            startDate: staff.startDate
-        });
-    };
-
-    const handleInputChange = (e) => {
-        const { name, value } = e.target;
-        setUpdatedEmployee(prevState => ({
-            ...prevState,
-            [name]: value
-        }));
-    };
-
+    if (!staffData) return <div>Loading...</div>;
+    
     return (
-        <div>
-            {selectedEmployee && (
-                <div className="modal show" style={{ display: 'block' }} aria-hidden="true">
-                    <div className="modal-dialog modal-lg">
-                        <div className="modal-content">
-                            <div className="modal-header">
-                                <h5 className="modal-title">Cập nhật thông tin nhân viên</h5>
-                                <button
-                                    type="button"
-                                    className="btn-close"
-                                    onClick={() => setSelectedEmployee(null)}
-                                ></button>
-                            </div>
-                            <div className="mb-3">
-                                <label htmlFor="gender" className="form-label">Giới tính</label>
-                                <select
-                                    className="form-select"
-                                    id="gender"
-                                    name="gender"
-                                    value={updatedEmployee.gender}
-                                    onChange={handleInputChange}
-                                >
-                                    <option value={true}>Nam</option>
-                                    <option value={false}>Nữ</option>
-                                </select>
-                            </div>
-                            <div className="modal-footer">
-                                <button
-                                    type="button"
-                                    className="btn btn-secondary"
-                                    onClick={() => setSelectedEmployee(null)}
-                                >
-                                    Đóng
-                                </button>
-                                <button
-                                    type="button"
-                                    className="btn btn-success"
-                                    onClick={handleUpdate}
-                                >
-                                    Cập nhật
-                                </button>
-                            </div>
-                            <div className="mb-3">
-                                <label htmlFor="phone" className="form-label">Số điện thoại</label>
-                                <input
-                                    type="text"
-                                    className="form-control"
-                                    id="phone"
-                                    name="phone"
-                                    value={updatedEmployee.phone}
-                                    onChange={handleInputChange}
-                                />
-                            </div>
-                            <div className="mb-3">
-                                <label htmlFor="email" className="form-label">Email</label>
-                                <input
-                                    type="email"
-                                    className="form-control"
-                                    id="email"
-                                    name="email"
-                                    value={updatedEmployee.email}
-                                    onChange={handleInputChange}
-                                />
-                            </div>
-                            <div className="mb-3">
-                                <label htmlFor="salary" className="form-label">Lương</label>
-                                <input
-                                    type="number"
-                                    className="form-control"
-                                    id="salary"
-                                    name="salary"
-                                    value={updatedEmployee.salary}
-                                    onChange={handleInputChange}
-                                />
-                            </div>
-                            <div className="mb-3">
-                                <label htmlFor="startDate" className="form-label">Ngày bắt đầu</label>
-                                <input
-                                    type="date"
-                                    className="form-control"
-                                    id="startDate"
-                                    name="startDate"
-                                    value={updatedEmployee.startDate}
-                                    onChange={handleInputChange}
-                                />
-                            </div>
+        <>
+            <NavbarApp/>
+            <div className="container my-5 rounded mx-auto p-4" style={{minHeight: '45vh'}}>
+                <h3 className="text-center text-white py-3 bg-success rounded mb-5" style={{fontSize: '2.25rem'}}>
+                    Chỉnh sửa nhân viên
+                </h3>
+                <Formik
+                    initialValues={{
+                        name: staffData?.name || '',
+                        birthDate: staffData?.birthDate || '',
+                        address: staffData?.address || '',
+                        phone: staffData?.phone || '',
+                        email: staffData?.email || '',
+                        position: staffData?.position || '',
+                        salary: staffData?.salary || '',
+                        startDate: staffData?.startDate || '',
+                    }}
+                    validationSchema={validationSchema}
+                    onSubmit={handleSubmit}>
+                    
+                    <FormikForm>
+                        <div className="mb-2">
+                            <label className="form-label" style={{fontSize: '1.2rem'}}>Tên</label>
+                            <Field type="text" name="name" className="form-control form-control-lg"/>
+                            <ErrorMessage name="name" component="div" className="text-danger small"/>
                         </div>
-                        <div className="modal-footer">
-                            <button type="button" className="btn btn-secondary" data-bs-dismiss="modal"
-                                    onClick={() => setSelectedEmployee(null)}>Đóng
-                            </button>
-                            <button type="button" className="btn btn-success" onClick={handleUpdate}>Cập nhật
-                            </button>
+
+                        <div className="mb-2">
+                            <label className="form-label" style={{fontSize: '1.2rem'}}>Ngày sinh</label>
+                            <Field type="date" name="birthDate" className="form-control form-control-lg"/>
+                            <ErrorMessage name="birthDate" component="div" className="text-danger small"/>
                         </div>
-                    </div>
-                </div>
-            )}
-        </div>
+
+                        <div className="mb-2">
+                            <label className="form-label" style={{fontSize: '1.2rem'}}>Địa chỉ</label>
+                            <Field type="text" name="address" className="form-control form-control-lg"/>
+                            <ErrorMessage name="address" component="div" className="text-danger small"/>
+                        </div>
+
+                        <div className="mb-2">
+                            <label className="form-label" style={{fontSize: '1.2rem'}}>Điện thoại</label>
+                            <Field type="text" name="phone" className="form-control form-control-lg"/>
+                            <ErrorMessage name="phone" component="div" className="text-danger small"/>
+                        </div>
+
+                        <div className="mb-2">
+                            <label className="form-label" style={{fontSize: '1.2rem'}}>Email</label>
+                            <Field type="email" name="email" className="form-control form-control-lg"/>
+                            <ErrorMessage name="email" component="div" className="text-danger small"/>
+                        </div>
+
+                        <div className="mb-2">
+                            <label className="form-label" style={{fontSize: '1.2rem'}}>Lương</label>
+                            <Field type="number" name="salary" className="form-control form-control-lg"/>
+                            <ErrorMessage name="salary" component="div" className="text-danger small"/>
+                        </div>
+
+                        <div className="mb-2">
+                            <label className="form-label" style={{fontSize: '1.2rem'}}>Ngày làm việc</label>
+                            <Field type="date" name="startDate" className="form-control form-control-lg"/>
+                            <ErrorMessage name="startDate" component="div" className="text-danger small"/>
+                        </div>
+
+                        <div className="mb-2">
+                            <label className="form-label" style={{fontSize: '1.2rem'}}>Vị trí</label>
+                            <Field type="text" name="position" className="form-control form-control-lg"/>
+                            <ErrorMessage name="position" component="div" className="text-danger small"/>
+                        </div>
+
+                        <div className="d-flex justify-content-end">
+                            <button
+                                type="button"
+                                className="btn btn-success btn-lg me-2"
+                                onClick={() => navigate("/staff/list")}>
+                                Trở lại
+                            </button>
+                            <button type="submit" className="btn btn-success btn-lg">Hoàn Thành</button>
+                        </div>
+
+                    </FormikForm>
+                </Formik>
+
+                <ToastContainer position="top-right" autoClose={5000}/>
+            </div>
+            <Footer/>
+        </>
     );
-}
+};
+export default EditStaff;

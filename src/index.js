@@ -21,6 +21,7 @@ import AddCustomer from "./components/uncommon/AddCustomer";
 import EditContract from "./components/uncommon/EditContract";
 import ServiceList from "./components/uncommon/ServiceList";
 import AddStaff from "./components/uncommon/AddStaff";
+import EditStaff from "./components/uncommon/EditStaff";
 import { EditBuilding } from './components/uncommon/EditBuilding';
 import './assets/css/styles.css';
 
@@ -34,7 +35,8 @@ root.render(
             <Routes>
                 <Route path="/building/edit" element={<EditBuilding />} />
                 <Route path="/staff/list" element={<Staff />} />
-                <Route path="/staff/list/add" element={<AddStaff />} />
+                <Route path="/staff/add" element={<AddStaff />} />
+                <Route path="/staff/edit/:id" element={<EditStaff/>}/>
                 <Route path="/login" element={<Login />} />
                 <Route path="/logout" element={<Logout />} />
                 <Route path="/user/detail" element={<UserInfo />} />
