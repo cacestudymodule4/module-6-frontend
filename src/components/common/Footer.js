@@ -83,7 +83,6 @@ const headingStyle = {
 
 const iconContainerStyle = {
     display: 'flex',
-    justifyContent: 'center',
     gap: '20px',
 };
 
