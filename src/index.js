@@ -3,10 +3,10 @@ import ReactDOM from 'react-dom/client';
 import './index.css';
 import Home from './components/uncommon/Home';
 import reportWebVitals from './reportWebVitals';
-import {BrowserRouter, Route, Routes} from "react-router-dom";
-import {ToastContainer} from "react-toastify";
+import { BrowserRouter, Route, Routes } from "react-router-dom";
+import { ToastContainer } from "react-toastify";
 import store from "./redux/store";
-import {Provider} from "react-redux";
+import { Provider } from "react-redux";
 import Staff from "./components/uncommon/Staff";
 import Contract from "./components/uncommon/Contract";
 import ContractDetail from "./components/uncommon/ContractDetail";
@@ -22,33 +22,35 @@ import EditContract from "./components/uncommon/EditContract";
 import ServiceList from "./components/uncommon/ServiceList";
 import AddStaff from "./components/uncommon/AddStaff";
 import EditStaff from "./components/uncommon/EditStaff";
-
+import { EditBuilding } from './components/uncommon/EditBuilding';
+import './assets/css/styles.css';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
     // <React.StrictMode>
     <Provider store={store}>
         <BrowserRouter>
-            <ToastContainer/>
+            <ToastContainer />
             <Routes>
-                <Route path="/staff/list" element={<Staff/>}/>
-                <Route path="/staff/add" element={<AddStaff/>}/>
+                <Route path="/building/edit" element={<EditBuilding />} />
+                <Route path="/staff/list" element={<Staff />} />
+                <Route path="/staff/add" element={<AddStaff />} />
                 <Route path="/staff/edit/:id" element={<EditStaff/>}/>
-                <Route path="/login" element={<Login/>}/>
-                <Route path="/logout" element={<Logout/>}/>
-                <Route path="/user/detail" element={<UserInfo/>}/>
-                <Route path="/customer/list" element={<CustomerList/>}/>
-                <Route path="/customer/add" element={<AddCustomer/>}/>
-                <Route path="/home" element={<Home/>}/>
-                <Route path="/contract/add" element={<AddContract/>}/>
-                <Route path="/contract/list" element={<Contract/>}/>
-                <Route path="/contract/detail/:id" element={<ContractDetail/>}/>
-                <Route path="/contract/edit/" element={<EditContract/>}/>
-                <Route path="/user/detail" element={<UserInfo/>}/>
-                <Route path="/salary" element={<Salary/>}/>
-                <Route path="/report" element={<Chart8Component/>}/>
-                <Route path="/*" element={<Login/>}/>
-                <Route path="/service/list" element={<ServiceList/>}/>
+                <Route path="/login" element={<Login />} />
+                <Route path="/logout" element={<Logout />} />
+                <Route path="/user/detail" element={<UserInfo />} />
+                <Route path="/customer/list" element={<CustomerList />} />
+                <Route path="/customer/add" element={<AddCustomer />} />
+                <Route path="/home" element={<Home />} />
+                <Route path="/contract/add" element={<AddContract />} />
+                <Route path="/contract/list" element={<Contract />} />
+                <Route path="/contract/detail/:id" element={<ContractDetail />} />
+                <Route path="/contract/edit/" element={<EditContract />} />
+                <Route path="/user/detail" element={<UserInfo />} />
+                <Route path="/salary" element={<Salary />} />
+                <Route path="/report" element={<Chart8Component />} />
+                <Route path="/*" element={<Login />} />
+                <Route path="/service/list" element={<ServiceList />} />
             </Routes>
         </BrowserRouter>
     </Provider>
