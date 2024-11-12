@@ -32,8 +32,8 @@ root.render(
             <ToastContainer/>
             <Routes>
                 <Route path="/staff/list" element={<Staff/>}/>
-                <Route path="/staff/list/add" element={<AddStaff/>}/>
-                <Route path="/staff/list/edit/:id" element={<EditStaff/>}/>
+                <Route path="/staff/add" element={<AddStaff/>}/>
+                <Route path="/staff/edit/:id" element={<EditStaff/>}/>
                 <Route path="/login" element={<Login/>}/>
                 <Route path="/logout" element={<Logout/>}/>
                 <Route path="/user/detail" element={<UserInfo/>}/>
