@@ -5,8 +5,8 @@ import axios from "axios";
 import {toast} from "react-toastify";
 import * as Yup from "yup";
 import {useNavigate} from "react-router-dom";
-import Footer from "./Footer";
-import {NavbarApp} from "./Navbar";
+import Footer from "../common/Footer";
+import {NavbarApp} from "../common/Navbar";
 
 function AddContract() {
     const navigate = useNavigate();
