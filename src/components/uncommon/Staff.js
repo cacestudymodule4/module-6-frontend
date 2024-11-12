@@ -6,8 +6,8 @@ import 'react-toastify/dist/ReactToastify.css';
 import moment from 'moment';
 import { useNavigate } from "react-router-dom";
 import { Button, Modal } from "react-bootstrap";
-import { NavbarApp } from "./Navbar";
-import Footer from "./Footer";
+import { NavbarApp } from "../common/Navbar";
+import Footer from "../common/Footer";
 
 function Staff() {
     const navigate = useNavigate();
@@ -81,7 +81,7 @@ function Staff() {
     return (
         <>
             <NavbarApp />
-            <div className="container my-5 rounded mx-auto p-4" style={contentStyle}>
+            <div className="container my-5 rounded mx-auto p-4">
                 <h3 className="text-center text-white py-3 bg-success rounded" style={{ fontSize: '2.25rem' }}>
                     Danh sách nhân viên văn phòng
                 </h3>
@@ -176,12 +176,6 @@ function Staff() {
             <Footer />
         </>
     );
-}
-
-
-const contentStyle = {
-    height: '100%',
-    margin: 0
 }
 
 export default Staff;
