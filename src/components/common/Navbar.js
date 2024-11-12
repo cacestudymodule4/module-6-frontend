@@ -3,6 +3,8 @@ import { Navbar, Nav, Button, NavDropdown, Form, Container, Offcanvas } from 're
 import "bootstrap/dist/css/bootstrap.min.css";
 
 export const NavbarApp = () => {
+    const userRole = localStorage.getItem("userRole");
+
     return (
         <>
             {['lg'].map((expand) => (
@@ -43,17 +45,9 @@ export const NavbarApp = () => {
                                         <NavDropdown.Item href="#action5">
                                             Something else here
                                         </NavDropdown.Item>
+                                        {userRole === "ADMIN" ? <NavDropdown.Item href="/building/edit">Sửa toà nhà</NavDropdown.Item> : ""}
                                     </NavDropdown>
                                 </Nav>
-                                <Form className="d-flex">
-                                    <Form.Control
-                                        type="search"
-                                        placeholder="Search"
-                                        className="me-2"
-                                        aria-label="Search"
-                                    />
-                                    <Button variant="outline-success">Search</Button>
-                                </Form>
                             </Offcanvas.Body>
                         </Navbar.Offcanvas>
                     </Container>
