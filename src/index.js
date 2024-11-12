@@ -18,9 +18,12 @@ import Salary from "./components/uncommon/Salary";
 import Chart8Component from "./components/uncommon/Report";
 import CustomerList from "./components/uncommon/CustomerList";
 import AddCustomer from "./components/uncommon/AddCustomer";
+import EditContract from "./components/common/EditContract";
 import ServiceList from "./components/common/ServiceList";
 import AddStaff from "./components/uncommon/AddStaff";
+import { EditBuilding } from './components/uncommon/EditBuilding';
 import './assets/css/styles.css';
+
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
@@ -29,6 +32,7 @@ root.render(
         <BrowserRouter>
             <ToastContainer />
             <Routes>
+                <Route path="/building/edit" element={<EditBuilding />} />
                 <Route path="/staff/list" element={<Staff />} />
                 <Route path="/staff/list/add" element={<AddStaff />} />
                 <Route path="/login" element={<Login />} />
@@ -40,6 +44,7 @@ root.render(
                 <Route path="/contract/add" element={<AddContract />} />
                 <Route path="/contract/list" element={<Contract />} />
                 <Route path="/contract/detail/:id" element={<ContractDetail />} />
+                <Route path="/contract/edit/" element={<EditContract />} />
                 <Route path="/user/detail" element={<UserInfo />} />
                 <Route path="/salary" element={<Salary />} />
                 <Route path="/report" element={<Chart8Component />} />
