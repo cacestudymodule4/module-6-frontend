@@ -1,14 +1,13 @@
-import React, { useState, useEffect } from 'react';
+import React, {useState, useEffect} from 'react';
 import axios from 'axios';
-import { Modal, Button } from 'react-bootstrap'; // Import Modal và Button từ react-bootstrap
-import { useNavigate } from "react-router-dom";
+import {Modal, Button} from 'react-bootstrap'; // Import Modal và Button từ react-bootstrap
+import {useNavigate} from "react-router-dom";
 import '../../assets/css/CustomerList.css';
-import { FaSearch } from "react-icons/fa";
-import { NavbarApp } from "../common/Navbar";
+import {FaSearch} from "react-icons/fa";
+import {NavbarApp} from "../common/Navbar";
 import Footer from "../common/Footer";
 import * as Yup from 'yup';
-import removeAccents from 'remove-accents';
-import { TbReload } from "react-icons/tb";
+import {TbReload} from "react-icons/tb";
 import {toast} from "react-toastify";
 import moment from "moment/moment";
 
@@ -38,24 +37,23 @@ function CustomerList() {
     const [errors, setErrors] = useState({});
     const [searchName, setSearchName] = useState('');
     const [searchIdentification, setSearchIdentification] = useState('');
-    const [currentPage, setCurrentPage] = useState(0);
     const [pageSize] = useState(5);
     const [totalPages, setTotalPages] = useState(0);
+    const [page, setPage] = useState(1);
 
-    const fetchCustomers = async (page = 0) => {
+    const fetchCustomers = async () => {
         try {
-            const response = await axios.get('http://localhost:8080/api/customers', {
+            const response = await axios.get('http://localhost:8080/api/customers/list', {
                 params: {
-                    page: page,
+                    page: page - 1,
                     size: pageSize,
                 },
-                headers: { Authorization: `Bearer ${localStorage.getItem('jwtToken')}` }
+                headers: {Authorization: `Bearer ${localStorage.getItem('jwtToken')}`}
             });
             console.log("Dữ liệu khách hàng:", response.data);
             setCustomers(response.data.content);
-            setFilteredCustomers(response.data.content); // Đảm bảo dữ liệu được lọc và hiển thị
+            setFilteredCustomers(response.data.content);
             setTotalPages(response.data.totalPages);
-            setCurrentPage(page);
         } catch (error) {
             console.error('Có lỗi khi lấy danh sách khách hàng:', error);
         }
@@ -63,7 +61,7 @@ function CustomerList() {
 
     useEffect(() => {
         fetchCustomers();  // Gọi hàm fetch khi component mount
-    }, []);
+    }, [page]);
 
     const navigate = useNavigate();
     const handleNavigateToAddCustomer = () => {
@@ -102,7 +100,7 @@ function CustomerList() {
     };
 
     const handleEditChange = (e) => {
-        const { name, value } = e.target;
+        const {name, value} = e.target;
         setEditedCustomer({
             ...editedCustomer,
             [name]: value
@@ -111,21 +109,22 @@ function CustomerList() {
 
     const handleSaveEdit = async () => {
         try {
-            await customerSchema.validate(editedCustomer, { abortEarly: false });
+            await customerSchema.validate(editedCustomer, {abortEarly: false});
 
             const response = await axios.put(
                 `http://localhost:8080/api/customers/update/${editedCustomer.id}`,
                 editedCustomer,
                 {
-                    headers: { Authorization: `Bearer ${localStorage.getItem('jwtToken')}` }
+                    headers: {Authorization: `Bearer ${localStorage.getItem('jwtToken')}`}
                 }
             );
+
             if (response.status === 200) {
                 setCustomers(customers.map(customer => customer.id === editedCustomer.id ? response.data : customer));
                 setFilteredCustomers(filteredCustomers.map(customer => customer.id === editedCustomer.id ? response.data : customer));
                 setEditingCustomer(null);
                 setErrors({});
-                toast.success("Chỉnh sửa thành công")
+                toast.success("Chỉnh sửa thành công");
             }
         } catch (error) {
             if (error.inner) {
@@ -134,13 +133,17 @@ function CustomerList() {
                     newErrors[err.path] = err.message;
                 });
                 setErrors(newErrors);
-            } else if (error.response && error.response.status === 400) {
-                setErrors({ api: error.response.data });
+                toast.error("Chỉnh sửa thất bại. Vui lòng kiểm tra lại thông tin.");
+            } else if (error.response && error.response.data) {
+                toast.error(`${error.response.data.message || error.response.data}`);
+                setErrors({api: error.response.data});
             } else {
                 console.error('Có lỗi khi cập nhật khách hàng:', error);
+                toast.error("Đã xảy ra lỗi không xác định khi chỉnh sửa.");
             }
         }
     };
+
 
     const handleCancelEdit = () => {
         setEditingCustomer(null);
@@ -157,29 +160,26 @@ function CustomerList() {
                     page: page,
                     size: pageSize,
                 },
-                headers: { Authorization: `Bearer ${localStorage.getItem('jwtToken')}` }
+                headers: {Authorization: `Bearer ${localStorage.getItem('jwtToken')}`}
             });
             setFilteredCustomers(response.data.content);
             setTotalPages(response.data.totalPages);
-            setCurrentPage(page);
+            setPage(page);
         } catch (error) {
             console.error('Có lỗi khi tìm kiếm khách hàng:', error);
         }
     };
 
     const handleReload = () => {
-        fetchCustomers(currentPage);
+        fetchCustomers(page);
     };
 
     const handlePageChange = (newPage) => {
-        if (newPage < 0 || newPage >= totalPages) return;
-        setCurrentPage(newPage);
-        fetchCustomers(newPage);
+        setPage(newPage);
     };
-
     return (
         <>
-            <NavbarApp />
+            <NavbarApp/>
             <div className="customer-list container mt-5">
                 <h2 className="text-center mb-5 bg-success text-white py-4">Danh sách khách hàng</h2>
                 <div className="d-flex justify-content-between align-items-center mb-3">
@@ -206,8 +206,8 @@ function CustomerList() {
                     </div>
                 </div>
                 <div className="table-responsive">
-                    <table className="table table-striped table-bordered">
-                    <thead className="thead-dark">
+                    <table className="table table-hover table-bordered border-success">
+                        <thead className="table-success">
                         <tr>
                             <th>STT</th>
                             <th>Tên Khách Hàng</th>
@@ -224,7 +224,7 @@ function CustomerList() {
                         {filteredCustomers.length > 0 ? (
                             filteredCustomers.map((customer, index) => (
                                 <tr key={customer.id}>
-                                    <td>{(currentPage * pageSize) + index + 1}</td>
+                                    <td>{(page - 1) * pageSize + index + 1}</td>
                                     {editingCustomer === customer.id ? (
                                         <>
                                             <td>
@@ -302,6 +302,8 @@ function CustomerList() {
                                             <td>
                                                 <button className="btn btn-success" onClick={handleSaveEdit}>Lưu
                                                 </button>
+                                            </td>
+                                            <td>
                                                 <button className="btn btn-danger" onClick={handleCancelEdit}>Hủy
                                                 </button>
                                             </td>
@@ -330,15 +332,21 @@ function CustomerList() {
                                 </tr>
                             ))
                         ) : (
-                            <tr><td colSpan="9" className="text-center">Không có khách hàng nào</td></tr>
+                            <tr>
+                                <td colSpan="9" className="text-center">Không có khách hàng nào</td>
+                            </tr>
                         )}
                         </tbody>
                     </table>
                 </div>
-                <div className="d-flex justify-content-between">
-                    <button className="btn btn-outline-success" onClick={() => handlePageChange(currentPage - 1)} disabled={currentPage === 0}>Trang trước</button>
-                    <span>Trang {currentPage + 1} / {totalPages}</span>
-                    <button className="btn btn-outline-success" onClick={() => handlePageChange(currentPage + 1)} disabled={currentPage === totalPages - 1}>Trang sau</button>
+                <div className="d-flex justify-content-between" style={{marginBottom: "20px"}}>
+                    <button className="btn btn-outline-success" onClick={() => handlePageChange(page - 1)}
+                            disabled={page === 1}>Trang trước
+                    </button>
+                    <span>Trang {page} / {totalPages}</span>
+                    <button className="btn btn-outline-success" onClick={() => handlePageChange(page + 1)}
+                            disabled={page === totalPages}>Trang sau
+                    </button>
                 </div>
             </div>
 
@@ -347,7 +355,8 @@ function CustomerList() {
                     <Modal.Title>Xóa khách hàng</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
-                    Bạn có chắc chắn muốn xóa khách hàng {customerToDelete?.name}?
+                    Bạn có chắc chắn muốn xóa khách hàng
+                    <span className="text-danger"> {customerToDelete?.name}</span>?
                 </Modal.Body>
                 <Modal.Footer>
                     <Button variant="secondary" onClick={closeModal}>Hủy</Button>
@@ -355,7 +364,7 @@ function CustomerList() {
                 </Modal.Footer>
             </Modal>
 
-            <Footer />
+            <Footer/>
         </>
     );
 }
