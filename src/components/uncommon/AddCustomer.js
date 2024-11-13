@@ -38,7 +38,7 @@ const AddCustomer = () => {
         onSubmit: async (values) => {
             try {
                 // Gửi yêu cầu POST tới API backend để thêm khách hàng
-                const response = await axios.post('http://localhost:8080/api/customers', values, {
+                const response = await axios.post('http://localhost:8080/api/customers/add', values, {
                     headers: { Authorization: `Bearer ${localStorage.getItem('jwtToken')}` },
                 });
 
