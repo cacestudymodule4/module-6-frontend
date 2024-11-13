@@ -38,22 +38,32 @@ function CustomerList() {
     const [errors, setErrors] = useState({});
     const [searchName, setSearchName] = useState('');
     const [searchIdentification, setSearchIdentification] = useState('');
+    const [currentPage, setCurrentPage] = useState(0);
+    const [pageSize] = useState(5);
+    const [totalPages, setTotalPages] = useState(0);
 
-    useEffect(() => {
-        fetchCustomers();
-    }, []);
-
-    const fetchCustomers = async () => {
+    const fetchCustomers = async (page = 0) => {
         try {
             const response = await axios.get('http://localhost:8080/api/customers', {
+                params: {
+                    page: page,
+                    size: pageSize,
+                },
                 headers: { Authorization: `Bearer ${localStorage.getItem('jwtToken')}` }
             });
-            setCustomers(response.data);
-            setFilteredCustomers(response.data);
+            console.log("Dữ liệu khách hàng:", response.data);
+            setCustomers(response.data.content);
+            setFilteredCustomers(response.data.content); // Đảm bảo dữ liệu được lọc và hiển thị
+            setTotalPages(response.data.totalPages);
+            setCurrentPage(page);
         } catch (error) {
             console.error('Có lỗi khi lấy danh sách khách hàng:', error);
         }
     };
+
+    useEffect(() => {
+        fetchCustomers();  // Gọi hàm fetch khi component mount
+    }, []);
 
     const navigate = useNavigate();
     const handleNavigateToAddCustomer = () => {
@@ -101,10 +111,8 @@ function CustomerList() {
 
     const handleSaveEdit = async () => {
         try {
-            // Validate edited customer using Yup schema
             await customerSchema.validate(editedCustomer, { abortEarly: false });
 
-            // Send PUT request to update customer
             const response = await axios.put(
                 `http://localhost:8080/api/customers/update/${editedCustomer.id}`,
                 editedCustomer,
@@ -140,21 +148,33 @@ function CustomerList() {
         setErrors({});
     };
 
-    const handleSearchByName = () => {
-        const filtered = customers.filter(customer =>
-            removeAccents(customer.name.toLowerCase()).includes(removeAccents(searchName.toLowerCase()))
-        );
-        setFilteredCustomers(filtered);
+    const handleCombinedSearch = async (page = 0) => {
+        try {
+            const response = await axios.get('http://localhost:8080/api/customers/search', {
+                params: {
+                    name: searchName,
+                    identification: searchIdentification,
+                    page: page,
+                    size: pageSize,
+                },
+                headers: { Authorization: `Bearer ${localStorage.getItem('jwtToken')}` }
+            });
+            setFilteredCustomers(response.data.content);
+            setTotalPages(response.data.totalPages);
+            setCurrentPage(page);
+        } catch (error) {
+            console.error('Có lỗi khi tìm kiếm khách hàng:', error);
+        }
     };
 
-    const handleSearchByIdentification = () => {
-        const filtered = customers.filter(customer =>
-            customer.identification.includes(searchIdentification)
-        );
-        setFilteredCustomers(filtered);
-    };
     const handleReload = () => {
-        fetchCustomers();
+        fetchCustomers(currentPage);
+    };
+
+    const handlePageChange = (newPage) => {
+        if (newPage < 0 || newPage >= totalPages) return;
+        setCurrentPage(newPage);
+        fetchCustomers(newPage);
     };
 
     return (
@@ -164,36 +184,30 @@ function CustomerList() {
                 <h2 className="text-center mb-5 bg-success text-white py-4">Danh sách khách hàng</h2>
                 <div className="d-flex justify-content-between align-items-center mb-3">
                     <button className="btn btn-success" onClick={handleNavigateToAddCustomer}>Thêm mới</button>
-                    <button className="btn btn-success" onClick={handleReload}><TbReload />
-                    </button>
+                    <button className="btn btn-success" onClick={handleReload}><TbReload/></button>
                     <div className="d-flex align-items-center">
-                        <div className="d-flex align-items-center mr-3">
-                            <input
-                                type="text"
-                                className="form-control mr-2"
-                                placeholder="Tìm kiếm theo tên"
-                                value={searchName}
-                                onChange={(e) => setSearchName(e.target.value)}
-                            />
-                            <button className="btn btn-success customer-name-search" onClick={handleSearchByName}>
-                                <FaSearch />
-                            </button>
-                        </div>
-                        <div className="d-flex align-items-center">
-                            <input
-                                type="text"
-                                className="form-control mr-2"
-                                placeholder="Tìm kiếm theo CMND"
-                                value={searchIdentification}
-                                onChange={(e) => setSearchIdentification(e.target.value)}
-                            />
-                            <button className="btn btn-success customer-id-search" onClick={handleSearchByIdentification}><FaSearch /></button>
-                        </div>
+                        <input
+                            type="text"
+                            className="form-control mr-2"
+                            placeholder="Tìm kiếm theo tên"
+                            value={searchName}
+                            onChange={(e) => setSearchName(e.target.value)}
+                        />
+                        <input
+                            type="text"
+                            className="form-control mr-2"
+                            placeholder="Tìm kiếm theo CMND"
+                            value={searchIdentification}
+                            onChange={(e) => setSearchIdentification(e.target.value)}
+                        />
+                        <button className="btn btn-success customer-id-search" onClick={() => handleCombinedSearch(0)}>
+                            <FaSearch/>
+                        </button>
                     </div>
                 </div>
                 <div className="table-responsive">
                     <table className="table table-striped table-bordered">
-                        <thead className="thead-dark">
+                    <thead className="thead-dark">
                         <tr>
                             <th>STT</th>
                             <th>Tên Khách Hàng</th>
@@ -207,131 +221,137 @@ function CustomerList() {
                         </tr>
                         </thead>
                         <tbody>
-                        {filteredCustomers.map((customer, index) => (
-                            <tr key={customer.id}>
-                                <td>{index + 1}</td>
-                                {editingCustomer === customer.id ? (
-                                    <>
-                                        <td>
-                                            <input
-                                                type="text"
-                                                name="name"
-                                                value={editedCustomer.name}
-                                                onChange={handleEditChange}
-                                                className="form-control"
-                                            />
-                                            {errors.name && <div className="text-danger">{errors.name}</div>}
-                                        </td>
-                                        <td>
-                                            <input
-                                                type="date"
-                                                name="birthday"
-                                                value={editedCustomer.birthday}
-                                                onChange={handleEditChange}
-                                                className="form-control"
-                                            />
-                                            {errors.birthday && <div className="text-danger">{errors.birthday}</div>}
-                                        </td>
-                                        <td>
-                                            <input
-                                                type="text"
-                                                name="identification"
-                                                value={editedCustomer.identification}
-                                                onChange={handleEditChange}
-                                                className="form-control"
-                                            />
-                                            {errors.identification && <div className="text-danger">{errors.identification}</div>}
-                                        </td>
-                                        <td>
-                                            <input
-                                                type="text"
-                                                name="address"
-                                                value={editedCustomer.address}
-                                                onChange={handleEditChange}
-                                                className="form-control"
-                                            />
-                                            {errors.address && <div className="text-danger">{errors.address}</div>}
-                                        </td>
-                                        <td>
-                                            <input
-                                                type="text"
-                                                name="phone"
-                                                value={editedCustomer.phone}
-                                                onChange={handleEditChange}
-                                                className="form-control"
-                                            />
-                                            {errors.phone && <div className="text-danger">{errors.phone}</div>}
-                                        </td>
-                                        <td>
-                                            <input
-                                                type="email"
-                                                name="email"
-                                                value={editedCustomer.email}
-                                                onChange={handleEditChange}
-                                                className="form-control"
-                                            />
-                                            {errors.email && <div className="text-danger">{errors.email}</div>}
-                                        </td>
-                                        <td>
-                                            <input
-                                                type="text"
-                                                name="company"
-                                                value={editedCustomer.company}
-                                                onChange={handleEditChange}
-                                                className="form-control"
-                                            />
-                                            {errors.company && <div className="text-danger">{errors.company}</div>}
-                                        </td>
-                                        <td>
-                                            <button onClick={handleSaveEdit} className="btn btn-primary">Lưu</button>
-                                        </td>
-                                        <td>
-                                            <button onClick={handleCancelEdit} className="btn btn-secondary">Hủy</button>
-                                        </td>
-                                    </>
-                                ) : (
-                                    <>
-                                        <td>{customer.name}</td>
-                                        <td>{moment(customer.birthday, 'YYYY-MM-DD').format('DD-MM-YYYY')}</td>
-                                        <td>{customer.identification}</td>
-                                        <td>{customer.address}</td>
-                                        <td>{customer.phone}</td>
-                                        <td>{customer.email}</td>
-                                        <td>{customer.company}</td>
-                                        <td>
-                                            <button className="btn btn-warning" onClick={() => handleEditClick(customer)}>
-                                                Sửa
-                                            </button>
-                                        </td>
-                                        <td>
-                                            <button className="btn btn-danger" onClick={() => handleOpenModal(customer)}>
-                                                Xóa
-                                            </button>
-                                        </td>
-                                    </>
-                                )}
-                            </tr>
-                        ))}
+                        {filteredCustomers.length > 0 ? (
+                            filteredCustomers.map((customer, index) => (
+                                <tr key={customer.id}>
+                                    <td>{(currentPage * pageSize) + index + 1}</td>
+                                    {editingCustomer === customer.id ? (
+                                        <>
+                                            <td>
+                                                <input
+                                                    type="text"
+                                                    name="name"
+                                                    value={editedCustomer.name}
+                                                    onChange={handleEditChange}
+                                                    className="form-control"
+                                                />
+                                                {errors.name && <div className="text-danger">{errors.name}</div>}
+                                            </td>
+                                            <td>
+                                                <input
+                                                    type="date"
+                                                    name="birthday"
+                                                    value={moment(editedCustomer.birthday).format("YYYY-MM-DD")}
+                                                    onChange={handleEditChange}
+                                                    className="form-control"
+                                                />
+                                                {errors.birthday &&
+                                                    <div className="text-danger">{errors.birthday}</div>}
+                                            </td>
+                                            <td>
+                                                <input
+                                                    type="text"
+                                                    name="identification"
+                                                    value={editedCustomer.identification}
+                                                    onChange={handleEditChange}
+                                                    className="form-control"
+                                                />
+                                                {errors.identification &&
+                                                    <div className="text-danger">{errors.identification}</div>}
+                                            </td>
+                                            <td>
+                                                <input
+                                                    type="text"
+                                                    name="address"
+                                                    value={editedCustomer.address}
+                                                    onChange={handleEditChange}
+                                                    className="form-control"
+                                                />
+                                                {errors.address && <div className="text-danger">{errors.address}</div>}
+                                            </td>
+                                            <td>
+                                                <input
+                                                    type="text"
+                                                    name="phone"
+                                                    value={editedCustomer.phone}
+                                                    onChange={handleEditChange}
+                                                    className="form-control"
+                                                />
+                                                {errors.phone && <div className="text-danger">{errors.phone}</div>}
+                                            </td>
+                                            <td>
+                                                <input
+                                                    type="text"
+                                                    name="email"
+                                                    value={editedCustomer.email}
+                                                    onChange={handleEditChange}
+                                                    className="form-control"
+                                                />
+                                                {errors.email && <div className="text-danger">{errors.email}</div>}
+                                            </td>
+                                            <td>
+                                                <input
+                                                    type="text"
+                                                    name="company"
+                                                    value={editedCustomer.company}
+                                                    onChange={handleEditChange}
+                                                    className="form-control"
+                                                />
+                                                {errors.company && <div className="text-danger">{errors.company}</div>}
+                                            </td>
+                                            <td>
+                                                <button className="btn btn-success" onClick={handleSaveEdit}>Lưu
+                                                </button>
+                                                <button className="btn btn-danger" onClick={handleCancelEdit}>Hủy
+                                                </button>
+                                            </td>
+                                        </>
+                                    ) : (
+                                        <>
+                                            <td>{customer.name}</td>
+                                            <td>{moment(customer.birthday).format('DD-MM-YYYY')}</td>
+                                            <td>{customer.identification}</td>
+                                            <td>{customer.address}</td>
+                                            <td>{customer.phone}</td>
+                                            <td>{customer.email}</td>
+                                            <td>{customer.company}</td>
+                                            <td>
+                                                <button className="btn btn-warning"
+                                                        onClick={() => handleEditClick(customer)}>Sửa
+                                                </button>
+                                            </td>
+                                            <td>
+                                                <button className="btn btn-danger"
+                                                        onClick={() => handleOpenModal(customer)}>Xóa
+                                                </button>
+                                            </td>
+                                        </>
+                                    )}
+                                </tr>
+                            ))
+                        ) : (
+                            <tr><td colSpan="9" className="text-center">Không có khách hàng nào</td></tr>
+                        )}
                         </tbody>
                     </table>
                 </div>
+                <div className="d-flex justify-content-between">
+                    <button className="btn btn-outline-success" onClick={() => handlePageChange(currentPage - 1)} disabled={currentPage === 0}>Trang trước</button>
+                    <span>Trang {currentPage + 1} / {totalPages}</span>
+                    <button className="btn btn-outline-success" onClick={() => handlePageChange(currentPage + 1)} disabled={currentPage === totalPages - 1}>Trang sau</button>
+                </div>
             </div>
 
-            {/* Modal for deletion */}
             <Modal show={isModalOpen} onHide={closeModal}>
                 <Modal.Header closeButton>
                     <Modal.Title>Xóa khách hàng</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
-                    Bạn có chắc chắn muốn xóa khách hàng này?
+                    Bạn có chắc chắn muốn xóa khách hàng {customerToDelete?.name}?
                 </Modal.Body>
                 <Modal.Footer>
-                    <Button variant="secondary" onClick={closeModal}>
-                        Hủy
-                    </Button>
-                    <Button variant="danger" onClick={handleDeleteCustomer}>
-                        Xóa
-                    </Button>
+                    <Button variant="secondary" onClick={closeModal}>Hủy</Button>
+                    <Button variant="danger" onClick={handleDeleteCustomer}>Xóa</Button>
                 </Modal.Footer>
             </Modal>
 
