@@ -51,7 +51,7 @@ function* changePasswordSaga(action) {
     }
 }
 
-function* userInfoSaga(action) {
+function* userInfoSaga() {
     try {
         const response = yield call(axios.get, BaseURL + '/api/user/detail', {
             headers: {Authorization: `Bearer ${localStorage.getItem('jwtToken')}`}
