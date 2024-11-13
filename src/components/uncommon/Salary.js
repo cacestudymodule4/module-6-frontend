@@ -119,7 +119,7 @@ const Salary = () => {
                                                     onClick={() => handleSort("name")}>Họ và tên
                                                 </th>
                                                 <th scope="col" className="text-uppercase salary-th"
-                                                    onClick={() => handleSort("email")}>Email
+                                                    onClick={() => handleSort("position")}>Ví trí
                                                 </th>
                                                 <th scope="col" className="text-uppercase salary-th"
                                                     onClick={() => handleSort("salary")}>Lương
@@ -133,7 +133,7 @@ const Salary = () => {
                                                         <tr className="salary-tr" key={index}>
                                                             <td className="salary-td">{index + 1 + (page - 1)}</td>
                                                             <td className="salary-td">{value.name}</td>
-                                                            <td className="salary-td">{value.email}</td>
+                                                            <td className="salary-td">{value.position}</td>
                                                             <td className="text-end">{value.salary} VND</td>
                                                         </tr>
                                                     ))}
