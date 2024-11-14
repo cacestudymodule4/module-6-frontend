@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from "react";
-import {Form, Button, Row, Col} from 'react-bootstrap';
+import {Form, Button, Row, Col, Modal, Table} from 'react-bootstrap';
 import {Formik, Field, Form as FormikForm, ErrorMessage} from "formik";
 import axios from "axios";
 import {toast} from "react-toastify";
@@ -7,19 +7,26 @@ import * as Yup from "yup";
 import {useNavigate} from "react-router-dom";
 import Footer from "../common/Footer";
 import {NavbarApp} from "../common/Navbar";
+import '../../assets/css/Contract.css';
+import {FaRedo, FaSearch} from "react-icons/fa";
 
 function AddContract() {
     const navigate = useNavigate();
     const [ground, setGround] = useState([]);
     const [staff, setStaff] = useState([]);
-    const [nameStaff, setNameStaff] = useState('');
     const [customer, setCustomer] = useState([]);
-    const [customerName, setCustomerName] = useState('');
+    const [customerSelected, setCustomerSelected] = useState(null);
+    const [staffSelected, setStaffSelected] = useState(null);
+    const [groundSelected, setGroundSelected] = useState(null);
     const [priceGround, setPriceGround] = useState('');
     const [startDay, setStartDay] = useState('');
     const [endDay, setEndDay] = useState('');
     const [term, setTerm] = useState('');
-
+    const [showCusModal, setShowCusModal] = useState(false);
+    const [showStaffModal, setShowStaffModal] = useState(false);
+    const [showGroundModal, setShowGroundModal] = useState(false);
+    const [listContract, setListContract] = useState([]);
+    const [totalPrice, setTotalPrice] = useState(null);
     useEffect(() => {
         async function getStaff() {
             try {
@@ -31,6 +38,20 @@ function AddContract() {
                 console.log(error);
             }
         }
+
+        async function getContract() {
+            try {
+                const response = await axios.get("http://localhost:8080/api/contract/list"
+                    , {
+                        headers: {Authorization: `Bearer ${localStorage.getItem('jwtToken')}`}
+                    });
+                setListContract(response.data);
+                console.log(response.data);
+            } catch (err) {
+                console.log(err);
+            }
+        }
+
 
         async function getCustomer() {
             try {
@@ -45,31 +66,35 @@ function AddContract() {
 
         async function getGround() {
             try {
-                const response = await axios.get("http://localhost:8080/api/ground/list", {
+                const response = await axios.get("http://localhost:8080/api/ground/list-rent", {
                     headers: {Authorization: `Bearer ${localStorage.getItem('jwtToken')}`}
                 })
                 setGround(response.data);
+                console.log("okk")
             } catch (error) {
                 console.log(error);
             }
         }
 
+        getContract();
         getCustomer();
         getGround();
         getStaff();
     }, []);
-    const handleAddContract = async (value,{resetForm}) => {
+    const handleAddContract = async (value, {resetForm}) => {
+        console.log("adding contract");
         try {
             const data = {
-                cmd: value.cmd,
-                staffId: value.staffId,
+                ground: groundSelected,
+                staff: staffSelected,
+                customer: customerSelected,
+                totalPrice: totalPrice,
                 term: value.term,
-                ground: value.ground,
-                startDay: value.startDay,
-                endDay: endDay,
+                startDate: startDay,
+                endDate: endDay,
                 price: priceGround,
                 deposit: value.deposit,
-                content: value.content,
+                description: value.content,
             }
             const res = await axios.post(`http://localhost:8080/api/contract/add`, data, {
                     headers: {Authorization: `Bearer ${localStorage.getItem('jwtToken')}`},
@@ -77,12 +102,7 @@ function AddContract() {
             )
             if (res.status === 200) {
                 toast.success("Thêm mới thành công");
-                resetForm();
-                setEndDay("");
-                setCustomerName("");
-                setPriceGround("");
-                setNameStaff("");
-
+                navigate('/contract/list')
             }
         } catch (error) {
             toast.error("Thêm thất bại");
@@ -95,9 +115,12 @@ function AddContract() {
         start.setMonth(start.getMonth() + parseInt(months));
         return start.toISOString().split('T')[0];  // Định dạng lại thành "YYYY-MM-DD"
     };
+
     const handleTermChange = (event) => {
         const termValue = event.target.value;
         setTerm(termValue);
+        const price = priceGround * termValue;
+        setTotalPrice(price)
         const calculatedEndDate = calculateEndDate(startDay, termValue);
         setEndDay(calculatedEndDate);
     };
@@ -107,14 +130,14 @@ function AddContract() {
         const calculatedEndDate = calculateEndDate(startDate, term);
         setEndDay(calculatedEndDate);
     };
+
     const initialValues = {
-        cmd: '',
-        staffId: '',
-        term: '',
-        nameStaff: '',
-        ground: '',
-        startDay: '',
-        price: '',
+        totalPrice: totalPrice * 0.1,
+        term: term,
+        customer: customerSelected ? customerSelected.name : "",
+        staff: staffSelected ? staffSelected.name : "",
+        ground: groundSelected ? groundSelected.name : "",
+        startDay: startDay,
         endDay: '',
         deposit: '',
         content: ''
@@ -124,15 +147,16 @@ function AddContract() {
             .min(5, "Tối thiểu 5 ký tự")
             .max(300, "Tối đa 300 ký tự")
             .required('Không được trống'),
-        cmd: Yup.string()
-            .required('Không được trống.'),
-        staffId: Yup.string()
-            .required('Không được trống.'),
-        ground: Yup.string()
-            .required('Không được trống'),
         deposit: Yup.number()
-            .min(50000000, 'Tối thiểu 5 triệu đồng.')
+            .min(totalPrice, "Tiền cọc phải lớn hơn hoặc bằng 10% tổng tiền")
+            .max(totalPrice, "Tối đa số bằng tổng số tiền")
             .required('Không được trống'),
+        staff: Yup.string()
+            .required("Không được trống"),
+        ground: Yup.string()
+            .required("Không được trống"),
+        customer: Yup.string()
+            .required("không được trống"),
         term: Yup.number()
             .required('Không được trống')
             .min(3, 'Kỳ hạng tối thiểu 3 tháng')  // Tối thiểu 3
@@ -141,34 +165,45 @@ function AddContract() {
             .required('Ngày bắt đầu là bắt buộc')
             .min(new Date(), 'Ngày bắt đầu không được nhỏ hơn ngày hiện tại'),
     });
-    const handleIdentificationChange = (event) => {
-        const selectedId = event.target.value;
-        const selectedCustomer = customer.find(cus => cus.identification === selectedId);
-        if (selectedCustomer) {
-            setCustomerName(selectedCustomer.name);
-        } else {
-            setCustomerName('');
+    // =================Tìm trong modal===============//
+    const handleSearchCus = async (value) => {
+        try {
+            const res = await axios.get(`http://localhost:8080/api/customer/findCus?searchCus=${value.searchCus}`, {
+                    headers: {Authorization: `Bearer ${localStorage.getItem('jwtToken')}`},
+                },
+            )
+            setCustomer(res.data);
+        } catch
+            (err) {
+            console.log(err);
         }
-    };
-    const handleStaffChange = (event) => {
-        const selectedIdStaff = event.target.value;
-        const selectedStaff = staff.find(st => st.id === Number(selectedIdStaff));
-        if (selectedStaff) {
-            setNameStaff(selectedStaff.name);
-        } else {
-            setCustomerName('');
+    }
+    const handleSearchStaff = async (value) => {
+        try {
+            const res = await axios.get(`http://localhost:8080/api/staff/findStaff?searchStaff=${value.searchStaff}`, {
+                    headers: {Authorization: `Bearer ${localStorage.getItem('jwtToken')}`},
+                },
+            )
+            setStaff(res.data);
+        } catch
+            (err) {
+            console.log(err);
         }
-    };
-    const handlePriceChange = (event) => {
-        const selectedCode = event.target.value;
-        const selectedGround = ground.find(grd => grd.id === Number(selectedCode));
-        if (selectedGround) {
-            setPriceGround(selectedGround.price);
-        } else {
-            setPriceGround('');
-            toast.error("Không tìm thấy mặt bằng với mã đã chọn!");
+    }
+    const handleSearchGround = async (value) => {
+        try {
+            const res = await axios.get(`http://localhost:8080/api/ground/findGround?searchGround=${value.searchGround}`, {
+                    headers: {Authorization: `Bearer ${localStorage.getItem('jwtToken')}`},
+                },
+            )
+            setGround(res.data);
+        } catch
+            (err) {
+            console.log(err);
         }
-    };
+    }
+
+
     return (
         <>
             <NavbarApp/>
@@ -176,70 +211,173 @@ function AddContract() {
                 <h2 className="text-center mb-5 bg-success align-content-center"
                     style={{color: "white", height: "70px"}}>
                     Thêm mới hợp đồng</h2>
+
                 <Formik
                     initialValues={initialValues}
                     onSubmit={handleAddContract}
+                    enableReinitialize
                     validationSchema={validationSchema}
                     validateOnBlur={true}
                 >
                     {({values, setFieldValue}) => (
                         <FormikForm>
                             <Row>
-                                <Col md={4}>
+                                <Col md={3}>
                                     <Form.Group className="mb-3">
-                                        <Form.Label>CMND khách hàng</Form.Label>
-                                        <Field as="select"
-                                               name="cmd"
-                                               className="form-control custom-date-input"
-                                               value={values.cmd}  // Đồng bộ hóa giá trị với Formik
-                                               onChange={(e) => {
-                                                   handleIdentificationChange(e);
-                                                   setFieldValue('cmd', e.target.value); // Cập nhật giá trị trong Formik state
-                                               }}
-                                        >
-                                            <option value="">Chọn CMND</option>
-                                            {customer.map((cus) => (
-                                                <option key={cus.id} value={cus.identification}>
-                                                    {cus.identification}
-                                                </option>
-                                            ))}
-                                        </Field>
+                                        <Form.Label>
+                                            <Button variant={"success"} style={{marginRight: "30px"}} onClick={() => setShowCusModal(true)}>
+                                                Chon khách hàng
+                                            </Button> </Form.Label>
+                                        <Field
+                                            as={Form.Control}
+                                            type="text"
+                                            name={"customer"}
+                                            className="form-control custom-date-input readonly-input "
+                                            value={customerSelected ? customerSelected.name : ""}
+                                            readOnly
+                                        />
                                         <ErrorMessage
-                                            name="cmd"
+                                            name="customer"
                                             component="div"
                                             className="error-message text-danger"
                                         />
                                     </Form.Group>
                                 </Col>
-                                <Col md={4}>
+
+                                <Col md={3}>
                                     <Form.Group className="mb-3">
-                                        <Form.Label>Tên khách hàng</Form.Label>
+                                        <Form.Label className={"add-label"}>
+                                            Số điện thoại
+                                        </Form.Label>
                                         <Field
                                             as={Form.Control}
                                             type="text"
                                             className="form-control custom-date-input readonly-input "
-                                            name={"nameCus"}
-                                            value={customerName}
+                                            value={customerSelected ? customerSelected.phone : ""}
                                             readOnly
+                                        />
+
+                                    </Form.Group>
+                                </Col>
+                                <Col md={3}>
+                                    <Form.Group className="mb-3">
+                                        <Form.Label className={"add-label"}>
+                                            Email
+                                        </Form.Label>
+                                        <Field
+                                            as={Form.Control}
+                                            type="text"
+                                            className="form-control custom-date-input readonly-input "
+                                            name={"emailCus"}
+                                            value={customerSelected ? customerSelected.email : ""}
+                                            readOnly
+                                        />
+
+                                    </Form.Group>
+                                </Col>
+                                <Col md={3}>
+                                    <Form.Group className="mb-3">
+                                        <Form.Label className={"add-label"}>
+                                            Địa chỉ
+                                        </Form.Label>
+                                        <Field
+                                            as={Form.Control}
+                                            type="text"
+                                            className="form-control custom-date-input readonly-input "
+                                            name={"adrCus"}
+                                            value={customerSelected ? customerSelected.address : ""}
+                                            readOnly
+                                        />
+
+                                    </Form.Group>
+                                </Col>
+                            </Row>
+
+                            {/*  --------------chọn nhân viên----------------------*/}
+                            <Row>
+                                <Col md={3}>
+                                    <Form.Group className="mb-3">
+                                        <Form.Label>
+                                            <Button variant={"success"} style={{marginRight: "30px"}}
+                                                    onClick={() => setShowStaffModal(true)}>
+                                                Chon nhân viên
+                                            </Button> </Form.Label>
+                                        <Field
+                                            type="text"
+                                            name={"staff"}
+                                            className="form-control custom-date-input readonly-input "
+                                            value={staffSelected ? staffSelected.name : ""}
+                                            readOnly
+                                        />
+                                        <ErrorMessage
+                                            name="staff"
+                                            component="div"
+                                            className="error-message text-danger"
                                         />
                                     </Form.Group>
                                 </Col>
-                                <Col md={4}>
+
+                                <Col md={3}>
                                     <Form.Group className="mb-3">
-                                        <Form.Label>Mặt bằng</Form.Label>
-                                        <Field as="select" name="ground" className="form-control custom-date-input"
-                                               value={values.ground}
-                                               onChange={(e) => {
-                                                   handlePriceChange(e);
-                                                   setFieldValue('ground', e.target.value);
-                                               }}>
-                                            <option value=""> Chọn mã mặt bằng</option>
-                                            {ground.map((ground) => (
-                                                <option key={ground.id} value={ground.id}>
-                                                    MB{ground.id}
-                                                </option>
-                                            ))}
-                                        </Field>
+                                        <Form.Label className={"add-label"}>
+                                            Số điện thoại
+                                        </Form.Label>
+                                        <Field
+                                            type="text"
+                                            className="form-control custom-date-input readonly-input "
+                                            value={staffSelected ? staffSelected.phone : ""}
+                                            readOnly
+                                        />
+
+                                    </Form.Group>
+                                </Col>
+                                <Col md={3}>
+                                    <Form.Group className="mb-3">
+                                        <Form.Label className={"add-label"}>
+                                            Email
+                                        </Form.Label>
+                                        <Field
+                                            as={Form.Control}
+                                            type="text"
+                                            className="form-control custom-date-input readonly-input "
+                                            value={staffSelected ? staffSelected.email : ""}
+                                            readOnly
+                                        />
+
+                                    </Form.Group>
+                                </Col>
+                                <Col md={3}>
+                                    <Form.Group className="mb-3">
+                                        <Form.Label className={"add-label"}>
+                                            Địa chỉ
+                                        </Form.Label>
+                                        <Field
+                                            as={Form.Control}
+                                            type="text"
+                                            className="form-control custom-date-input readonly-input "
+                                            value={staffSelected ? staffSelected.address : ""}
+                                            readOnly
+                                        />
+
+                                    </Form.Group>
+                                </Col>
+                            </Row>
+                            {/*========================== chọn mat bằng ============================*/}
+                            <Row>
+                                <Col md={3}>
+                                    <Form.Group className="mb-3">
+                                        <Form.Label>
+                                            <Button variant={"success"} style={{marginRight: "30px"}}
+                                                    onClick={() => setShowGroundModal(true)}>
+                                                Chon mặt bằng
+                                            </Button> </Form.Label>
+                                        <Field
+                                            type="text"
+                                            name={"ground"}
+                                            className="form-control custom-date-input readonly-input "
+                                            value={groundSelected ? groundSelected.name : ""}
+                                            readOnly
+                                        />
                                         <ErrorMessage
                                             name="ground"
                                             component="div"
@@ -247,19 +385,63 @@ function AddContract() {
                                         />
                                     </Form.Group>
                                 </Col>
+
+                                <Col md={3}>
+                                    <Form.Group className="mb-3">
+                                        <Form.Label className={"add-label"}>
+                                            Diện tích </Form.Label>
+                                        <Field
+                                            as={Form.Control}
+                                            type="text"
+                                            className="form-control custom-date-input readonly-input "
+                                            value={groundSelected ? groundSelected.area + " m²" : ""}
+                                            readOnly
+                                        />
+
+                                    </Form.Group>
+                                </Col>
+                                <Col md={3}>
+                                    <Form.Group className="mb-3">
+                                        <Form.Label className={"add-label"}>
+                                            Vị trí
+                                        </Form.Label>
+                                        <Field
+                                            as={Form.Control}
+                                            type="text"
+                                            className="form-control custom-date-input readonly-input "
+                                            value={groundSelected ? groundSelected.floor.name : ""}
+                                            readOnly
+                                        />
+
+                                    </Form.Group>
+                                </Col>
+                                <Col md={3}>
+                                    <Form.Group className="mb-3">
+                                        <Form.Label className={"add-label"}>
+                                            Giá thuê theo tháng </Form.Label>
+                                        <Field
+                                            as={Form.Control}
+                                            type="text"
+                                            className="form-control custom-date-input readonly-input "
+                                            value={groundSelected ? groundSelected.price + " VNĐ" : ""}
+
+                                            readOnly
+                                        />
+
+                                    </Form.Group>
+                                </Col>
                             </Row>
                             <Row>
-                                <Col md={4}>
+                                <Col md={3}>
                                     <Form.Group className="mb-3">
-                                        <Form.Label>Kỳ hạng (tháng)</Form.Label>
+                                        <Form.Label>Nhập kỳ hạng (tháng)</Form.Label>
                                         <Field
                                             as={Form.Control}
                                             type="number"
                                             name="term"
                                             className="custom-date-input"
-                                            value={values.term}
+                                            value={term}
                                             onChange={(e) => {
-                                                setFieldValue('term', e.target.value);
                                                 handleTermChange(e);
                                             }}
                                         />
@@ -270,17 +452,16 @@ function AddContract() {
                                         />
                                     </Form.Group>
                                 </Col>
-                                <Col md={4}>
+                                <Col md={3}>
                                     <Form.Group className="mb-3">
-                                        <Form.Label>Ngày bắt đầu thuê</Form.Label>
+                                        <Form.Label>Chọn ngày bắt đầu thuê</Form.Label>
                                         <Field
                                             as={Form.Control}
                                             type="date"
                                             name="startDay"
-                                            value={values.startDay}
+                                            value={startDay}
                                             className={"custom-date-input"}
                                             onChange={(e) => {
-                                                setFieldValue('startDay', e.target.value);
                                                 handleStartDayChange(e);
                                             }}
                                         />
@@ -291,7 +472,7 @@ function AddContract() {
                                         />
                                     </Form.Group>
                                 </Col>
-                                <Col md={4}>
+                                <Col md={3}>
                                     <Form.Group className="mb-3">
                                         <Form.Label>Ngày kết thúc</Form.Label>
                                         <Field
@@ -309,28 +490,23 @@ function AddContract() {
                                         />
                                     </Form.Group>
                                 </Col>
+                                <Col md={3}>
+                                    <Form.Group className="mb-3">
+                                        <Form.Label>Tổng tiền</Form.Label>
+                                        <Field
+                                            as={Form.Control}
+                                            type="text"
+                                            className={"custom-date-input"}
+                                            value={totalPrice + " VNĐ"}
+                                            readOnly
+                                        />
+                                    </Form.Group>
+                                </Col>
                             </Row>
                             <Row>
                                 <Col md={3}>
                                     <Form.Group className="mb-3">
-                                        <Form.Label>Giá tiền mỗi tháng (VNĐ)</Form.Label>
-                                        <Field
-                                            as={Form.Control}
-                                            type="number"
-                                            name="price"
-                                            className={"custom-date-input readonly-input"}
-                                            value={priceGround}
-                                            readOnly/>
-                                        <ErrorMessage
-                                            name="price"
-                                            component="div"
-                                            className="error-message text-danger"
-                                        />
-                                    </Form.Group>
-                                </Col>
-                                <Col md={3}>
-                                    <Form.Group className="mb-3">
-                                        <Form.Label>Tiền cọc(VNĐ)</Form.Label>
+                                        <Form.Label>Tiền cọc (VNĐ)</Form.Label>
                                         <Field
                                             as={Form.Control}
                                             type="number"
@@ -339,48 +515,6 @@ function AddContract() {
                                         />
                                         <ErrorMessage
                                             name="deposit"
-                                            component="div"
-                                            className="error-message text-danger"
-                                        />
-                                    </Form.Group>
-                                </Col>
-                                <Col md={3}>
-                                    <Form.Group className="mb-3">
-                                        <Form.Label>Mã nhân viên</Form.Label>
-                                        <Field as="select" name="staffId" className="form-control custom-date-input"
-                                               value={values.staffId}
-                                               onChange={(e) => {
-                                                   handleStaffChange(e);
-                                                   setFieldValue('staffId', e.target.value);
-                                               }}
-                                        >
-                                            <option value="">Chọn mã nhân viên</option>
-                                            {staff.map((staff) => (
-                                                <option key={staff.id} value={staff.id}>
-                                                    NV{staff.id}
-                                                </option>
-                                            ))}
-                                        </Field>
-                                        <ErrorMessage
-                                            name="staffId"
-                                            component="div"
-                                            className="error-message text-danger"
-                                        />
-                                    </Form.Group>
-                                </Col>
-                                <Col md={3}>
-                                    <Form.Group className="mb-3">
-                                        <Form.Label>Tên Nhân viên</Form.Label>
-                                        <Field
-                                            as={Form.Control}
-                                            type="text"
-                                            placeholder=""
-                                            name="nameStaff"
-                                            className={"custom-date-input readonly-input "}
-                                            value={nameStaff}
-                                        />
-                                        <ErrorMessage
-                                            name="nameStaff"
                                             component="div"
                                             className="error-message text-danger"
                                         />
@@ -417,6 +551,222 @@ function AddContract() {
                     )}
                 </Formik>
             </div>
+            {/*===========modal nhân viên====================*/}
+            <Modal show={showStaffModal} className={"modal-contract-custom"}>
+                <Modal.Header closeButton onClick={() => setShowStaffModal(false)}>
+                    <Modal.Title>Xác Nhận</Modal.Title>
+
+                </Modal.Header>
+                <Modal.Body>
+                    <div className={"search-fixed"}>
+                        <Formik initialValues={{searchStaff: ''}}
+                                onSubmit={handleSearchStaff}>
+                            {() => (
+                                <FormikForm className="mb-3 custom-search ">
+                                    <Form.Group className="mb-3" controlId="formSearch">
+                                        <Form.Label className="small-label">Tìm theo tên nhân viên</Form.Label>
+                                        <Field
+                                            as={Form.Control}
+                                            type="text"
+                                            placeholder="Nhập tên nhân viên"
+                                            name="searchStaff"
+                                        />
+                                    </Form.Group>
+                                    <Button style={{marginRight: "68%"}} variant="secondary" type="submit"
+                                            className={"search-contract-btn "}>
+                                        <FaSearch></FaSearch>
+                                    </Button>
+                                </FormikForm>
+                            )}
+                        </Formik>
+                    </div>
+                    <div className="modal-content-scroll">
+                        {staff.length === 0 ? (<h1 className={"text-center mt-5"}>Danh sách trống </h1>) :
+                            <Table striped bordered hover>
+                                <thead className={"custom-table text-white text-center"}>
+                                <tr>
+                                    <th>Tên nhân viên</th>
+                                    <th>Số điện thoại</th>
+                                    <th>Email</th>
+                                    <th colSpan="3" className="text-center">Hành động</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                {staff.map((staff, index) => (
+                                    <tr key={staff.id}>
+                                        <td className="text-center">{staff.name}</td>
+                                        <td className="text-center">{staff.phone}</td>
+                                        <td className="text-center">{staff.email}</td>
+                                        <td className="text-center">
+                                            <Button variant="info" type="button"
+                                                    onClick={() => {
+                                                        setStaffSelected(staff);
+                                                        setShowStaffModal(false);
+                                                    }}
+                                            >
+                                                Chọn
+                                            </Button>
+                                        </td>
+                                    </tr>
+                                ))}
+                                </tbody>
+                            </Table>}
+
+                    </div>
+
+                </Modal.Body>
+                <Modal.Footer>
+                    <Button variant="secondary" onClick={() => setShowStaffModal(false)}>
+                        Hủy
+                    </Button>
+                </Modal.Footer>
+            </Modal>
+            {/*============modal khách hàng=================*/}
+            <Modal show={showCusModal} className={"modal-contract-custom"}>
+                <Modal.Header closeButton onClick={() => setShowCusModal(false)}>
+                    <Modal.Title>Xác Nhận</Modal.Title>
+
+                </Modal.Header>
+                <Modal.Body>
+                    <div className={"search-fixed"}>
+                        <Formik initialValues={{searchCus: ''}}
+                                onSubmit={(value) => handleSearchCus(value)}>
+                            {() => (
+                                <FormikForm className="mb-3 custom-search ">
+                                    <Form.Group className="mb-3" controlId="formSearch">
+                                        <Form.Label className="small-label">Tìm theo tên khách hàng</Form.Label>
+                                        <Field
+                                            as={Form.Control}
+                                            type="text"
+                                            placeholder="Nhập tên khách hàng"
+                                            name="searchCus"
+                                        />
+                                    </Form.Group>
+                                    <Button style={{marginRight: "68%"}} variant="secondary" type="submit"
+                                            className={"search-contract-btn "}>
+                                        <FaSearch></FaSearch>
+                                    </Button>
+                                </FormikForm>
+                            )}
+                        </Formik>
+                    </div>
+                    <div className="modal-content-scroll">
+                        {customer.length === 0 ? (<h1 className={"text-center mt-5"}>Danh sách trống </h1>) :
+                            <Table striped bordered hover>
+                                <thead className={"custom-table text-white text-center"}>
+                                <tr>
+                                    <th>Tên khách hàng</th>
+                                    <th>Số điện thoại</th>
+                                    <th>Email</th>
+                                    <th colSpan="3" className="text-center">Hành động</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                {customer.map((customer, index) => (
+                                    <tr key={customer.id}>
+                                        <td className="text-center">{customer.name}</td>
+                                        <td className="text-center">{customer.phone}</td>
+                                        <td className="text-center">{customer.email}</td>
+                                        <td className="text-center">
+                                            <Button variant="info" type="button"
+                                                    onClick={() => {
+                                                        setCustomerSelected(customer);
+                                                        setShowCusModal(false);
+                                                        console.log(customerSelected)
+                                                    }}
+                                            >
+                                                Chọn
+                                            </Button>
+                                        </td>
+                                    </tr>
+                                ))}
+                                </tbody>
+                            </Table>}
+
+                    </div>
+
+                </Modal.Body>
+                <Modal.Footer>
+                    <Button variant="secondary" onClick={() => setShowCusModal(false)}>
+                        Hủy
+                    </Button>
+                </Modal.Footer>
+            </Modal>
+            {/*===========modal mặt bằng====================*/}
+            <Modal show={showGroundModal} className={"modal-contract-custom"}>
+                <Modal.Header closeButton onClick={() => setShowGroundModal(false)}>
+                    <Modal.Title>Xác Nhận</Modal.Title>
+
+                </Modal.Header>
+                <Modal.Body>
+                    <div className={"search-fixed"}>
+                        <Formik initialValues={{searchGround: ''}}
+                                onSubmit={handleSearchGround}>
+                            {() => (
+                                <FormikForm className="mb-3 custom-search ">
+                                    <Form.Group className="mb-3" controlId="formSearch">
+                                        <Form.Label className="small-label">Tìm theo tên mặt bằng</Form.Label>
+                                        <Field
+                                            as={Form.Control}
+                                            type="text"
+                                            placeholder="Nhập tên mặt bằng"
+                                            name="searchGround"
+                                        />
+                                    </Form.Group>
+                                    <Button style={{marginRight: "68%"}} variant="secondary" type="submit"
+                                            className={"search-contract-btn "}>
+                                        <FaSearch></FaSearch>
+                                    </Button>
+                                </FormikForm>
+                            )}
+                        </Formik>
+                    </div>
+                    <div className="modal-content-scroll">
+                        {ground.length === 0 ? (<h1 className={"text-center mt-5"}>Danh sách trống </h1>) :
+                            <Table striped bordered hover>
+                                <thead className={"custom-table text-white text-center"}>
+                                <tr>
+                                    <th>Tên mặt bằng</th>
+                                    <th>Diện tích</th>
+                                    <th>Vị trí</th>
+                                    <th>Giá thuê (tháng)</th>
+                                    <th colSpan="3" className="text-center">Hành động</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                {ground.map((ground, index) => (
+                                    <tr key={ground.id}>
+                                        <td className="text-center">{ground.name}</td>
+                                        <td className="text-center">{ground.area} m²</td>
+                                        <td className="text-center">{ground.floor.name}</td>
+                                        <td className="text-center">{ground.price} VNĐ</td>
+                                        <td className="text-center">
+                                            <Button variant="info" type="button"
+                                                    onClick={() => {
+                                                        setPriceGround(ground.price);
+                                                        setGroundSelected(ground);
+                                                        setTotalPrice(term * ground.price);
+                                                        setShowGroundModal(false);
+                                                        console.log(customerSelected)
+                                                    }}
+                                            >
+                                                Chọn
+                                            </Button>
+                                        </td>
+                                    </tr>
+                                ))}
+                                </tbody>
+                            </Table>}
+
+                    </div>
+
+                </Modal.Body>
+                <Modal.Footer>
+                    <Button variant="secondary" onClick={() => setShowGroundModal(false)}>
+                        Hủy
+                    </Button>
+                </Modal.Footer>
+            </Modal>
             <Footer/>
         </>
 
