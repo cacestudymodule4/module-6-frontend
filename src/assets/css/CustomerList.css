@@ -85,14 +85,14 @@
 }
 
 /* Modal Styles */
-.modal-content {
-    width: 500px;
-    height: 200px;
-    max-width: 90%;
-    max-height: 80%;
-    padding: 20px;
-    margin: auto;
-}
+/*.modal-content {*/
+/*    width: 500px;*/
+/*    height: 200px;*/
+/*    max-width: 90%;*/
+/*    max-height: 80%;*/
+/*    padding: 20px;*/
+/*    margin: auto;*/
+/*}*/
 
 /* Error Styles */
 .customer-list__error {
