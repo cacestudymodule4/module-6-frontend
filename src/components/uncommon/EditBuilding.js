@@ -9,19 +9,29 @@ import { NavbarApp } from '../common/Navbar';
 import Footer from '../common/Footer';
 
 const ValidateForm = Yup.object().shape({
-    // id: Yup.string()
-    //     .matches(/^BO-\d{4}$/, "Mã sách phải có định dạng BO-XXXX (X là các số)")
-    //     .required("Trường không được để trống"),
-    // name: Yup.string()
-    //     .max(100, "Tên sách không được dài quá 100 ký tự")
-    //     .required("Trường không được để trống"),
-    // dateIn: Yup.date()
-    //     .max(new Date(), "Ngày nhập không được lớn hơn ngày hiện tại")
-    //     .required("Trường không được để trống"),
-    // quantity: Yup.number()
-    //     .integer("Số lượng phải là số nguyên")
-    //     .min(1, "Số lượng phải lớn hơn 0")
-    //     .required("Trường không được để trống")
+    name: Yup.string()
+        .required('Name is required'),
+
+    phoneNumber: Yup.string()
+        .matches(/^0\d{9}$/, 'Phone number must start with 0 and have 10 digits')
+        .matches(/^84\d{9}$/, 'Phone number starting with 84 must have 11 digits')
+        .required('Phone number is required'),
+
+    email: Yup.string()
+        .email("Email không được chứa dấu")
+        .required("Xin vui lòng nhập email")
+        .matches(
+            /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
+            "Email phải có định dạng hợp lệ, ví dụ: example@domain.com"
+        )
+        .max(50, "Email không được vượt quá 50 ký tự"),
+
+    area: Yup.number()
+        .integer('Area must be an integer')
+        .required('Area is required'),
+
+    address: Yup.string()
+        .required('Address is required')
 });
 
 export const EditBuilding = () => {
