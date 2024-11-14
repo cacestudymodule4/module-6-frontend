@@ -1,7 +1,7 @@
-import React, { useState, useEffect } from 'react';
+import React, {useState, useEffect} from 'react';
 import axios from 'axios';
-import { FaSearch } from 'react-icons/fa';
-import { ToastContainer, toast } from 'react-toastify';
+import {FaSearch} from 'react-icons/fa';
+import {ToastContainer, toast} from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import moment from 'moment';
 import {useNavigate} from "react-router-dom";
@@ -19,7 +19,7 @@ function Staff() {
 
     useEffect(() => {
         axios.get('http://localhost:8080/api/staff/list', {
-            headers: { Authorization: `Bearer ${localStorage.getItem('jwtToken')}` }
+            headers: {Authorization: `Bearer ${localStorage.getItem('jwtToken')}`}
         })
             .then(response => {
                 setStaffList(response.data);
@@ -46,7 +46,7 @@ function Staff() {
 
         try {
             await axios.delete(`http://localhost:8080/api/staff/delete/${staffDelete.id}`, {
-                headers: { Authorization: `Bearer ${localStorage.getItem('jwtToken')}` }
+                headers: {Authorization: `Bearer ${localStorage.getItem('jwtToken')}`}
             });
             setStaffList(staffList.filter(emp => emp.id !== staffDelete.id));
             handleCloseModal();
@@ -57,7 +57,7 @@ function Staff() {
     };
 
     const handleAddStaff = () => {
-        navigate('/staff/list/add');
+        navigate('/staff/add');
     };
 
     const handleSearch = async (values) => {
@@ -68,7 +68,7 @@ function Staff() {
         };
         try {
             const response = await axios.get('http://localhost:8080/api/staff/search', {
-                headers: { Authorization: `Bearer ${localStorage.getItem('jwtToken')}` },
+                headers: {Authorization: `Bearer ${localStorage.getItem('jwtToken')}`},
                 params: data
             });
             if (response.status === 200) {
@@ -81,7 +81,7 @@ function Staff() {
     };
 
     const handleEditStaff = (id) => {
-        navigate(`/staff/list/edit/${id}`);
+        navigate(`/staff/edit/${id}`);
     }
 
     return (
@@ -135,7 +135,7 @@ function Staff() {
                             </Form.Group>
 
                             <Button variant="secondary" type="submit" className="search" style={{borderRadius: '50%'}}>
-                                <FaSearch />
+                                <FaSearch/>
                             </Button>
                         </FormikForm>
                     )}
@@ -147,7 +147,7 @@ function Staff() {
                     style={{
                         fontSize: '1.1rem',
                         padding: '0.75rem 2rem',
-                        marginTop: '1rem' ,
+                        marginTop: '1rem',
                     }}
                     className='mb-4'>
                     Thêm mới nhân viên
@@ -207,23 +207,27 @@ function Staff() {
                     </table>
                 </div>
 
-                <ToastContainer position="top-right" autoClose={5000} />
+                <ToastContainer position="top-right" autoClose={5000}/>
 
                 <Modal show={isModalOpen} onHide={handleCloseModal} centered>
                     <Modal.Header closeButton>
                         <Modal.Title>Xác nhận xóa</Modal.Title>
                     </Modal.Header>
                     <Modal.Body>
-                        <p style={{ fontSize: '1.1rem' }}>Bạn có chắc chắn muốn xóa nhân viên {staffDelete?.name}?</p>
+                        <p style={{fontSize: '1.1rem'}}>
+                            Bạn có chắc chắn muốn xóa nhân viên
+                            <span style={{color: 'red'}}>"{staffDelete?.name}"</span>
+                        </p>
                     </Modal.Body>
                     <Modal.Footer>
-                        <Button variant="danger" onClick={handleDeleteStaff} style={{ fontSize: '1rem' }}>Xóa</Button>
-                        <Button variant="secondary" onClick={handleCloseModal} style={{ fontSize: '1rem' }}>Hủy</Button>
+                        <Button variant="danger" onClick={handleDeleteStaff} style={{fontSize: '1rem'}}>Xóa</Button>
+                        <Button variant="secondary" onClick={handleCloseModal} style={{fontSize: '1rem'}}>Hủy</Button>
                     </Modal.Footer>
                 </Modal>
             </div>
-            <Footer />
+            <Footer/>
         </>
     );
 }
+
 export default Staff;
