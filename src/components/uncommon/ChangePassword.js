@@ -1,6 +1,6 @@
 import React, {useEffect} from 'react';
 import {useDispatch, useSelector} from 'react-redux';
-import {CHANGE_PASSWORD} from '../../redux/actions';
+import {CHANGE_PASSWORD, LOGOUT} from '../../redux/actions';
 import {Formik, Form, Field, ErrorMessage} from 'formik';
 import * as Yup from 'yup';
 import {toast} from "react-toastify";
@@ -28,6 +28,7 @@ const ChangePassword = () => {
         }
         if (success) {
             toast.success("Đổi mật khẩu thành công", {position: "top-right", autoClose: 3000});
+            dispatch({type: LOGOUT});
         } else if (error) {
             toast.error(error, {position: "top-right", autoClose: 3000});
         }

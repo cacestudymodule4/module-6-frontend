@@ -1,0 +1,50 @@
+/* UserInfoSection.css */
+
+.user-info-section {
+    background-color: #f8f9fa;
+    padding: 1rem;
+    padding-md: 1.5rem;
+    padding-xl: 2rem;
+}
+
+.user-info-container {
+    max-width: 100%;
+}
+
+.user-info-card {
+    border: 1px solid #e9ecef;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.user-info-card-body {
+    padding: 1rem;
+    padding-md: 1.5rem;
+    padding-xl: 2rem;
+}
+
+.user-info-title {
+    font-size: 1.25rem;
+    text-align: center;
+    margin-bottom: 1rem;
+}
+
+.user-info-form-floating .form-control {
+    background-color: #ffffff;
+    border-color: #ced4da;
+}
+
+.user-info-form-floating label {
+    color: #6c757d;
+}
+
+.user-info-button {
+    background-color: #343a40;
+    color: #ffffff;
+    font-size: 1.25rem;
+    width: 100%;
+    padding: 0.75rem;
+}
+
+.user-info-button:hover {
+    background-color: #23272b;
+}
