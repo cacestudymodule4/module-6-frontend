@@ -52,7 +52,7 @@ const EditStaff = () => {
     };
 
     if (!staffData) return <div>Loading...</div>;
-    
+
     return (
         <>
             <NavbarApp/>
@@ -73,7 +73,7 @@ const EditStaff = () => {
                     }}
                     validationSchema={validationSchema}
                     onSubmit={handleSubmit}>
-                    
+
                     <FormikForm>
                         <div className="mb-2">
                             <label className="form-label" style={{fontSize: '1.2rem'}}>Tên</label>
@@ -135,7 +135,6 @@ const EditStaff = () => {
 
                     </FormikForm>
                 </Formik>
-
                 <ToastContainer position="top-right" autoClose={5000}/>
             </div>
             <Footer/>
