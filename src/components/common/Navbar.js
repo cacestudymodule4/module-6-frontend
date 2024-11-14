@@ -1,5 +1,5 @@
 import React from 'react';
-import { Navbar, Nav, Button, NavDropdown, Form, Container, Offcanvas } from 'react-bootstrap';
+import {Navbar, Nav, NavDropdown, Container, Offcanvas} from 'react-bootstrap';
 import "bootstrap/dist/css/bootstrap.min.css";
 
 export const NavbarApp = () => {
@@ -8,7 +8,8 @@ export const NavbarApp = () => {
     return (
         <>
             {['lg'].map((expand) => (
-                <Navbar key={expand} expand={expand} className="bg-body-tertiary" bg="success" data-bs-theme="success" sticky="top">
+                <Navbar key={expand} expand={expand} className="bg-body-tertiary" bg="success" data-bs-theme="success"
+                        sticky="top">
                     <Container>
                         <Navbar.Brand href="#">
                             <img
@@ -18,7 +19,7 @@ export const NavbarApp = () => {
                                 className="d-inline-block align-top"
                             />{' '}
                         </Navbar.Brand>
-                        <Navbar.Toggle aria-controls={`offcanvasNavbar-expand-${expand}`} />
+                        <Navbar.Toggle aria-controls={`offcanvasNavbar-expand-${expand}`}/>
                         <Navbar.Offcanvas
                             id={`offcanvasNavbar-expand-${expand}`}
                             aria-labelledby={`offcanvasNavbarLabel-expand-${expand}`}
@@ -31,21 +32,22 @@ export const NavbarApp = () => {
                             </Offcanvas.Header>
                             <Offcanvas.Body>
                                 <Nav className="justify-content-end flex-grow-1 pe-3">
-                                    <Nav.Link href="#action1">Trang chủ</Nav.Link>
-                                    <Nav.Link href="#action2">Link</Nav.Link>
+                                    <Nav.Link href="/home">Trang chủ</Nav.Link>
+                                    <Nav.Link href="/floor/list">Quản lý tầng</Nav.Link>
                                     <NavDropdown
                                         title="Dropdown"
                                         id={`offcanvasNavbarDropdown-expand-${expand}`}
                                     >
                                         <NavDropdown.Item href="#action3">Action</NavDropdown.Item>
-                                        <NavDropdown.Item href="#action4">
-                                            Another action
+                                        <NavDropdown.Item href="/salary">
+                                            Bảng lương
                                         </NavDropdown.Item>
-                                        <NavDropdown.Divider />
-                                        <NavDropdown.Item href="#action5">
-                                            Something else here
+                                        <NavDropdown.Divider/>
+                                        <NavDropdown.Item href="report">
+                                            Doanh thu
                                         </NavDropdown.Item>
-                                        {userRole === "ADMIN" ? <NavDropdown.Item href="/building/edit">Sửa toà nhà</NavDropdown.Item> : ""}
+                                        {userRole === "ADMIN" ?
+                                            <NavDropdown.Item href="/building/edit">Sửa toà nhà</NavDropdown.Item> : ""}
                                     </NavDropdown>
                                 </Nav>
                             </Offcanvas.Body>

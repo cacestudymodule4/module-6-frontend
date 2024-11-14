@@ -276,7 +276,6 @@ function EditContract() {
                                             name="content"
                                             style={{width: '100%'}}
                                             defaultValue={contract.description}
-                                            // value={values.content || contract.description}
                                             onChange={(e) => {
                                                 setFieldValue('content', e.target.value);
                                             }}

@@ -353,7 +353,6 @@ function CustomerList() {
                     </button>
                 </div>
             </div>
-
             <Modal show={isModalOpen} onHide={closeModal}>
                 <Modal.Header closeButton>
                     <Modal.Title>Xóa khách hàng</Modal.Title>
@@ -367,7 +366,6 @@ function CustomerList() {
                     <Button variant="danger" onClick={handleDeleteCustomer}>Xóa</Button>
                 </Modal.Footer>
             </Modal>
-
             <Footer/>
         </>
     );

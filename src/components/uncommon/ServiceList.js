@@ -1,9 +1,9 @@
-import React, { useState, useEffect } from 'react';
-import { Table, Modal, Button } from 'react-bootstrap';
-import { NavbarApp } from "../common/Navbar";
+import React, {useState, useEffect} from 'react';
+import {Table, Modal, Button} from 'react-bootstrap';
+import {NavbarApp} from "../common/Navbar";
 import Footer from "../common/Footer";
-import { FaSearch } from 'react-icons/fa';
-import { TbReload } from 'react-icons/tb';
+import {FaSearch} from 'react-icons/fa';
+import {TbReload} from 'react-icons/tb';
 import axios from 'axios';
 
 const ServiceList = () => {
@@ -22,13 +22,15 @@ const ServiceList = () => {
     const fetchServices = async (page) => {
         try {
             const response = await axios.get(`http://localhost:8080/api/services/list`, {
-                params: { page, size: pageSize },
-                headers: { Authorization: `Bearer ${localStorage.getItem('jwtToken')}` }
+                params: {page, size: pageSize},
+                headers: {Authorization: `Bearer ${localStorage.getItem('jwtToken')}`}
             });
             console.log("Dữ liệu dịch vụ:", response.data);
-            setServices(response.data.content);
+            setServices(response.data.content
+            );
             setTotalPages(response.data.totalPages);
-        } catch (error) {
+        } catch
+            (error) {
             console.error("Lỗi khi tải danh sách dịch vụ:", error);
         }
     };
@@ -58,7 +60,7 @@ const ServiceList = () => {
     const handleDeleteService = async () => {
         try {
             await axios.delete(`/api/services/delete/${serviceToDelete.id}`, {
-                headers: { Authorization: `Bearer ${localStorage.getItem('jwtToken')}` }
+                headers: {Authorization: `Bearer ${localStorage.getItem('jwtToken')}`}
             });
             setModalOpen(false);
             fetchServices(currentPage);
@@ -69,11 +71,11 @@ const ServiceList = () => {
 
     return (
         <>
-            <NavbarApp />
+            <NavbarApp/>
             <div className="service-list container mt-5">
                 <h2 className="text-center mb-5 bg-success text-white py-4">Danh sách dịch vụ</h2>
                 <div className="d-flex justify-content-between align-items-center mb-3">
-                    <button className="btn btn-success" onClick={handleReload}><TbReload /></button>
+                    <button className="btn btn-success" onClick={handleReload}><TbReload/></button>
                     <div className="d-flex align-items-center">
                         <input
                             type="text"
@@ -83,7 +85,7 @@ const ServiceList = () => {
                             onChange={(e) => setSearchName(e.target.value)}
                         />
                         <button className="btn btn-success" onClick={handleSearch}>
-                            <FaSearch />
+                            <FaSearch/>
                         </button>
                     </div>
                 </div>
@@ -110,7 +112,9 @@ const ServiceList = () => {
                                         <button className="btn btn-warning">Sửa</button>
                                     </td>
                                     <td>
-                                        <button className="btn btn-danger" onClick={() => handleOpenModal(service)}>Xóa</button>
+                                        <button className="btn btn-danger"
+                                                onClick={() => handleOpenModal(service)}>Xóa
+                                        </button>
                                     </td>
                                 </tr>
                             ))
@@ -155,7 +159,7 @@ const ServiceList = () => {
                     </Modal.Footer>
                 </Modal>
             </div>
-            <Footer />
+            <Footer/>
         </>
     );
 };
