@@ -37,23 +37,18 @@ const AddCustomer = () => {
         }),
         onSubmit: async (values) => {
             try {
-                // Gửi yêu cầu POST tới API backend để thêm khách hàng
                 const response = await axios.post('http://localhost:8080/api/customers/add', values, {
                     headers: { Authorization: `Bearer ${localStorage.getItem('jwtToken')}` },
                 });
 
-                // Kiểm tra xem yêu cầu có thành công không
                 if (response.status === 200) {
                     toast.success('Khách hàng đã được thêm thành công!');
                     navigate('/customer/list');
                 }
             } catch (error) {
-                // Bắt lỗi và hiển thị thông báo lỗi từ backend
                 if (error.response) {
-                    // Nếu backend trả về lỗi chi tiết trong phần response.data
-                    setError(error.response.data);  // Lưu thông báo lỗi từ backend
+                    setError(error.response.data);
                 } else {
-                    // Lỗi kết nối hoặc lỗi khác
                     setError('Có lỗi kết nối với máy chủ. Vui lòng thử lại sau.');
                 }
             }

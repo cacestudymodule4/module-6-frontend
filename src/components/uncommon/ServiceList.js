@@ -9,7 +9,7 @@ import axios from 'axios';
 const ServiceList = () => {
     const [services, setServices] = useState([]);
     const [currentPage, setCurrentPage] = useState(0);
-    const [pageSize] = useState(10);
+    const [pageSize] = useState(5);
     const [totalPages, setTotalPages] = useState(0);
     const [searchName, setSearchName] = useState('');
     const [isModalOpen, setModalOpen] = useState(false);
@@ -21,7 +21,7 @@ const ServiceList = () => {
 
     const fetchServices = async (page) => {
         try {
-            const response = await axios.get(`/api/services/list`, {
+            const response = await axios.get(`http://localhost:8080/api/services/list`, {
                 params: { page, size: pageSize },
                 headers: { Authorization: `Bearer ${localStorage.getItem('jwtToken')}` }
             });
@@ -34,7 +34,7 @@ const ServiceList = () => {
     };
 
     const handleSearch = () => {
-        fetchServices(0);  // Reset về trang đầu tiên khi tìm kiếm
+        fetchServices(0);
     };
 
     const handleReload = () => {
@@ -57,7 +57,7 @@ const ServiceList = () => {
 
     const handleDeleteService = async () => {
         try {
-            await axios.delete(`/api/services/${serviceToDelete.id}`, {
+            await axios.delete(`/api/services/delete/${serviceToDelete.id}`, {
                 headers: { Authorization: `Bearer ${localStorage.getItem('jwtToken')}` }
             });
             setModalOpen(false);
@@ -90,7 +90,7 @@ const ServiceList = () => {
                 <div className="table-responsive">
                     <Table striped bordered hover>
                         <thead className="table-success">
-                        <tr>
+                        <tr className="text-center">
                             <th>STT</th>
                             <th>Tên Dịch Vụ</th>
                             <th>Giá</th>
@@ -101,13 +101,13 @@ const ServiceList = () => {
                         <tbody>
                         {services.length > 0 ? (
                             services.map((service, index) => (
-                                <tr key={service.id}>
+                                <tr key={service.id} className="text-center">
                                     <td>{(currentPage * pageSize) + index + 1}</td>
                                     <td>{service.name}</td>
                                     <td>{service.price}</td>
                                     <td>{service.unit}</td>
                                     <td>
-                                        <button className="btn btn-warning" >Sửa</button>
+                                        <button className="btn btn-warning">Sửa</button>
                                     </td>
                                     <td>
                                         <button className="btn btn-danger" onClick={() => handleOpenModal(service)}>Xóa</button>
@@ -122,7 +122,7 @@ const ServiceList = () => {
                         </tbody>
                     </Table>
                 </div>
-                <div className="d-flex justify-content-between mb-4">
+                <div className="d-flex justify-content-center mb-4">
                     <button
                         className="btn btn-outline-success"
                         onClick={() => handlePageChange(currentPage - 1)}
@@ -130,7 +130,7 @@ const ServiceList = () => {
                     >
                         Trang trước
                     </button>
-                    <span>Trang {currentPage + 1} / {totalPages}</span>
+                    <span className="mx-3">Trang {currentPage + 1} / {totalPages}</span>
                     <button
                         className="btn btn-outline-success"
                         onClick={() => handlePageChange(currentPage + 1)}
