@@ -22,7 +22,6 @@ function* loginSaga(action) {
         const { token } = response.data;
         localStorage.setItem("userRole", response.data.authorities[0].authority)
         localStorage.setItem("jwtToken", token);
-
         yield put({ type: LOGIN_SUCCESS, payload: response.data });
     } catch (error) {
         console.error("Đăng nhập thất bại", error);
