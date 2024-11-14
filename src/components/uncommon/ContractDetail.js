@@ -133,11 +133,11 @@ function ContractDetail() {
                                 </Col>
                                 <Col md={4}>
                                     <Form.Group controlId="groundName">
-                                        <Form.Label>Mã mặt bằng</Form.Label>
+                                        <Form.Label>Tên mặt bằng</Form.Label>
                                         <Form.Control
                                             className={"custom-date-input"}
                                             type="text"
-                                            value={"MB" + contract.ground.id}
+                                            value={"MB" + contract.ground.name}
                                             readOnly
                                         />
                                     </Form.Group>

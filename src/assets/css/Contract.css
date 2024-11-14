@@ -1,42 +1,88 @@
-.custom-table{
+.custom-table {
     background-color: black !important;
     color: white !important;
 }
-.custom-checkbox{
+
+.custom-checkbox {
     width: 20px;
     height: 20px;
     transform: scale(1.3);
     margin-top: 10px;
 }
-.custom-search{
+
+.custom-search {
     display: flex;
     justify-content: space-between;
     align-items: center;
 }
-::placeholder{
+
+::placeholder {
     font-size: small;
 }
-.search-contract-btn{
+
+.search-contract-btn {
     border-radius: 50% !important;
     margin-top: 13px;
 }
-.small-label{
+
+.small-label {
     font-size: small;
     font-weight: bold;
     color: #6d757d !important;
 }
+
 select option.small-text {
-    font-size: 12px; /* Làm chữ nhỏ lại */
+    font-size: 12px;
 }
-.custom-date-input{
+
+.custom-date-input {
     height: 45px !important;
     border-color: rgba(0, 0, 0, 0.1) !important;
     box-shadow: none !important;
-    cursor: default ;
+    cursor: default;
 }
+
 .readonly-input:hover,
 .readonly-input:focus {
     cursor: default !important;
     box-shadow: none !important;
     border-color: #ced4da !important;
+}
+
+.modal-contract-custom .modal-dialog {
+    width: 70vw !important;
+    height: 90vh !important;
+    max-width: none;
+    margin: 25px auto !important;
+}
+.modal-contract-custom .modal-body {
+    max-height: 80vh;
+    overflow-y: auto;
+}
+.modal-contract-custom .modal-body::-webkit-scrollbar {
+    display: none;
+}
+
+.modal-contract-custom .modal-content {
+    height: 100% !important;
+    width: 100% !important;
+}
+.search-contract-btn-add{
+
+}
+.search-fixed {
+    position: sticky;
+    top: 0;
+    background-color: white;
+    z-index: 10;
+    padding: 10px;
+    border-bottom: 1px solid #ddd;
+}
+.modal-content-scroll {
+    max-height: 400px;
+    overflow-y: auto;
+    padding-top: 20px;
+}
+.add-label{
+    padding: 7px;
 }
