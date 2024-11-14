@@ -55,7 +55,7 @@ function AddContract() {
 
         async function getCustomer() {
             try {
-                const response = await axios.get("http://localhost:8080/api/customer/list", {
+                const response = await axios.get("http://localhost:8080/api/customers/list-add", {
                     headers: {Authorization: `Bearer ${localStorage.getItem('jwtToken')}`}
                 })
                 setCustomer(response.data);
@@ -66,7 +66,7 @@ function AddContract() {
 
         async function getGround() {
             try {
-                const response = await axios.get("http://localhost:8080/api/ground/list-rent", {
+                const response = await axios.get("http://localhost:8080/api/ground/list", {
                     headers: {Authorization: `Bearer ${localStorage.getItem('jwtToken')}`}
                 })
                 setGround(response.data);
@@ -168,7 +168,7 @@ function AddContract() {
     // =================Tìm trong modal===============//
     const handleSearchCus = async (value) => {
         try {
-            const res = await axios.get(`http://localhost:8080/api/customer/findCus?searchCus=${value.searchCus}`, {
+            const res = await axios.get(`http://localhost:8080/api/customers/findCus?searchCus=${value.searchCus}`, {
                     headers: {Authorization: `Bearer ${localStorage.getItem('jwtToken')}`},
                 },
             )
