@@ -65,7 +65,7 @@ function AddContract() {
 
         async function getGround() {
             try {
-                const response = await axios.get("http://localhost:8080/api/ground/list", {
+                const response = await axios.get("http://localhost:8080/api/ground/list-rent", {
                     headers: {Authorization: `Bearer ${localStorage.getItem('jwtToken')}`}
                 })
                 setGround(response.data);

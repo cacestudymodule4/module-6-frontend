@@ -47,7 +47,7 @@ const Salary = () => {
     const [sort, setSort] = useState("id");
     const [sortDir, setSortDir] = useState("asc");
     const [q, setQ] = useState("");
-    const [size, setSize] = useState(5);
+    const [size, setSize] = useState(1);
     const [total, setTotal] = useState(null);
     const sum = async () => {
         try {
