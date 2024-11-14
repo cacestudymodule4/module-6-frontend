@@ -1,7 +1,7 @@
     import React, {useState, useEffect} from "react";
 import axios from "axios";
 import {useNavigate} from "react-router-dom";
-import {FaRedo, FaSearch} from 'react-icons/fa';  // Import icon từ react-icons
+import {FaRedo, FaSearch, FaFilter} from 'react-icons/fa';  // Import icon từ react-icons
 import {Table, Modal, Button, Form} from 'react-bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import {toast} from "react-toastify";
@@ -9,6 +9,8 @@ import {Formik, Field, Form as FormikForm} from "formik";
 import '../../assets/css/Contract.css';
 import {NavbarApp} from "../common/Navbar";
 import Footer from "../common/Footer";
+import moment from "moment/moment";
+
 function Contract() {
     const navigate = useNavigate();
     const [listContract, setListContract] = useState([]);
@@ -79,11 +81,26 @@ function Contract() {
             console.log(error);
         }
     }
+    const handleFilter = async (value) => {
+        try {
+            const resp = await axios.get(`http://localhost:8080/api/contract/filter`, {
+                    headers: {Authorization: `Bearer ${localStorage.getItem('jwtToken')}`},
+                    params: {selectedFilter: value.selectedFilter}
+                },
+            )
+            if (resp.status === 200) {
+                setListContract(resp.data);
+            }
+        } catch (err) {
+            console.log(err)
+        }
+    }
     return (
         <>
             <NavbarApp/>
             <div className="container mt-5 mb-5">
-                <h2 className="text-center mb-5 bg-success align-content-center" style={{color: "white",height:"70px"}}>
+                <h2 className="text-center mb-5 bg-success align-content-center"
+                    style={{color: "white", height: "70px"}}>
                     Danh sách hợp đồng</h2>
                 <Formik
                     initialValues={{
@@ -95,7 +112,7 @@ function Contract() {
                     onSubmit={(value) => handleSearch(value)}
                 >
                     {() => (
-                        <FormikForm className="mb-3 custom-search">
+                        <FormikForm className="mb-3 custom-search ">
                             <Form.Group className="mb-3" controlId="formSearch">
                                 <Form.Label className="small-label">Tìm theo tên khách hàng</Form.Label>
                                 <Field
@@ -106,11 +123,11 @@ function Contract() {
                                 />
                             </Form.Group>
                             <Form.Group className="mb-3" controlId="formSearch">
-                                <Form.Label className="small-label">Tìm kiếm theo mã số thuế</Form.Label>
+                                <Form.Label className="small-label">Tìm kiếm theo mã hợp đồng</Form.Label>
                                 <Field
                                     as={Form.Control}
                                     type="text"
-                                    placeholder="Nhập mã mặt bằng"
+                                    placeholder="Nhập mã hợp đồng"
                                     name="taxCode"
                                 />
                             </Form.Group>
@@ -139,71 +156,102 @@ function Contract() {
                         </FormikForm>
                     )}
                 </Formik>
+                <Formik
+                    initialValues={{
+                        selectedFilter: "",
+                    }}
+                    onSubmit={handleFilter}>
+                    {() => (
+                        <FormikForm className="mb-3">
+                            <Form.Group className="mb-3">
+                                <Field as="select" name="selectedFilter" style={{borderRadius: "5px"}}
+                                       className="custom-date-input "
+
+                                >
+                                    <option value=""
+                                            selected={true}> Chọn tình trạng hợp đồng
+                                    </option>
+                                    <option value="Có hiệu lực">Có hiệu lực
+                                    </option>
+                                    <option value="Hết hiệu lực">Hết hiệu lực
+                                    </option>
+                                    <option value="Chưa có hệu lực">Chưa có hiệu lực
+                                    </option>
+
+                                </Field>
+                                <Button variant="secondary" style={{height: "42px", borderRadius: "50%"}}
+                                        className={"ms-2"} type="submit">
+                                    <FaFilter/> </Button>
+                            </Form.Group>
+                        </FormikForm>
+                    )}
+                </Formik>
                 <Button variant={"success"} className={"mb-2"} onClick={handleAddContract}>Thêm mới</Button>
-                <Button variant="secondary" className={"mb-2 ms-2 "} onClick={handleReload}>
+                <Button variant="secondary" style={{borderRadius: "50%"}} className={"mb-2 ms-2 "}
+                        onClick={handleReload}>
                     <FaRedo/>
                 </Button>
-                {listContract.length ===0 ? ( <h1 className={"text-center mt-5"}>Danh sách trống </h1> ):
+                {listContract.length === 0 ? (<h1 className={"text-center mt-5"}>Danh sách trống </h1>) :
                     <Table striped bordered hover>
-                    <thead className={"custom-table text-white text-center"}>
-                    <tr>
-                        <th>ID</th>
-                        <th>Tên khách hàng</th>
-                        <th>Tên mặt bằng</th>
-                        <th className="text-center">Đang thuê</th>
-                        <th colSpan="3" className="text-center">Hành động</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    {listContract.map((contract, index) => (
-                        <tr key={contract.id}>
-                            <td>CT{contract.id}</td>
-                            <td>{contract.customer.name}</td>
-                            <td>{contract.ground.name}</td>
-                            <td className="text-center">
-                                <input
-                                    type="checkbox"
-                                    className="custom-checkbox"
-                                    checked={isContractActive(contract.endDate)}
-                                    readOnly
-                                />
-                            </td>
-                            <td className="text-center">
-                                <Button variant="info" type="submit"
-                                        onClick={() => navigate(`/contract/detail/${contract.id}`, {state: {contract}})}
-                                >
-                                    Chi tiết
-                                </Button>
-                            </td>
-                            <td className="text-center">
-                                <Button variant="warning" type="submit"
-                                        onClick={() => navigate(`/contract/edit`, {state: {contract}})}
-                                >
-                                    Sửa
-                                </Button>
-                            </td>
-                            <td className="text-center">
-                                <Button variant="danger" type="submit" onClick={() => handleDeleteClick(contract)}>
-                                    Xoá
-                                </Button>
-                            </td>
+                        <thead className={"custom-table text-white text-center"}>
+                        <tr>
+                            <th>Mã hợp đồng</th>
+                            <th>Tên khách hàng</th>
+                            <th>Tên mặt bằng</th>
+                            <th>Trạng thái hợp đồng</th>
+                            <th>Ngày băt đầu</th>
+                            <th>Ngày kết thúc</th>
+                            <th colSpan="3" className="text-center">Hành động</th>
                         </tr>
-                    ))}
-                    </tbody>
-                </Table>}
+                        </thead>
+                        <tbody>
+                        {listContract.map((contract, index) => (
+                            <tr key={contract.id}>
+                                <td className="text-center">{contract.code}</td>
+                                <td className="text-center">{contract.customer.name}</td>
+                                <td className="text-center">{contract.ground.name}</td>
+                                <td className="text-center">
+                                    {isContractActive(contract.endDate) ? "Còn hiệu lực" : "Hết hiệu lực"}
+                                </td>
+                                <td className="text-center">{moment(contract.startDate, 'YYYY-MM-DD').format('DD-MM-YYYY')}</td>
+                                <td className="text-center">{moment(contract.endDate, 'YYYY-MM-DD').format('DD-MM-YYYY')}</td>
+                                <td className="text-center">
+                                    <Button variant="info" type="submit"
+                                            onClick={() => navigate(`/contract/detail/${contract.id}`, {state: {contract}})}
+                                    >
+                                        Chi tiết
+                                    </Button>
+                                </td>
+                                <td className="text-center">
+                                    <Button variant="warning" type="submit"
+                                            onClick={() => navigate(`/contract/edit`, {state: {contract}})}
+                                    >
+                                        Sửa
+                                    </Button>
+                                </td>
+                                <td className="text-center">
+                                    <Button variant="danger" type="submit" onClick={() => handleDeleteClick(contract)}>
+                                        Xoá
+                                    </Button>
+                                </td>
+                            </tr>
+                        ))}
+                        </tbody>
+                    </Table>}
 
                 <Modal show={showDeleteModal}>
-                    <Modal.Header closeButton>
+                    <Modal.Header closeButton onClick={() => setShowDeleteModal(false)}>
                         <Modal.Title>Xác Nhận</Modal.Title>
                     </Modal.Header>
-                    <Modal.Body>Bạn có chắc chắn muốn xóa hợp đồng mã số: "CT{contractToDelete?.id}"
-                        không?</Modal.Body>
+                    <Modal.Body>Xác nhận xóa hợp đồng mã số: <span
+                        className={"text-danger"}>"{contractToDelete?.code}"</span>
+                    </Modal.Body>
                     <Modal.Footer>
-                        <Button variant="secondary" onClick={() => setShowDeleteModal(false)}>
-                            Hủy
-                        </Button>
                         <Button variant="danger" onClick={handleConfirmDelete}>
                             Xóa
+                        </Button>
+                        <Button variant="secondary" onClick={() => setShowDeleteModal(false)}>
+                            Hủy
                         </Button>
                     </Modal.Footer>
                 </Modal>

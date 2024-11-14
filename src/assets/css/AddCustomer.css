@@ -1,0 +1,81 @@
+/* Thêm ảnh nền chỉ cho trang AddCustomer */
+.add-customer-background {
+    background-image: url('/src/assets/img/building.jpg'); /* Đặt đường dẫn tới ảnh nền */
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.add-customer-page {
+    width: 50%;
+    margin: auto;
+    padding: 20px;
+    background-color: rgba(0, 0, 0, 0.6);
+    border-radius: 8px;
+    color: white;
+    font-family: Arial, sans-serif;
+    font-size: 20px;
+}
+
+.add-customer-page h2 {
+    text-align: center;
+    color: #00b386;
+}
+
+.add-customer-page label {
+    display: block;
+    margin-top: 10px;
+    color: #ffffff;
+}
+
+.add-customer-page input[type="text"],
+.add-customer-page input[type="email"],
+.add-customer-page input[type="tel"],
+.add-customer-page input[type="url"],
+.add-customer-page input[type="date"] {
+    width: 100%;
+    padding: 10px;
+    margin-top: 5px;
+    border: none;
+    border-radius: 4px;
+    box-sizing: border-box;
+}
+
+.add-customer-page button {
+    height: 35%;
+    width: 100%;
+    padding: 10px;
+    margin-top: 20px;
+    background-color: #00b386;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 20px;
+}
+
+.add-customer-page button:hover {
+    background-color: #008060;
+}
+
+.add-customer-page p {
+    text-align: center;
+    margin-top: 15px;
+    color: red;
+    font-size: 20px;
+}
+.success-message {
+    color: green;
+    font-weight: bold;
+    margin-top: 10px;
+}
+
+/*.error-message {*/
+/*    color: red;*/
+/*    font-weight: bold;*/
+/*    margin-top: 10px;*/
+/*}*/

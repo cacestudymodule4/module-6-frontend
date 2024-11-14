@@ -10,9 +10,7 @@ import { NavbarApp } from "../common/Navbar";
 
 const AddStaff = () => {
     const navigate = useNavigate();
-    const [staffList, setStaffList] = useState([]);
     const [isAddModalOpen, setIsAddModalOpen] = useState(true);
-    const [filteredStaffList, setFilteredStaffList] = useState([]);
 
     const initialValues = {
         name: "",
@@ -76,7 +74,6 @@ const AddStaff = () => {
                 toast.error(response.data);
                 return;
             }
-
             navigate('/staff/list');
             toast.success("Nhân viên mới đã được thêm thành công!!!");
             setIsAddModalOpen(false);
