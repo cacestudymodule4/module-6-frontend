@@ -1,11 +1,11 @@
-import React, { useState } from 'react';
-import { useFormik } from 'formik';
+import React, {useState} from 'react';
+import {useFormik} from 'formik';
 import * as Yup from 'yup';
-import { toast } from 'react-toastify';
-import { useNavigate } from 'react-router-dom';
+import {toast} from 'react-toastify';
+import {useNavigate} from 'react-router-dom';
 import axios from 'axios';
-import { FaSave } from 'react-icons/fa';
-import { NavbarApp } from "../common/Navbar";
+import {FaSave} from 'react-icons/fa';
+import {NavbarApp} from "../common/Navbar";
 import Footer from "../common/Footer";
 
 const AddCustomer = () => {
@@ -39,9 +39,8 @@ const AddCustomer = () => {
             try {
                 // Gửi yêu cầu POST tới API backend để thêm khách hàng
                 const response = await axios.post('http://localhost:8080/api/customers/add', values, {
-                    headers: { Authorization: `Bearer ${localStorage.getItem('jwtToken')}` },
+                    headers: {Authorization: `Bearer ${localStorage.getItem('jwtToken')}`},
                 });
-
                 // Kiểm tra xem yêu cầu có thành công không
                 if (response.status === 200) {
                     toast.success('Khách hàng đã được thêm thành công!');
@@ -62,13 +61,11 @@ const AddCustomer = () => {
 
     return (
         <>
-            <NavbarApp />
-            <div className="container mt-5" style={{ marginBottom: '50px' }}>
+            <NavbarApp/>
+            <div className="container mt-5" style={{marginBottom: '50px'}}>
                 <h2 className="text-center mb-5 bg-success text-white py-4">Thêm Mới Khách Hàng</h2>
-
                 {/* Hiển thị thông báo lỗi nếu có */}
                 {error && <div className="alert alert-danger">{error}</div>}
-
                 <form onSubmit={formik.handleSubmit}>
                     {/* Row 1: Name and Birthday */}
                     <div className="row mb-3">
@@ -204,14 +201,14 @@ const AddCustomer = () => {
                     </div>
 
                     <button type="submit" className="btn btn-success">
-                        <FaSave /> Lưu
+                        <FaSave/> Lưu
                     </button>
                     <button type="button" className="btn btn-secondary ms-3" onClick={() => navigate('/customer/list')}>
                         Quay lại
                     </button>
                 </form>
             </div>
-            <Footer />
+            <Footer/>
         </>
     );
 };

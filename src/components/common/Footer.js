@@ -1,5 +1,5 @@
 import React from 'react';
-import { Container, Row, Col, Image, Button } from 'react-bootstrap';
+import { Container, Row, Col, Button } from 'react-bootstrap';
 import '../../assets/css/footer.css';
 import {
     FaPhoneAlt,
@@ -19,13 +19,7 @@ const Footer = () => {
                 <Row>
                     <Col md={4}>
                         <div className="footer-logo">
-                            {/* <Image
-                                src="https://quanlychungcuhaiphong.vn/upload/icon/9-3-2024/lexico-53-70.png"
-                                alt="Logo"
-                                height="200"
-                                fluid
-                            /> */}
-                            <Row className='text-start ms-5'>
+                            <Row className='text-start'>
                                 <Col>
                                     <h3 className='fw-bold'>Liên hệ</h3>
                                     <p><FaMapMarkerAlt /> 293 Nguyễn Tất Thành, Đà Nẵng</p>

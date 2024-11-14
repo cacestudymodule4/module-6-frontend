@@ -8,7 +8,7 @@ import {useNavigate} from "react-router-dom";
 import Footer from "../common/Footer";
 import {NavbarApp} from "../common/Navbar";
 import '../../assets/css/Contract.css';
-import {FaRedo, FaSearch} from "react-icons/fa";
+import {FaSearch} from "react-icons/fa";
 
 function AddContract() {
     const navigate = useNavigate();
@@ -51,7 +51,6 @@ function AddContract() {
                 console.log(err);
             }
         }
-
 
         async function getCustomer() {
             try {
@@ -203,7 +202,6 @@ function AddContract() {
         }
     }
 
-
     return (
         <>
             <NavbarApp/>
@@ -243,7 +241,6 @@ function AddContract() {
                                         />
                                     </Form.Group>
                                 </Col>
-
                                 <Col md={3}>
                                     <Form.Group className="mb-3">
                                         <Form.Label className={"add-label"}>
@@ -292,7 +289,6 @@ function AddContract() {
                                     </Form.Group>
                                 </Col>
                             </Row>
-
                             {/*  --------------chọn nhân viên----------------------*/}
                             <Row>
                                 <Col md={3}>
@@ -682,9 +678,7 @@ function AddContract() {
                                 ))}
                                 </tbody>
                             </Table>}
-
                     </div>
-
                 </Modal.Body>
                 <Modal.Footer>
                     <Button variant="secondary" onClick={() => setShowCusModal(false)}>
@@ -757,9 +751,7 @@ function AddContract() {
                                 ))}
                                 </tbody>
                             </Table>}
-
                     </div>
-
                 </Modal.Body>
                 <Modal.Footer>
                     <Button variant="secondary" onClick={() => setShowGroundModal(false)}>
@@ -769,7 +761,6 @@ function AddContract() {
             </Modal>
             <Footer/>
         </>
-
     );
 }
 
