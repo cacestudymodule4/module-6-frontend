@@ -16,17 +16,21 @@ function Staff() {
     const [filteredStaffList, setFilteredStaffList] = useState([]);
     const [staffDelete, setStaffDelete] = useState(null);
     const [isModalOpen, setIsModalOpen] = useState(false);
+    const [currentPage, setCurrentPage] = useState(0);
+    const [totalPages, setTotalPages] = useState(1);
+    const pageSize = 4;
 
     useEffect(() => {
-        axios.get('http://localhost:8080/api/staff/list', {
+        axios.get(`http://localhost:8080/api/staff/list?page=${currentPage}&size=${pageSize}`, {
             headers: {Authorization: `Bearer ${localStorage.getItem('jwtToken')}`}
         })
             .then(response => {
-                setStaffList(response.data);
-                setFilteredStaffList(response.data);
+                setStaffList(response.data.content);
+                setFilteredStaffList(response.data.content);
+                setTotalPages(response.data.totalPages);
             })
             .catch(error => toast.error("Lỗi khi tải danh sách nhân viên"));
-    }, [staffList]);
+    }, [currentPage]);
 
     const handleOpenModal = (staff) => {
         setStaffDelete(staff);
@@ -82,7 +86,13 @@ function Staff() {
 
     const handleEditStaff = (id) => {
         navigate(`/staff/edit/${id}`);
-    }
+    };
+
+    const handlePageChange = (newPage) => {
+        if (newPage >= 0 && newPage < totalPages) {
+            setCurrentPage(newPage);
+        }
+    };
 
     return (
         <>
@@ -186,8 +196,6 @@ function Staff() {
                                 <td className="text-center">{moment(staff.startDate, 'YYYY-MM-DD').format('DD-MM-YYYY')}</td>
                                 <td className="text-center">{staff.position}</td>
                                 <td className="text-center">
-                                    <button className="btn btn-info btn-sm me-2" style={{fontSize: '0.9rem'}}>Xem
-                                    </button>
                                     <button
                                         className="btn btn-warning btn-sm me-2"
                                         style={{fontSize: '0.9rem'}}
@@ -195,7 +203,7 @@ function Staff() {
                                         Cập nhật
                                     </button>
                                     <button
-                                        className="btn btn-danger btn-sm"
+                                        className="btn btn-danger btn-sm me-2"
                                         onClick={() => handleOpenModal(staff)}
                                         style={{fontSize: '0.9rem'}}>
                                         Xóa
@@ -207,24 +215,40 @@ function Staff() {
                     </table>
                 </div>
 
-                <ToastContainer position="top-right" autoClose={5000}/>
+                <div className="d-flex justify-content-between">
+                    <button
+                        className="btn btn-secondary"
+                        onClick={() => handlePageChange(currentPage - 1)}
+                        disabled={currentPage === 0}>
+                        Previous
+                    </button>
+                    <span className="my-auto">Page {currentPage + 1} of {totalPages}</span>
+                    <button
+                        className="btn btn-secondary"
+                        onClick={() => handlePageChange(currentPage + 1)}
+                        disabled={currentPage === totalPages - 1}>
+                        Next
+                    </button>
+                </div>
 
-                <Modal show={isModalOpen} onHide={handleCloseModal} centered>
+                <Modal show={isModalOpen} onHide={handleCloseModal}>
                     <Modal.Header closeButton>
                         <Modal.Title>Xác nhận xóa</Modal.Title>
                     </Modal.Header>
                     <Modal.Body>
-                        <p style={{fontSize: '1.1rem'}}>
-                            Bạn có chắc chắn muốn xóa nhân viên
-                            <span style={{color: 'red'}}>"{staffDelete?.name}"</span>
-                        </p>
+                        <p>Bạn có chắc chắn muốn xóa nhân viên này không?</p>
                     </Modal.Body>
                     <Modal.Footer>
-                        <Button variant="danger" onClick={handleDeleteStaff} style={{fontSize: '1rem'}}>Xóa</Button>
-                        <Button variant="secondary" onClick={handleCloseModal} style={{fontSize: '1rem'}}>Hủy</Button>
+                        <Button variant="secondary" onClick={handleCloseModal}>
+                            Hủy
+                        </Button>
+                        <Button variant="danger" onClick={handleDeleteStaff}>
+                            Xóa
+                        </Button>
                     </Modal.Footer>
                 </Modal>
             </div>
+
             <Footer/>
         </>
     );
