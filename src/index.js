@@ -23,8 +23,9 @@ import ServiceList from "./components/uncommon/ServiceList";
 import AddStaff from "./components/uncommon/AddStaff";
 import EditStaff from "./components/uncommon/EditStaff";
 import { EditBuilding } from './components/uncommon/EditBuilding';
+import { Floor } from './components/uncommon/Floor/Floor';
+import { AddEditFloor } from './components/uncommon/Floor/AddEditFloor';
 import './assets/css/styles.css';
-
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
@@ -34,9 +35,12 @@ root.render(
             <ToastContainer />
             <Routes>
                 <Route path="/building/edit" element={<EditBuilding />} />
+                <Route path="/floor/list" element={<Floor />} />
+                <Route path="/floor/add" element={<AddEditFloor />} />
+                <Route path="/floor/edit/:id" element={<AddEditFloor />} />
                 <Route path="/staff/list" element={<Staff />} />
                 <Route path="/staff/add" element={<AddStaff />} />
-                <Route path="/staff/edit/:id" element={<EditStaff/>}/>
+                <Route path="/staff/edit/:id" element={<EditStaff />} />
                 <Route path="/login" element={<Login />} />
                 <Route path="/logout" element={<Logout />} />
                 <Route path="/user/detail" element={<UserInfo />} />

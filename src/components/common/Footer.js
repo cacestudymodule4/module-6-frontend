@@ -25,7 +25,7 @@ const Footer = () => {
                                 height="200"
                                 fluid
                             /> */}
-                            <Row className='text-start ms-5'>
+                            <Row className='text-start'>
                                 <Col>
                                     <h3 className='fw-bold'>Liên hệ</h3>
                                     <p><FaMapMarkerAlt /> 293 Nguyễn Tất Thành, Đà Nẵng</p>
