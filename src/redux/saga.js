@@ -20,6 +20,7 @@ function* loginSaga(action) {
             headers: {'Content-Type': 'application/json'}
         });
         const {token} = response.data;
+        localStorage.setItem("userRole", response.data.authorities[0].authority)
         localStorage.setItem("jwtToken", token);
         yield put({type: LOGIN_SUCCESS, payload: response.data});
     } catch (error) {
@@ -51,7 +52,7 @@ function* changePasswordSaga(action) {
     }
 }
 
-function* userInfoSaga(action) {
+function* userInfoSaga() {
     try {
         const response = yield call(axios.get, BaseURL + '/api/user/detail', {
             headers: {Authorization: `Bearer ${localStorage.getItem('jwtToken')}`}
