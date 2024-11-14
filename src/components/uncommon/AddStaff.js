@@ -1,12 +1,12 @@
-import { ToastContainer, toast } from "react-toastify";
+import {ToastContainer, toast} from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import axios from "axios";
-import React, { useEffect, useState } from "react";
+import React, {useEffect, useState} from "react";
 import * as Yup from "yup";
-import { Formik, Field, Form as FormikForm, ErrorMessage } from "formik";
-import { useNavigate } from "react-router-dom";
+import {Formik, Field, Form as FormikForm, ErrorMessage} from "formik";
+import {useNavigate} from "react-router-dom";
 import Footer from "../common/Footer";
-import { NavbarApp } from "../common/Navbar";
+import {NavbarApp} from "../common/Navbar";
 
 const AddStaff = () => {
     const navigate = useNavigate();
@@ -64,10 +64,10 @@ const AddStaff = () => {
             .max(new Date(), "Ngày bắt đầu không được ở tương lai")
     });
 
-    const addEmployee = async (values, { resetForm }) => {
+    const addEmployee = async (values, {resetForm}) => {
         try {
             const response = await axios.post('http://localhost:8080/api/staff/add', values, {
-                headers: { Authorization: `Bearer ${localStorage.getItem('jwtToken')}` }
+                headers: {Authorization: `Bearer ${localStorage.getItem('jwtToken')}`}
             });
 
             if (response.status === 409) {
@@ -168,7 +168,7 @@ const AddStaff = () => {
                 </Formik>
                 <ToastContainer position="top-right" autoClose={5000}/>
             </div>
-            <Footer />
+            <Footer/>
         </>
     );
 };

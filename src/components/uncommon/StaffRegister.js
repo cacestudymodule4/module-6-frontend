@@ -31,7 +31,7 @@ const StaffRegister = () => {
     const handleSubmit = async (values, {setSubmitting, setErrors}) => {
         try {
             await axios.post("http://localhost:8080/api/register", values, {
-                headers: { Authorization: `Bearer ${localStorage.getItem('jwtToken')}` },
+                headers: {Authorization: `Bearer ${localStorage.getItem('jwtToken')}`},
             });
             navigate("/login");
         } catch (error) {
@@ -115,7 +115,8 @@ const StaffRegister = () => {
                                 <ErrorMessage name="gender" component="div" className="text-danger"/>
                             </div>
                             <div className="d-flex justify-content-center mt-3">
-                                <button type="submit" className="btn btn-success w-75 rounded-pill" disabled={isSubmitting}>
+                                <button type="submit" className="btn btn-success w-75 rounded-pill"
+                                        disabled={isSubmitting}>
                                     {isSubmitting ? "Đang đăng ký..." : "Đăng ký"}
                                 </button>
                             </div>
