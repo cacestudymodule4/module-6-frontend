@@ -60,7 +60,11 @@ function CustomerList() {
     };
 
     useEffect(() => {
-        fetchCustomers();  // Gọi hàm fetch khi component mount
+        if (searchName || searchIdentification) {
+            handleCombinedSearch(page - 1);
+        } else {
+            fetchCustomers(page);
+        }
     }, [page]);
 
     const navigate = useNavigate();
@@ -79,6 +83,7 @@ function CustomerList() {
             setFilteredCustomers(filteredCustomers.filter(customer => customer.id !== customerToDelete.id));
             closeModal();
             toast.success("Xóa thành công")
+            fetchCustomers();
         } catch (error) {
             console.error('Có lỗi khi xóa khách hàng:', error);
         }
@@ -151,13 +156,13 @@ function CustomerList() {
         setErrors({});
     };
 
-    const handleCombinedSearch = async (page = 0) => {
+    const handleCombinedSearch = async (newPage = 0) => {
         try {
             const response = await axios.get('http://localhost:8080/api/customers/search', {
                 params: {
                     name: searchName,
                     identification: searchIdentification,
-                    page: page,
+                    page: newPage,
                     size: pageSize,
                 },
                 headers: {Authorization: `Bearer ${localStorage.getItem('jwtToken')}`}
@@ -168,15 +173,18 @@ function CustomerList() {
         } catch (error) {
             console.error('Có lỗi khi tìm kiếm khách hàng:', error);
         }
-    };
+        };
 
     const handleReload = () => {
-        fetchCustomers(page);
+        setPage(1);
+        fetchCustomers();
     };
 
     const handlePageChange = (newPage) => {
-        setPage(newPage);
-    };
+        if (newPage >= 1 && newPage <= totalPages) {
+            setPage(newPage);
+        }
+    }
     return (
         <>
             <NavbarApp/>
