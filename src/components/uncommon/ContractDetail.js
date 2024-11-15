@@ -5,6 +5,7 @@ import {useNavigate} from "react-router-dom";
 import '../../assets/css/Contract.css';
 import {NavbarApp} from "../common/Navbar";
 import Footer from "../common/Footer";
+import ContractPdfButton from "./ContractPdfButton";
 
 function ContractDetail() {
     const navigate = useNavigate();
@@ -281,6 +282,7 @@ function ContractDetail() {
                     </Card>
                 </Form>
             </div>
+            <ContractPdfButton contractId={contract.id}></ContractPdfButton>
             <Footer/>
         </>
     );

@@ -5,7 +5,7 @@ import '../../assets/css/salary.css';
 import axios from "axios";
 import Footer from "../common/Footer";
 import {NavbarApp} from "../common/Navbar";
-import {Link} from "react-router-dom";
+import {Link, useNavigate} from "react-router-dom";
 
 const totalSalary = (data) => {
     return data.reduce((sum, {salary}) => sum + salary, 0);
@@ -34,13 +34,15 @@ const exportToCSV = async (filename) => {
     a.click();
     document.body.removeChild(a);
 }
-const formatDate = () => {
+export const formatDate = () => {
     const now = new Date();
     const formattedDate = now.toLocaleDateString('vi-VN').replace(/\//g, '-');
     const formattedTime = now.toLocaleTimeString('vi-VN').replace(/[:]/g, '-');
     return formattedDate + "_" + formattedTime;
 }
 const Salary = () => {
+    const token = localStorage.getItem('jwtToken');
+    const navigate = useNavigate();
     const [salary, setSalary] = useState([]);
     const [page, setPage] = useState(1);
     const [totalPages, setTotalPages] = useState(0);
@@ -67,6 +69,7 @@ const Salary = () => {
         }
     }
     useEffect(() => {
+        if (!token) navigate("/login");
         const fetchData = async () => {
             try {
                 const resp = await axios.get("http://localhost:8080/api/salary", {
@@ -85,9 +88,7 @@ const Salary = () => {
                 console.error("Lỗi khi lấy dữ liệu: " + error);
             }
         };
-        if (!total) {
-            sum();
-        }
+        if (!total) sum();
         fetchData();
     }, [page, sort, sortDir, q, size, total]);
     const handlePreviousPage = () => {
@@ -180,7 +181,8 @@ const Salary = () => {
                                             </tbody>
                                         </table>
                                     </div>
-                                    <div className={"col-12 d-flex justify-content-center justify-content-lg-end align-items-end text-success"}>
+                                    <div
+                                        className={"col-12 d-flex justify-content-center justify-content-lg-end align-items-end text-success"}>
                                         {size === 999 ?
                                             <p onClick={() => handleShowAll(5)} style={{cursor: 'pointer'}}>
                                                 Thu lại

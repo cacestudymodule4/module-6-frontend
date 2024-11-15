@@ -7,8 +7,10 @@ import '../../assets/css/home.css';
 import {FaPhoneAlt, FaEnvelope, FaMapMarkerAlt, FaChartArea, FaBuilding} from 'react-icons/fa';
 import Footer from '../common/Footer';
 import axios from 'axios';
+import {useNavigate} from "react-router-dom";
 
 function App() {
+    const navigate = useNavigate();
     const [building, setBuilding] = useState({});
     const token = localStorage.getItem("jwtToken");
     const getBuildings = async () => {
@@ -26,6 +28,7 @@ function App() {
     };
 
     useEffect(() => {
+        if (!token) navigate('/login');
         getBuildings();
     }, [])
     return (
@@ -119,7 +122,7 @@ function App() {
                             <p><FaBuilding/> {building.name}</p>
                             <p><FaMapMarkerAlt/> {building.address}</p>
                             <p><FaPhoneAlt/> {building.phoneNumber}</p>
-                            <p><FaChartArea/> {building.area} km2</p>
+                            <p><FaChartArea/> {building.area} m<sup>2</sup></p>
                             <p><FaEnvelope/> {building.email}</p>
                         </Col>
                         <Col md={5}>

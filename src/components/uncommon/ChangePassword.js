@@ -23,15 +23,11 @@ const ChangePassword = () => {
             .required("Xác nhận mật khẩu là bắt buộc")
     });
     useEffect(() => {
-        if (!token) {
-            navigate("/login")
-        }
+        if (!token) navigate("/login");
         if (success) {
             toast.success("Đổi mật khẩu thành công", {position: "top-right", autoClose: 3000});
             dispatch({type: LOGOUT});
-        } else if (error) {
-            toast.error(error, {position: "top-right", autoClose: 3000});
-        }
+        } else if (error) toast.error(error, {position: "top-right", autoClose: 3000});
     }, [error, success]);
     const handleSubmit = (values) => {
         dispatch({
