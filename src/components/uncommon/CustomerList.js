@@ -28,6 +28,8 @@ const customerSchema = Yup.object().shape({
 });
 
 function CustomerList() {
+    const token = localStorage.getItem('jwtToken');
+    const navigate = useNavigate();
     const [customers, setCustomers] = useState([]);
     const [filteredCustomers, setFilteredCustomers] = useState([]);
     const [isModalOpen, setIsModalOpen] = useState(false);
@@ -60,6 +62,7 @@ function CustomerList() {
     };
 
     useEffect(() => {
+        if (!token) navigate("/login")
         if (searchName || searchIdentification) {
             handleCombinedSearch(page - 1);
         } else {
@@ -67,7 +70,6 @@ function CustomerList() {
         }
     }, [page]);
 
-    const navigate = useNavigate();
     const handleNavigateToAddCustomer = () => {
         navigate('/customer/add');
     };
@@ -173,7 +175,7 @@ function CustomerList() {
         } catch (error) {
             console.error('Có lỗi khi tìm kiếm khách hàng:', error);
         }
-        };
+    };
 
     const handleReload = () => {
         setPage(1);
@@ -199,7 +201,7 @@ function CustomerList() {
                         placeholder="Tìm kiếm theo tên"
                         value={searchName}
                         onChange={(e) => setSearchName(e.target.value)}
-                        style={{ maxWidth: "250px" }}
+                        style={{maxWidth: "250px"}}
                     />
                     <input
                         type="text"
@@ -207,7 +209,7 @@ function CustomerList() {
                         placeholder="Tìm kiếm theo CMND"
                         value={searchIdentification}
                         onChange={(e) => setSearchIdentification(e.target.value)}
-                        style={{ maxWidth: "250px" }}
+                        style={{maxWidth: "250px"}}
                     />
                     <button className="btn btn-success customer-id-search" onClick={() => handleCombinedSearch(0)}>
                         <FaSearch/>

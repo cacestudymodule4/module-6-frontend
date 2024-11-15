@@ -6,7 +6,7 @@ import { FaSearch } from 'react-icons/fa';
 import { TbReload } from 'react-icons/tb';
 import axios from 'axios';
 import { toast } from "react-toastify";
-import {useNavigate} from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 const ServiceList = () => {
     const [services, setServices] = useState([]);
@@ -19,6 +19,8 @@ const ServiceList = () => {
     const [serviceToDelete, setServiceToDelete] = useState(null);
     const [showDeleteModal, setShowDeleteModal] = useState(false);
 
+    const navigate = useNavigate();
+
     useEffect(() => {
         fetchServices(currentPage);
     }, [currentPage]);
@@ -26,7 +28,7 @@ const ServiceList = () => {
     const fetchServices = async (page) => {
         try {
             const response = await axios.get(`http://localhost:8080/api/services/list`, {
-                params: { page, size: pageSize },
+                params: { page, size: pageSize, name: searchName },
                 headers: { Authorization: `Bearer ${localStorage.getItem('jwtToken')}` }
             });
             setServices(response.data.content);
@@ -74,7 +76,10 @@ const ServiceList = () => {
             cancelEditing();
         } catch (error) {
             console.error("Lỗi khi cập nhật dịch vụ:", error);
-            toast.error("Cập nhật thất bại");
+            const errorMessage = error.response && error.response.data
+                ? error.response.data
+                : "Cập nhật thất bại";
+            toast.error(errorMessage);
         }
     };
 
@@ -101,10 +106,14 @@ const ServiceList = () => {
         }
         closeDeleteModal();
     };
-    const navigate = useNavigate();
-    const handleNavigateToAddService =() =>{
+
+    const handleNavigateToAddService = () => {
         navigate('/service/add');
-    }
+    };
+
+    const handleViewService = (serviceId) => {
+        navigate(`/service/view/${serviceId}`);
+    };
 
     return (
         <>
@@ -113,7 +122,7 @@ const ServiceList = () => {
                 <h2 className="text-center mb-5 bg-success text-white py-4">Danh sách dịch vụ</h2>
                 <div className="d-flex mb-3">
                     <button className="btn btn-success" onClick={handleNavigateToAddService}>Thêm mới</button>
-                    <button className="btn btn-success ms-2" onClick={handleReload}><TbReload/></button>
+                    <button className="btn btn-success ms-2" onClick={handleReload}><TbReload /></button>
                 </div>
                 <div className="d-flex justify-content-center align-items-center mb-3">
                     <input
@@ -122,11 +131,11 @@ const ServiceList = () => {
                         placeholder="Tìm kiếm theo tên dịch vụ"
                         value={searchName}
                         onChange={(e) => setSearchName(e.target.value)}
-                        />
-                        <button className="btn btn-success" onClick={handleSearch}>
-                            <FaSearch/>
-                        </button>
-                    </div>
+                    />
+                    <button className="btn btn-success ms-2" onClick={handleSearch}>
+                        <FaSearch />
+                    </button>
+                </div>
                 <div className="table-responsive">
                     <Table striped bordered hover>
                         <thead className="table-success">
@@ -135,7 +144,7 @@ const ServiceList = () => {
                             <th>Tên Dịch Vụ</th>
                             <th>Giá</th>
                             <th>Đơn vị</th>
-                            <th colSpan={2}>Hành Động</th>
+                            <th colSpan={3}>Hành Động</th>
                         </tr>
                         </thead>
                         <tbody>
@@ -143,70 +152,58 @@ const ServiceList = () => {
                             services.map((service, index) => (
                                 <tr key={service.id} className="text-center">
                                     <td>{(currentPage * pageSize) + index + 1}</td>
-                                    <td>
+                                    <td>{service.name}</td>
+                                    <td>{service.price}</td>
+                                    <td>{service.unit}</td>
+                                    <td style={{width: '80px', textAlign: 'center'}}>
+                                        <button className="btn btn-info"
+                                                onClick={() => handleViewService(service.id)}>Xem
+                                        </button>
+                                    </td>
+                                    <td style={{width: '80px', textAlign: 'center'}}>
                                         {editIndex === index ? (
-                                            <input
-                                                type="text"
-                                                name="name"
-                                                value={editFormData.name}
-                                                onChange={handleEditChange}
-                                            />
+                                            <button className="btn btn-primary"
+                                                    onClick={() => saveEdit(service.id)}>Lưu</button>
                                         ) : (
-                                            service.name
+                                            <button className="btn btn-warning"
+                                                    onClick={() => startEditing(index, service)}>Sửa</button>
                                         )}
                                     </td>
-                                    <td>
-                                        {editIndex === index ? (
-                                            <input
-                                                type="number"
-                                                name="price"
-                                                value={editFormData.price}
-                                                onChange={handleEditChange}
-                                            />
-                                        ) : (
-                                            service.price
-                                        )}
-                                    </td>
-                                    <td>
-                                        {editIndex === index ? (
-                                            <input
-                                                type="text"
-                                                name="unit"
-                                                value={editFormData.unit}
-                                                onChange={handleEditChange}
-                                            />
-                                        ) : (
-                                            service.unit
-                                        )}
-                                    </td>
-                                    <td>
-                                        {editIndex === index ? (
-                                            <button className="btn btn-primary" onClick={() => saveEdit(service.id)}>Lưu</button>
-                                        ) : (
-                                            <button className="btn btn-warning" onClick={() => startEditing(index, service)}>Sửa</button>
-                                        )}
-                                    </td>
-                                    <td>
+                                    <td style={{width: '80px', textAlign: 'center'}}>
                                         {editIndex === index ? (
                                             <button className="btn btn-secondary" onClick={cancelEditing}>Hủy</button>
                                         ) : (
-                                            <button className="btn btn-danger" onClick={() => openDeleteModal(service.id)}>Xóa</button>
+                                            <button className="btn btn-danger"
+                                                    onClick={() => openDeleteModal(service.id)}>Xóa</button>
                                         )}
                                     </td>
+
                                 </tr>
                             ))
                         ) : (
                             <tr>
-                                <td colSpan="6" className="text-center">Không có dịch vụ nào</td>
+                                <td colSpan="7" className="text-center">Không có dịch vụ nào</td>
                             </tr>
                         )}
                         </tbody>
                     </Table>
                 </div>
                 <div className="d-flex justify-content-center mb-4">
-                    <button className="btn btn-outline-success" onClick={() => handlePageChange(currentPage - 1)} disabled={currentPage === 0}>Trang trước</button>
+                    <button
+                        className="btn btn-outline-success"
+                        onClick={() => handlePageChange(currentPage - 1)}
+                        disabled={currentPage === 0}
+                    >
+                        Trang trước
+                    </button>
                     <span className="mx-3">Trang {currentPage + 1} / {totalPages}</span>
-                    <button className="btn btn-outline-success" onClick={() => handlePageChange(currentPage + 1)} disabled={currentPage === totalPages - 1}>Trang sau</button>
+                    <button
+                        className="btn btn-outline-success"
+                        onClick={() => handlePageChange(currentPage + 1)}
+                        disabled={currentPage === totalPages - 1}
+                    >
+                        Trang sau
+                    </button>
                 </div>
             </div>
 
