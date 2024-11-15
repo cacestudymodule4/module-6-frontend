@@ -109,6 +109,10 @@ function Staff() {
         }
     };
 
+    const formatCurrency = (value) => {
+        return value ? new Intl.NumberFormat('vi-VN').format(value) : '0';
+    }
+
     return (
         <>
             <NavbarApp/>
@@ -207,7 +211,7 @@ function Staff() {
                                 <td className="text-center">{staff.address}</td>
                                 <td className="text-center">{staff.phone}</td>
                                 <td className="text-center">{staff.email}</td>
-                                <td className="text-center">{staff.salary}</td>
+                                <td className="text-center">{formatCurrency(staff.salary)} VNĐ</td>
                                 <td className="text-center">{moment(staff.startDate, 'YYYY-MM-DD').format('DD-MM-YYYY')}</td>
                                 <td className="text-center">{staff.position}</td>
                                 <td className="text-center">

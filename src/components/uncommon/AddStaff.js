@@ -10,7 +10,7 @@ import {NavbarApp} from "../common/Navbar";
 
 const AddStaff = () => {
     const navigate = useNavigate();
-    const [isAddModalOpen, setIsAddModalOpen] = useState(true);
+    const [isAddModalOpen, setIsAddModalOpen] = useState(false);
 
     const initialValues = {
         name: "",
@@ -71,16 +71,13 @@ const AddStaff = () => {
                 headers: {Authorization: `Bearer ${localStorage.getItem('jwtToken')}`}
             });
 
-            if (response.status === 409) {
-                toast.error(response.data);
-                return;
+            if (response.status === 200 || response.status === 201) {
+                toast.success("Nhân viên mới đã được thêm thành công!!!");
+                setIsAddModalOpen(false);
+                navigate('/staff/list');
             }
-            setIsAddModalOpen(false);
-            toast.success("Nhân viên mới đã được thêm thành công!!!");
-            navigate('/staff/list');
         } catch (error) {
-            console.error(error)
-            if (error.response && error.response.data) {
+            if (error.response && error.response.status === 409) {
                 toast.error(error.response.data);
             } else {
                 toast.error("Xin bạn hãy kiểm tra lại Tên, Email, Số điện thoại");
@@ -101,72 +98,93 @@ const AddStaff = () => {
                     onSubmit={addEmployee}
                 >
                     <FormikForm>
-                        <div className="mb-2">
-                            <label className="form-label" style={{fontSize: '1.2rem'}}>Mã nhân viên</label>
-                            <Field type="text" name="codeStaff" className="form-control form-control-lg"/>
-                            <ErrorMessage name="codeStaff" component="div" className="text-danger small"/>
+                        <div className="row">
+                            <div className="col-md-6">
+                                <div className="mb-3">
+                                    <label className="form-label" style={{fontSize: '1.1rem'}}>Mã nhân viên</label>
+                                    <Field type="text" name="codeStaff" className="form-control form-control-lg"/>
+                                    <ErrorMessage name="codeStaff" component="div" className="text-danger small"/>
+                                </div>
+
+                                <div className="mb-3">
+                                    <label className="form-label" style={{fontSize: '1.1rem'}}>Họ và Tên</label>
+                                    <Field type="text" name="name" className="form-control form-control-lg"/>
+                                    <ErrorMessage name="name" component="div" className="text-danger small"/>
+                                </div>
+
+                                <div className="mb-3">
+                                    <label className="form-label" style={{fontSize: '1.1rem'}}>Ngày sinh</label>
+                                    <Field type="date" name="birthDate" className="form-control form-control-lg"/>
+                                    <ErrorMessage name="birthDate" component="div" className="text-danger small"/>
+                                </div>
+
+                                <div className="mb-3">
+                                    <label className="form-label" style={{fontSize: '1.1rem'}}>Email</label>
+                                    <Field type="email" name="email" className="form-control form-control-lg"/>
+                                    <ErrorMessage name="email" component="div" className="text-danger small"/>
+                                </div>
+
+                                <div className="mb-3">
+                                    <label className="form-label" style={{fontSize: '1.1rem'}}>Số điện thoại</label>
+                                    <Field type="text" name="phone" className="form-control form-control-lg"/>
+                                    <ErrorMessage name="phone" component="div" className="text-danger small"/>
+                                </div>
+                            </div>
+
+                            <div className="col-md-6">
+                                <div className="mb-3">
+                                    <label className="form-label" style={{fontSize: '1.1rem'}}>Địa chỉ</label>
+                                    <Field type="text" name="address" className="form-control form-control-lg"/>
+                                    <ErrorMessage name="address" component="div" className="text-danger small"/>
+                                </div>
+
+                                <div className="mb-3">
+                                    <label className="form-label" style={{fontSize: '1.1rem'}}>Lương</label>
+                                    <div className="input-group">
+                                        <Field type="number" name="salary" className="form-control form-control-lg"/>
+                                        <span className="input-group-text">VNĐ</span>
+                                    </div>
+                                    <ErrorMessage name="salary" component="div" className="text-danger small"/>
+                                </div>
+
+                                <div className="mb-3">
+                                    <label className="form-label" style={{fontSize: '1.1rem'}}>Ngày bắt đầu</label>
+                                    <Field type="date" name="startDate" className="form-control form-control-lg"/>
+                                    <ErrorMessage name="startDate" component="div" className="text-danger small"/>
+                                </div>
+
+                                <div className="mb-3">
+                                    <label className="form-label" style={{fontSize: '1.1rem'}}>Bộ phận</label>
+                                    <Field as="select" name="position" className="form-select form-select-lg">
+                                        <option value="Manager">Quản lý</option>
+                                        <option value="Staff">Nhân viên</option>
+                                        <option value="HR">Nhân sự</option>
+                                        <option value="IT">IT</option>
+                                    </Field>
+                                    <ErrorMessage name="position" component="div" className="text-danger small"/>
+                                </div>
+
+                                <div className="mb-3">
+                                    <label className="form-label" style={{fontSize: '1.1rem'}}>Giới tính</label>
+                                    <Field as="select" name="gender" className="form-select form-select-lg">
+                                        <option value={true}>Nam</option>
+                                        <option value={false}>Nữ</option>
+                                    </Field>
+                                </div>
+                            </div>
                         </div>
-                        <div className="mb-2">
-                            <label className="form-label" style={{fontSize: '1.2rem'}}>Tên</label>
-                            <Field type="text" name="name" className="form-control form-control-lg"/>
-                            <ErrorMessage name="name" component="div" className="text-danger small"/>
-                        </div>
-                        <div className="mb-2">
-                            <label className="form-label" style={{fontSize: '1.2rem'}}>Ngày sinh</label>
-                            <Field type="date" name="birthDate" className="form-control form-control-lg"/>
-                            <ErrorMessage name="birthDate" component="div" className="text-danger small"/>
-                        </div>
-                        <div className="mb-2">
-                            <label className="form-label" style={{fontSize: '1.2rem'}}>Giới tính</label>
-                            <Field as="select" name="gender" className="form-select form-select-lg">
-                                <option value={true}>Nam</option>
-                                <option value={false}>Nữ</option>
-                            </Field>
-                        </div>
-                        <div className="mb-2">
-                            <label className="form-label" style={{fontSize: '1.2rem'}}>Địa chỉ</label>
-                            <Field type="text" name="address" className="form-control form-control-lg"/>
-                            <ErrorMessage name="address" component="div" className="text-danger small"/>
-                        </div>
-                        <div className="mb-2">
-                            <label className="form-label" style={{fontSize: '1.2rem'}}>Số điện thoại</label>
-                            <Field type="text" name="phone" className="form-control form-control-lg"/>
-                            <ErrorMessage name="phone" component="div" className="text-danger small"/>
-                        </div>
-                        <div className="mb-2">
-                            <label className="form-label" style={{fontSize: '1.2rem'}}>Email</label>
-                            <Field type="email" name="email" className="form-control form-control-lg"/>
-                            <ErrorMessage name="email" component="div" className="text-danger small"/>
-                        </div>
-                        <div className="mb-2">
-                            <label className="form-label" style={{fontSize: '1.2rem'}}>Lương</label>
-                            <Field type="number" name="salary" className="form-control form-control-lg"/>
-                            <ErrorMessage name="salary" component="div" className="text-danger small"/>
-                        </div>
-                        <div className="mb-2">
-                            <label className="form-label" style={{fontSize: '1.2rem'}}>Ngày bắt đầu</label>
-                            <Field type="date" name="startDate" className="form-control form-control-lg"/>
-                            <ErrorMessage name="startDate" component="div" className="text-danger small"/>
-                        </div>
-                        <div className="mb-2">
-                            <label className="form-label" style={{fontSize: '1.2rem'}}>Vị trí</label>
-                            <Field as="select" name="position" className="form-control form-control-lg">
-                                <option value="Manager">Quản lý</option>
-                                <option value="Staff">Nhân viên</option>
-                                <option value="HR">Nhân sự</option>
-                                <option value="IT">IT</option>
-                            </Field>
-                            <ErrorMessage name="position" component="div" className="text-danger small"/>
-                        </div>
-                        <div className="d-flex justify-content-end">
+
+                        <div className="d-flex justify-content-end mt-3">
                             <button
                                 type="button"
-                                className="btn btn-success btn-lg me-2"
+                                className="btn btn-outline-success btn-lg me-2"
                                 onClick={() => navigate("/staff/list")}>
+                                <i className="bi bi-arrow-left-circle me-2"></i>
                                 Trở lại
                             </button>
-                            <button type="submit" className="btn btn-success btn-lg">
-                                Thêm
+
+                            <button type="submit" className="btn btn-outline-success btn-lg">
+                                Thêm <i className="bi bi-plus-circle"></i>
                             </button>
                         </div>
                     </FormikForm>
