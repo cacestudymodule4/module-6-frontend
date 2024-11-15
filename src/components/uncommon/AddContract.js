@@ -8,7 +8,7 @@ import {useNavigate} from "react-router-dom";
 import Footer from "../common/Footer";
 import {NavbarApp} from "../common/Navbar";
 import '../../assets/css/Contract.css';
-import {FaRedo, FaSearch} from "react-icons/fa";
+import {FaSearch} from "react-icons/fa";
 
 function AddContract() {
     const navigate = useNavigate();
@@ -52,10 +52,9 @@ function AddContract() {
             }
         }
 
-
         async function getCustomer() {
             try {
-                const response = await axios.get("http://localhost:8080/api/customer/list", {
+                const response = await axios.get("http://localhost:8080/api/customers/list-add", {
                     headers: {Authorization: `Bearer ${localStorage.getItem('jwtToken')}`}
                 })
                 setCustomer(response.data);
@@ -168,7 +167,7 @@ function AddContract() {
     // =================Tìm trong modal===============//
     const handleSearchCus = async (value) => {
         try {
-            const res = await axios.get(`http://localhost:8080/api/customer/findCus?searchCus=${value.searchCus}`, {
+            const res = await axios.get(`http://localhost:8080/api/customers/findCus?searchCus=${value.searchCus}`, {
                     headers: {Authorization: `Bearer ${localStorage.getItem('jwtToken')}`},
                 },
             )
@@ -202,7 +201,6 @@ function AddContract() {
             console.log(err);
         }
     }
-
 
     return (
         <>
@@ -243,7 +241,6 @@ function AddContract() {
                                         />
                                     </Form.Group>
                                 </Col>
-
                                 <Col md={3}>
                                     <Form.Group className="mb-3">
                                         <Form.Label className={"add-label"}>
@@ -292,7 +289,6 @@ function AddContract() {
                                     </Form.Group>
                                 </Col>
                             </Row>
-
                             {/*  --------------chọn nhân viên----------------------*/}
                             <Row>
                                 <Col md={3}>
@@ -682,9 +678,7 @@ function AddContract() {
                                 ))}
                                 </tbody>
                             </Table>}
-
                     </div>
-
                 </Modal.Body>
                 <Modal.Footer>
                     <Button variant="secondary" onClick={() => setShowCusModal(false)}>
@@ -757,9 +751,7 @@ function AddContract() {
                                 ))}
                                 </tbody>
                             </Table>}
-
                     </div>
-
                 </Modal.Body>
                 <Modal.Footer>
                     <Button variant="secondary" onClick={() => setShowGroundModal(false)}>
@@ -769,7 +761,6 @@ function AddContract() {
             </Modal>
             <Footer/>
         </>
-
     );
 }
 

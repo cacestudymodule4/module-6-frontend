@@ -1,7 +1,7 @@
-import React, { useState, useEffect } from 'react';
+import React, {useState, useEffect} from 'react';
 import axios from 'axios';
-import { FaSearch } from 'react-icons/fa';
-import { ToastContainer, toast } from 'react-toastify';
+import {FaSearch} from 'react-icons/fa';
+import {ToastContainer, toast} from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import moment from 'moment';
 import {useNavigate} from "react-router-dom";
@@ -16,17 +16,25 @@ function Staff() {
     const [filteredStaffList, setFilteredStaffList] = useState([]);
     const [staffDelete, setStaffDelete] = useState(null);
     const [isModalOpen, setIsModalOpen] = useState(false);
+    const [currentPage, setCurrentPage] = useState(0);
+    const [totalPages, setTotalPages] = useState(1);
+    const pageSize = 4;
 
-    useEffect(() => {
-        axios.get('http://localhost:8080/api/staff/list', {
+    const fetchStaffList = () => {
+        axios.get(`http://localhost:8080/api/staff/list?page=${currentPage}&size=${pageSize}`, {
             headers: { Authorization: `Bearer ${localStorage.getItem('jwtToken')}` }
         })
             .then(response => {
-                setStaffList(response.data);
-                setFilteredStaffList(response.data);
+                setStaffList(response.data.content);
+                setFilteredStaffList(response.data.content);
+                setTotalPages(response.data.totalPages);
             })
             .catch(error => toast.error("Lỗi khi tải danh sách nhân viên"));
-    }, [staffList]);
+    };
+
+    useEffect(() => {
+        fetchStaffList();
+    }, [currentPage]);
 
     const handleOpenModal = (staff) => {
         setStaffDelete(staff);
@@ -48,16 +56,16 @@ function Staff() {
             await axios.delete(`http://localhost:8080/api/staff/delete/${staffDelete.id}`, {
                 headers: { Authorization: `Bearer ${localStorage.getItem('jwtToken')}` }
             });
-            setStaffList(staffList.filter(emp => emp.id !== staffDelete.id));
-            handleCloseModal();
             toast.success("Nhân viên đã được xóa thành công!");
+            handleCloseModal();
+            fetchStaffList();
         } catch (error) {
             toast.error("Có lỗi xảy ra khi xóa nhân viên");
         }
     };
 
     const handleAddStaff = () => {
-        navigate('/staff/list/add');
+        navigate('/staff/add');
     };
 
     const handleSearch = async (values) => {
@@ -65,14 +73,17 @@ function Staff() {
             codeStaff: `%${values.codeStaff}%`,
             name: `%${values.name}%`,
             position: `%${values.position}%`,
+            page: currentPage,
+            size: pageSize,
         };
         try {
             const response = await axios.get('http://localhost:8080/api/staff/search', {
-                headers: { Authorization: `Bearer ${localStorage.getItem('jwtToken')}` },
+                headers: {Authorization: `Bearer ${localStorage.getItem('jwtToken')}`},
                 params: data
             });
             if (response.status === 200) {
-                setFilteredStaffList(response.data);
+                setFilteredStaffList(response.data.content);
+                setTotalPages(response.data.totalPages);
             }
         } catch (error) {
             console.error(error);
@@ -81,8 +92,22 @@ function Staff() {
     };
 
     const handleEditStaff = (id) => {
-        navigate(`/staff/list/edit/${id}`);
-    }
+        navigate(`/staff/edit/${id}`);
+        setCurrentPage(0);
+        fetchStaffList();
+    };
+
+    const handlePageChange = (newPage) => {
+
+        if (newPage >= 0 && newPage < totalPages) {
+            setCurrentPage(newPage);
+            handleSearch({
+                codeStaff: "",
+                name: "",
+                position: "",
+            });
+        }
+    };
 
     return (
         <>
@@ -102,7 +127,7 @@ function Staff() {
                     {() => (
                         <FormikForm className="mb-3 custom-search">
                             <Form.Group className="mb-3" controlId="formSearch">
-                                <Form.Label className="small-label">Tìm theo mã nhân viên</Form.Label>
+                                <Form.Label className="small-label">Tìm kiếm theo mã nhân viên</Form.Label>
                                 <Field
                                     as={Form.Control}
                                     type="text"
@@ -135,7 +160,7 @@ function Staff() {
                             </Form.Group>
 
                             <Button variant="secondary" type="submit" className="search" style={{borderRadius: '50%'}}>
-                                <FaSearch />
+                                <FaSearch/>
                             </Button>
                         </FormikForm>
                     )}
@@ -147,7 +172,7 @@ function Staff() {
                     style={{
                         fontSize: '1.1rem',
                         padding: '0.75rem 2rem',
-                        marginTop: '1rem' ,
+                        marginTop: '1rem',
                     }}
                     className='mb-4'>
                     Thêm mới nhân viên
@@ -167,7 +192,7 @@ function Staff() {
                             <th className="text-center">Email</th>
                             <th className="text-center">Lương</th>
                             <th className="text-center">Ngày làm việc</th>
-                            <th className="text-center">Vị trí</th>
+                            <th className="text-center">Bộ phận</th>
                             <th className="text-center">Hành động</th>
                         </tr>
                         </thead>
@@ -186,8 +211,6 @@ function Staff() {
                                 <td className="text-center">{moment(staff.startDate, 'YYYY-MM-DD').format('DD-MM-YYYY')}</td>
                                 <td className="text-center">{staff.position}</td>
                                 <td className="text-center">
-                                    <button className="btn btn-info btn-sm me-2" style={{fontSize: '0.9rem'}}>Xem
-                                    </button>
                                     <button
                                         className="btn btn-warning btn-sm me-2"
                                         style={{fontSize: '0.9rem'}}
@@ -195,7 +218,7 @@ function Staff() {
                                         Cập nhật
                                     </button>
                                     <button
-                                        className="btn btn-danger btn-sm"
+                                        className="btn btn-danger btn-sm me-2"
                                         onClick={() => handleOpenModal(staff)}
                                         style={{fontSize: '0.9rem'}}>
                                         Xóa
@@ -207,23 +230,43 @@ function Staff() {
                     </table>
                 </div>
 
-                <ToastContainer position="top-right" autoClose={5000} />
+                <div className="d-flex justify-content-between">
+                    <button
+                        className="btn btn-secondary"
+                        onClick={() => handlePageChange(currentPage - 1)}
+                        disabled={currentPage === 0}>
+                        Trước
+                    </button>
+                    <span className="my-auto">Trang {currentPage + 1} / {totalPages}</span>
+                    <button
+                        className="btn btn-secondary"
+                        onClick={() => handlePageChange(currentPage + 1)}
+                        disabled={currentPage === totalPages - 1}>
+                        Sau
+                    </button>
+                </div>
 
                 <Modal show={isModalOpen} onHide={handleCloseModal} centered>
                     <Modal.Header closeButton>
                         <Modal.Title>Xác nhận xóa</Modal.Title>
                     </Modal.Header>
                     <Modal.Body>
-                        <p style={{ fontSize: '1.1rem' }}>Bạn có chắc chắn muốn xóa nhân viên {staffDelete?.name}?</p>
+                        <p style={{fontSize: '1.1rem'}}>
+                            Bạn có chắc chắn muốn xóa nhân viên
+                            <span style={{color: 'red'}}>"{staffDelete?.name}?"</span>
+                        </p>
                     </Modal.Body>
                     <Modal.Footer>
-                        <Button variant="danger" onClick={handleDeleteStaff} style={{ fontSize: '1rem' }}>Xóa</Button>
-                        <Button variant="secondary" onClick={handleCloseModal} style={{ fontSize: '1rem' }}>Hủy</Button>
+                        <Button variant="danger" onClick={handleDeleteStaff} style={{fontSize: '1rem'}}>Xóa</Button>
+                        <Button variant="secondary" onClick={handleCloseModal} style={{fontSize: '1rem'}}>Hủy</Button>
                     </Modal.Footer>
                 </Modal>
+
             </div>
-            <Footer />
+            <ToastContainer/>
+            <Footer/>
         </>
     );
 }
+
 export default Staff;

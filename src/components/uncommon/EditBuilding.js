@@ -102,7 +102,6 @@ export const EditBuilding = () => {
                     theme: "light",
                 });
             }
-
         } catch (error) {
             console.log(error);
         }
@@ -149,7 +148,7 @@ export const EditBuilding = () => {
                         </div>
 
                         <div className="mb-3">
-                            <label htmlFor="area" className="form-label">Diện tích(m<sup>2</sup>):</label>
+                            <label htmlFor="area" className="form-label">Diện tích:</label>
                             <Field type="number" id="area" name="area" className="form-control" />
                             <ErrorMessage name="area" component="div" style={{ color: 'red' }} />
                         </div>
@@ -161,7 +160,8 @@ export const EditBuilding = () => {
                         </div>
 
                         <div className="mb-3">
-                            <Button style={{ width: "10%", marginLeft: "90%" }} type="submit" className="form-control" variant="success">Submit</Button>
+                            <Button style={{ width: "10%", marginLeft: "90%" }} type="submit" className="form-control"
+                                variant="success">Submit</Button>
                         </div>
                     </Form>
                 </Formik>
