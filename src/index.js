@@ -27,6 +27,7 @@ import { Floor } from './components/uncommon/Floor/Floor';
 import { AddEditFloor } from './components/uncommon/Floor/AddEditFloor';
 import './assets/css/styles.css';
 import StaffRegister from "./components/uncommon/StaffRegister";
+import AddService from "./components/uncommon/AddService";
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
@@ -58,6 +59,7 @@ root.render(
                 <Route path="/report" element={<Chart8Component />} />
                 <Route path="/*" element={<Login />} />
                 <Route path="/service/list" element={<ServiceList />} />
+                <Route path="/service/add" element={<AddService/>} />
             </Routes>
         </BrowserRouter>
     </Provider>
