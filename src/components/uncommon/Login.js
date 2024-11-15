@@ -79,13 +79,6 @@ const Login = () => {
                                                                 <ErrorMessage name="password" component="div"
                                                                               className="text-danger mt-1"/>
                                                             </div>
-                                                            <p className="mt-1 text-secondary text-end">
-                                                                {" "}
-                                                                <Link to="/register"
-                                                                      className=" text-secondary">
-                                                                    Đăng ký tài khoản ? 
-                                                                </Link>
-                                                            </p>
                                                             <button
                                                                 className="btn btn-dark btn-lg w-100"
                                                                 type="submit"
