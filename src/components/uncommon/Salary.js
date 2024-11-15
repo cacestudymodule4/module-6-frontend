@@ -209,7 +209,7 @@ const Salary = () => {
                                         <button className="btn btn-success" onClick={() =>
                                             exportToCSV(`salary_report_` + formatDate())
                                         }>
-                                            Download CSV
+                                            Tải xuống CSV
                                         </button>
                                     </div>
                                     <div className="justify-content-center align-items-center mt-3">

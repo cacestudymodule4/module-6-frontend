@@ -28,8 +28,8 @@ function ContractPdfButton({contractId}) {
         if (!token) navigate("/login");
     })
     return (
-        <button onClick={downloadPdf}>
-            Tải Hợp Đồng PDF
+        <button className="btn btn-success" onClick={downloadPdf}>
+            Tải xuống PDF
         </button>
     );
 }
