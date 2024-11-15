@@ -29,7 +29,7 @@ function ContractPdfButton({contractId}) {
     })
     return (
         <button className="btn btn-success" onClick={downloadPdf}>
-            Download PDF
+            Tải xuống PDF
         </button>
     );
 }
