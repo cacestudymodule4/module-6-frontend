@@ -17,9 +17,7 @@ const Chart8Component = () => {
         return Object.values(revenue).reduce((acc, cur) => acc + cur, 0);
     }
     useEffect(() => {
-        if (!token) {
-            navigate("/login")
-        }
+        if (!token) navigate("/login");
         const fetchData = async () => {
             try {
                 const resp = await axios.post('http://localhost:8080/api/report', reportRequest, {
@@ -50,10 +48,7 @@ const Chart8Component = () => {
                         }
                     }
                 };
-
-                if (chart) {
-                    chart.destroy();
-                }
+                if (chart) chart.destroy();
                 const newChart = new ApexCharts(document.querySelector("#bsb-chart-8"), chartOptions);
                 newChart.render();
                 setChart(newChart);
@@ -63,9 +58,7 @@ const Chart8Component = () => {
         };
         fetchData();
         return () => {
-            if (chart) {
-                chart.destroy();
-            }
+            if (chart) chart.destroy();
         };
     }, [reportRequest]);
     const handleChange = (e) => {
