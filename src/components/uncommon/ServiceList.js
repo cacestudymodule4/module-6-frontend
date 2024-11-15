@@ -5,11 +5,12 @@ import Footer from "../common/Footer";
 import {FaSearch} from 'react-icons/fa';
 import {TbReload} from 'react-icons/tb';
 import axios from 'axios';
+import {toast} from "react-toastify";
 
 const ServiceList = () => {
     const [services, setServices] = useState([]);
     const [currentPage, setCurrentPage] = useState(0);
-    const [pageSize] = useState(10);
+    const [pageSize] = useState(5);
     const [totalPages, setTotalPages] = useState(0);
     const [searchName, setSearchName] = useState('');
     const [isModalOpen, setModalOpen] = useState(false);
@@ -21,20 +22,22 @@ const ServiceList = () => {
 
     const fetchServices = async (page) => {
         try {
-            const response = await axios.get(`/api/services/list`, {
+            const response = await axios.get(`http://localhost:8080/api/services/list`, {
                 params: {page, size: pageSize},
                 headers: {Authorization: `Bearer ${localStorage.getItem('jwtToken')}`}
             });
             console.log("Dữ liệu dịch vụ:", response.data);
-            setServices(response.data.content);
+            setServices(response.data.content
+            );
             setTotalPages(response.data.totalPages);
-        } catch (error) {
+        } catch
+            (error) {
             console.error("Lỗi khi tải danh sách dịch vụ:", error);
         }
     };
 
     const handleSearch = () => {
-        fetchServices(0);  // Reset về trang đầu tiên khi tìm kiếm
+        fetchServices(0);
     };
 
     const handleReload = () => {
@@ -57,13 +60,15 @@ const ServiceList = () => {
 
     const handleDeleteService = async () => {
         try {
-            await axios.delete(`/api/services/${serviceToDelete.id}`, {
+            await axios.delete(`http://localhost:8080/api/services/delete/${serviceToDelete.id}`, {
                 headers: {Authorization: `Bearer ${localStorage.getItem('jwtToken')}`}
             });
             setModalOpen(false);
+            toast.success("Xóa thành công")
             fetchServices(currentPage);
         } catch (error) {
             console.error("Lỗi khi xóa dịch vụ:", error);
+            toast.error("Xóa thất bại")
         }
     };
 
@@ -90,7 +95,7 @@ const ServiceList = () => {
                 <div className="table-responsive">
                     <Table striped bordered hover>
                         <thead className="table-success">
-                        <tr>
+                        <tr className="text-center">
                             <th>STT</th>
                             <th>Tên Dịch Vụ</th>
                             <th>Giá</th>
@@ -101,7 +106,7 @@ const ServiceList = () => {
                         <tbody>
                         {services.length > 0 ? (
                             services.map((service, index) => (
-                                <tr key={service.id}>
+                                <tr key={service.id} className="text-center">
                                     <td>{(currentPage * pageSize) + index + 1}</td>
                                     <td>{service.name}</td>
                                     <td>{service.price}</td>
@@ -124,7 +129,7 @@ const ServiceList = () => {
                         </tbody>
                     </Table>
                 </div>
-                <div className="d-flex justify-content-between mb-4">
+                <div className="d-flex justify-content-center mb-4">
                     <button
                         className="btn btn-outline-success"
                         onClick={() => handlePageChange(currentPage - 1)}
@@ -132,7 +137,7 @@ const ServiceList = () => {
                     >
                         Trang trước
                     </button>
-                    <span>Trang {currentPage + 1} / {totalPages}</span>
+                    <span className="mx-3">Trang {currentPage + 1} / {totalPages}</span>
                     <button
                         className="btn btn-outline-success"
                         onClick={() => handlePageChange(currentPage + 1)}
