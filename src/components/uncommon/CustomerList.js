@@ -60,7 +60,11 @@ function CustomerList() {
     };
 
     useEffect(() => {
-        fetchCustomers();
+        if (searchName || searchIdentification) {
+            handleCombinedSearch(page - 1);
+        } else {
+            fetchCustomers(page);
+        }
     }, [page]);
 
     const navigate = useNavigate();
@@ -180,7 +184,7 @@ function CustomerList() {
         if (newPage >= 1 && newPage <= totalPages) {
             setPage(newPage);
         }
-    };
+    }
     return (
         <>
             <NavbarApp/>

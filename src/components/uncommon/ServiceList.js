@@ -5,6 +5,7 @@ import Footer from "../common/Footer";
 import {FaSearch} from 'react-icons/fa';
 import {TbReload} from 'react-icons/tb';
 import axios from 'axios';
+import {toast} from "react-toastify";
 
 const ServiceList = () => {
     const [services, setServices] = useState([]);
@@ -59,13 +60,15 @@ const ServiceList = () => {
 
     const handleDeleteService = async () => {
         try {
-            await axios.delete(`/api/services/delete/${serviceToDelete.id}`, {
+            await axios.delete(`http://localhost:8080/api/services/delete/${serviceToDelete.id}`, {
                 headers: {Authorization: `Bearer ${localStorage.getItem('jwtToken')}`}
             });
             setModalOpen(false);
+            toast.success("Xóa thành công")
             fetchServices(currentPage);
         } catch (error) {
             console.error("Lỗi khi xóa dịch vụ:", error);
+            toast.error("Xóa thất bại")
         }
     };
 
