@@ -10,11 +10,21 @@ import Footer from '../common/Footer';
 
 const ValidateForm = Yup.object().shape({
     name: Yup.string()
-        .required('Name is required'),
+        .required('Không được để trống'),
 
     phoneNumber: Yup.string()
-        .matches(/^0\d{9}$/, 'Phone number must start with 0 and have 10 digits')
-        .matches(/^84\d{9}$/, 'Phone number starting with 84 must have 11 digits')
+        .test('is-valid-phone', 'Số điện thoại bắt đầu bằng 0 thì gồm 10 số hoặc bằng 84 thì gồm 11 số',
+            function (value) {
+                if (!value) return false;
+                if (/^0\d{9}$/.test(value)) {
+                    return true;
+                }
+                if (/^84\d{9}$/.test(value)) {
+                    return true;
+                }
+                return false;
+            }
+        )
         .required('Phone number is required'),
 
     email: Yup.string()
@@ -128,7 +138,7 @@ export const EditBuilding = () => {
 
                         <div className="mb-3">
                             <label htmlFor="phoneNumber" className="form-label">Số điện thoại:</label>
-                            <Field type="number" id="phoneNumber" name="phoneNumber" className="form-control" required />
+                            <Field type="text" id="phoneNumber" name="phoneNumber" className="form-control" required />
                             <ErrorMessage name="phoneNumber" component="div" style={{ color: 'red' }} />
                         </div>
 
@@ -139,7 +149,7 @@ export const EditBuilding = () => {
                         </div>
 
                         <div className="mb-3">
-                            <label htmlFor="area" className="form-label">Diện tích:</label>
+                            <label htmlFor="area" className="form-label">Diện tích(m<sup>2</sup>):</label>
                             <Field type="number" id="area" name="area" className="form-control" />
                             <ErrorMessage name="area" component="div" style={{ color: 'red' }} />
                         </div>

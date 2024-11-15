@@ -119,7 +119,7 @@ function App() {
               <p><FaBuilding /> {building.name}</p>
               <p><FaMapMarkerAlt /> {building.address}</p>
               <p><FaPhoneAlt /> {building.phoneNumber}</p>
-              <p><FaChartArea /> {building.area} km2</p>
+              <p><FaChartArea /> {building.area} m<sup>2</sup></p>
               <p><FaEnvelope /> {building.email}</p>
             </Col>
             <Col md={5}>

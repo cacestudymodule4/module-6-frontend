@@ -177,7 +177,7 @@ export const Floor = () => {
                                     <tr key={floor.id} className="text-center">
                                         <td>{floor.floorCode}</td>
                                         <td>{floor.name}</td>
-                                        <td>{floor.area}</td>
+                                        <td>{floor.area}m<sup>2</sup></td>
                                         <td>{floor.capacity}</td>
                                         <td>{floor.typeOfFloor}</td>
                                         <td className="text-center">
