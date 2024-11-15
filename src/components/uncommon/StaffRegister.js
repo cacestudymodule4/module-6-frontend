@@ -33,7 +33,7 @@ const StaffRegister = () => {
             await axios.post("http://localhost:8080/api/register", values, {
                 headers: {Authorization: `Bearer ${localStorage.getItem('jwtToken')}`},
             });
-            navigate("/login");
+            navigate("/home");
         } catch (error) {
             if (error.response && error.response.status === 400) {
                 setErrors(error.response.data);
