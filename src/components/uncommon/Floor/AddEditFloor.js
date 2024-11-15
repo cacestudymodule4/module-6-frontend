@@ -65,7 +65,7 @@ export const AddEditFloor = () => {
                 >
                     <Form>
                         <div className="form-group mb-3">
-                            <label className="form-label">Mã tầng lầu</label>
+                            <label className="form-label">Mã tầng lầu<span className="text-danger">*</span>:</label>
                             <Field
                                 as={Form.Control}
                                 type="text"
@@ -80,7 +80,7 @@ export const AddEditFloor = () => {
 
 
                         <div className="form-group mb-3">
-                            <label className="form-label">Tên tầng</label>
+                            <label className="form-label">Tên tầng<span className="text-danger">*</span>:</label>
                             <Field
                                 as={Form.Control}
                                 type="text"
@@ -94,7 +94,7 @@ export const AddEditFloor = () => {
                         </div>
 
                         <div className="form-group mb-3">
-                            <label className="form-label">Diện tích</label>
+                            <label className="form-label">Diện tích(m<sup>2</sup>)<span className="text-danger">*</span>:</label>
                             <Field
                                 as={Form.Control}
                                 type="number"
@@ -108,7 +108,7 @@ export const AddEditFloor = () => {
                         </div>
 
                         <div className="form-group mb-3">
-                            <label className="form-label">Sức chứa</label>
+                            <label className="form-label">Sức chứa<span className="text-danger">*</span>:</label>
                             <Field
                                 as={Form.Control}
                                 type="number"
@@ -122,7 +122,7 @@ export const AddEditFloor = () => {
                         </div>
 
                         <div className="form-group mb-3">
-                            <label className="form-label">Loại tầng</label>
+                            <label className="form-label">Loại tầng<span className="text-danger">*</span>:</label>
                             <Field
                                 as={Form.Control}
                                 type="text"
