@@ -1,5 +1,5 @@
 import {ToastContainer, toast} from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
+import 'react-toastify/dist/ReactToastify.css';
 import axios from "axios";
 import React, {useEffect, useState} from "react";
 import * as Yup from "yup";
@@ -22,6 +22,7 @@ const AddStaff = () => {
         salary: "",
         startDate: ""
     };
+
     const validationSchema = Yup.object({
         codeStaff: Yup.string()
             .required("Xin hãy nhập mã NV")
@@ -64,7 +65,7 @@ const AddStaff = () => {
             .max(new Date(), "Ngày bắt đầu không được ở tương lai")
     });
 
-    const addEmployee = async (values, {resetForm}) => {
+    const addEmployee = async (values) => {
         try {
             const response = await axios.post('http://localhost:8080/api/staff/add', values, {
                 headers: {Authorization: `Bearer ${localStorage.getItem('jwtToken')}`}
@@ -74,10 +75,9 @@ const AddStaff = () => {
                 toast.error(response.data);
                 return;
             }
-            navigate('/staff/list');
-            toast.success("Nhân viên mới đã được thêm thành công!!!");
             setIsAddModalOpen(false);
-            resetForm();
+            toast.success("Nhân viên mới đã được thêm thành công!!!");
+            navigate('/staff/list');
         } catch (error) {
             console.error(error)
             if (error.response && error.response.data) {
@@ -91,8 +91,8 @@ const AddStaff = () => {
     return (
         <>
             <NavbarApp/>
-            <div className="container-fluid my-5 rounded mx-auto p-4" style={{minHeight: '45vh'}}>
-                <h3 className="text-center text-white py-3 bg-success rounded mb-5" style={{fontSize: '2.25rem'}}>
+            <div className="container my-5 rounded p-4" style={{maxWidth: '800px'}}>
+                <h3 className="text-center text-white py-3 bg-success rounded mb-5" style={{fontSize: '2.15rem'}}>
                     Thêm Nhân Viên Mới
                 </h3>
                 <Formik
@@ -150,7 +150,12 @@ const AddStaff = () => {
                         </div>
                         <div className="mb-2">
                             <label className="form-label" style={{fontSize: '1.2rem'}}>Vị trí</label>
-                            <Field type="text" name="position" className="form-control form-control-lg"/>
+                            <Field as="select" name="position" className="form-control form-control-lg">
+                                <option value="Manager">Quản lý</option>
+                                <option value="Staff">Nhân viên</option>
+                                <option value="HR">Nhân sự</option>
+                                <option value="IT">IT</option>
+                            </Field>
                             <ErrorMessage name="position" component="div" className="text-danger small"/>
                         </div>
                         <div className="d-flex justify-content-end">
@@ -166,8 +171,8 @@ const AddStaff = () => {
                         </div>
                     </FormikForm>
                 </Formik>
-                <ToastContainer position="top-right" autoClose={5000}/>
             </div>
+            <ToastContainer position="top-right" autoClose={5000}/>
             <Footer/>
         </>
     );

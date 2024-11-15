@@ -20,9 +20,9 @@ function Staff() {
     const [totalPages, setTotalPages] = useState(1);
     const pageSize = 4;
 
-    useEffect(() => {
+    const fetchStaffList = () => {
         axios.get(`http://localhost:8080/api/staff/list?page=${currentPage}&size=${pageSize}`, {
-            headers: {Authorization: `Bearer ${localStorage.getItem('jwtToken')}`}
+            headers: { Authorization: `Bearer ${localStorage.getItem('jwtToken')}` }
         })
             .then(response => {
                 setStaffList(response.data.content);
@@ -30,6 +30,10 @@ function Staff() {
                 setTotalPages(response.data.totalPages);
             })
             .catch(error => toast.error("Lỗi khi tải danh sách nhân viên"));
+    };
+
+    useEffect(() => {
+        fetchStaffList();
     }, [currentPage]);
 
     const handleOpenModal = (staff) => {
@@ -50,11 +54,11 @@ function Staff() {
 
         try {
             await axios.delete(`http://localhost:8080/api/staff/delete/${staffDelete.id}`, {
-                headers: {Authorization: `Bearer ${localStorage.getItem('jwtToken')}`}
+                headers: { Authorization: `Bearer ${localStorage.getItem('jwtToken')}` }
             });
-            setStaffList(staffList.filter(emp => emp.id !== staffDelete.id));
-            handleCloseModal();
             toast.success("Nhân viên đã được xóa thành công!");
+            handleCloseModal();
+            fetchStaffList();
         } catch (error) {
             toast.error("Có lỗi xảy ra khi xóa nhân viên");
         }
@@ -69,6 +73,8 @@ function Staff() {
             codeStaff: `%${values.codeStaff}%`,
             name: `%${values.name}%`,
             position: `%${values.position}%`,
+            page: currentPage,
+            size: pageSize,
         };
         try {
             const response = await axios.get('http://localhost:8080/api/staff/search', {
@@ -76,7 +82,8 @@ function Staff() {
                 params: data
             });
             if (response.status === 200) {
-                setFilteredStaffList(response.data);
+                setFilteredStaffList(response.data.content);
+                setTotalPages(response.data.totalPages);
             }
         } catch (error) {
             console.error(error);
@@ -86,11 +93,19 @@ function Staff() {
 
     const handleEditStaff = (id) => {
         navigate(`/staff/edit/${id}`);
+        setCurrentPage(0);
+        fetchStaffList();
     };
 
     const handlePageChange = (newPage) => {
+
         if (newPage >= 0 && newPage < totalPages) {
             setCurrentPage(newPage);
+            handleSearch({
+                codeStaff: "",
+                name: "",
+                position: "",
+            });
         }
     };
 
@@ -112,7 +127,7 @@ function Staff() {
                     {() => (
                         <FormikForm className="mb-3 custom-search">
                             <Form.Group className="mb-3" controlId="formSearch">
-                                <Form.Label className="small-label">Tìm theo mã nhân viên</Form.Label>
+                                <Form.Label className="small-label">Tìm kiếm theo mã nhân viên</Form.Label>
                                 <Field
                                     as={Form.Control}
                                     type="text"
@@ -177,7 +192,7 @@ function Staff() {
                             <th className="text-center">Email</th>
                             <th className="text-center">Lương</th>
                             <th className="text-center">Ngày làm việc</th>
-                            <th className="text-center">Vị trí</th>
+                            <th className="text-center">Bộ phận</th>
                             <th className="text-center">Hành động</th>
                         </tr>
                         </thead>
@@ -220,35 +235,35 @@ function Staff() {
                         className="btn btn-secondary"
                         onClick={() => handlePageChange(currentPage - 1)}
                         disabled={currentPage === 0}>
-                        Previous
+                        Trước
                     </button>
-                    <span className="my-auto">Page {currentPage + 1} of {totalPages}</span>
+                    <span className="my-auto">Trang {currentPage + 1} / {totalPages}</span>
                     <button
                         className="btn btn-secondary"
                         onClick={() => handlePageChange(currentPage + 1)}
                         disabled={currentPage === totalPages - 1}>
-                        Next
+                        Sau
                     </button>
                 </div>
 
-                <Modal show={isModalOpen} onHide={handleCloseModal}>
+                <Modal show={isModalOpen} onHide={handleCloseModal} centered>
                     <Modal.Header closeButton>
                         <Modal.Title>Xác nhận xóa</Modal.Title>
                     </Modal.Header>
                     <Modal.Body>
-                        <p>Bạn có chắc chắn muốn xóa nhân viên này không?</p>
+                        <p style={{fontSize: '1.1rem'}}>
+                            Bạn có chắc chắn muốn xóa nhân viên
+                            <span style={{color: 'red'}}>"{staffDelete?.name}?"</span>
+                        </p>
                     </Modal.Body>
                     <Modal.Footer>
-                        <Button variant="secondary" onClick={handleCloseModal}>
-                            Hủy
-                        </Button>
-                        <Button variant="danger" onClick={handleDeleteStaff}>
-                            Xóa
-                        </Button>
+                        <Button variant="danger" onClick={handleDeleteStaff} style={{fontSize: '1rem'}}>Xóa</Button>
+                        <Button variant="secondary" onClick={handleCloseModal} style={{fontSize: '1rem'}}>Hủy</Button>
                     </Modal.Footer>
                 </Modal>
-            </div>
 
+            </div>
+            <ToastContainer/>
             <Footer/>
         </>
     );
