@@ -12,7 +12,6 @@ const AddStaff = () => {
     const token = localStorage.getItem("jwtToken");
     const navigate = useNavigate();
     const [isAddModalOpen, setIsAddModalOpen] = useState(false);
-    const [salary, setSalary] = useState("");
 
     const initialValues = {
         name: "",
@@ -22,7 +21,8 @@ const AddStaff = () => {
         phone: "",
         email: "",
         salary: "",
-        startDate: ""
+        startDate: "",
+        position: ""
     };
 
     useEffect(() => {
@@ -68,7 +68,11 @@ const AddStaff = () => {
 
         startDate: Yup.date()
             .required("Xin vui lòng nhập ngày bắt đầu làm việc")
-            .max(new Date(), "Ngày bắt đầu không được ở tương lai")
+            .max(new Date(), "Ngày bắt đầu không được ở tương lai"),
+
+        position: Yup.string()
+            .required("Xin hãy chọn vị trí")
+            .oneOf(["Manager", "Staff", "HR", "IT"], "Vị trí không hợp lệ"),
     });
 
     const addEmployee = async (values) => {
@@ -79,10 +83,11 @@ const AddStaff = () => {
 
             if (response.status === 200 || response.status === 201) {
                 toast.success("Nhân viên mới đã được thêm thành công!!!");
-                setIsAddModalOpen(false);
+                // setIsAddModalOpen(false);
                 navigate('/staff/list');
             }
         } catch (error) {
+            console.error("Error adding staff: ", error.response || error);
             if (error.response && error.response.status === 409) {
                 toast.error(error.response.data);
             } else {
@@ -92,10 +97,14 @@ const AddStaff = () => {
     };
 
     const handleSalaryChange = (e, setFieldValue) => {
-        const value = e.target.value.replace(/\D/g, "");
-        setFieldValue("salary", value);
-        setSalary(new Intl.NumberFormat("vi-VN").format(value));
+        const rawValue = e.target.value.replace(/\D/g, "");
+        setFieldValue("salary", rawValue);
     };
+
+    const formatSalaryDisplay = (value) => {
+        return new Intl.NumberFormat('vi-VN').format(value || 0);
+    };
+
 
     return (
         <>
@@ -152,17 +161,21 @@ const AddStaff = () => {
 
                                 <div className="mb-3">
                                     <label className="form-label" style={{fontSize: '1.1rem'}}>Lương</label>
-                                    <div className="input-group">
-                                        <Field
-                                            type="text"
-                                            name="salary"
-                                            className="form-control form-control-lg"
-                                            value={salary}
-                                            onChange={handleSalaryChange}
-                                            placeholder="Nhập lương"
-                                        />
-                                        <span className="input-group-text">VNĐ</span>
-                                    </div>
+                                    <Field name="salary">
+                                        {({field, form}) => (
+                                            <div className="input-group">
+                                                <input
+                                                    type="text"
+                                                    className="form-control form-control-lg"
+                                                    {...field}
+                                                    value={formatSalaryDisplay(field.value)}
+                                                    onChange={(e) => handleSalaryChange(e, form.setFieldValue)}
+                                                    placeholder="Nhập lương"
+                                                />
+                                                <span className="input-group-text">VNĐ</span>
+                                            </div>
+                                        )}
+                                    </Field>
                                     <ErrorMessage name="salary" component="div" className="text-danger small"/>
                                 </div>
 
@@ -172,9 +185,10 @@ const AddStaff = () => {
                                     <ErrorMessage name="startDate" component="div" className="text-danger small"/>
                                 </div>
 
-                                <div className="mb-3">
+                                <div className="mb-2">
                                     <label className="form-label" style={{fontSize: '1.1rem'}}>Bộ phận</label>
-                                    <Field as="select" name="position" className="form-select form-select-lg">
+                                    <Field as="select" name="position" className="form-control form-control-lg">
+                                        <option value="">-- Chọn bộ phận --</option>
                                         <option value="Manager">Quản lý</option>
                                         <option value="Staff">Nhân viên</option>
                                         <option value="HR">Nhân sự</option>
@@ -208,8 +222,8 @@ const AddStaff = () => {
                         </div>
                     </FormikForm>
                 </Formik>
+                <ToastContainer position="top-right" autoClose={5000}/>
             </div>
-            <ToastContainer position="top-right" autoClose={5000}/>
             <Footer/>
         </>
     );
