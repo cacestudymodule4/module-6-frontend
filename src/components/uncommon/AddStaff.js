@@ -9,8 +9,10 @@ import Footer from "../common/Footer";
 import {NavbarApp} from "../common/Navbar";
 
 const AddStaff = () => {
+    const token = localStorage.getItem("jwtToken");
     const navigate = useNavigate();
     const [isAddModalOpen, setIsAddModalOpen] = useState(false);
+    const [salary, setSalary] = useState("");
 
     const initialValues = {
         name: "",
@@ -22,6 +24,10 @@ const AddStaff = () => {
         salary: "",
         startDate: ""
     };
+
+    useEffect(() => {
+        if (!token) navigate("/login")
+    })
 
     const validationSchema = Yup.object({
         codeStaff: Yup.string()
@@ -46,7 +52,7 @@ const AddStaff = () => {
             .matches(/^(09|08)[0-9]{8}$/, "Số điện thoại phải bắt đầu bằng 09 hoặc 08 và có đúng 10 chữ số"),
 
         email: Yup.string()
-            .email("Email không được chứa dấu")
+            .email("Bạn nhập sai định dạng rồi, ví dụ: example@gmail.com")
             .required("Xin vui lòng nhập email")
             .matches(
                 /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
@@ -85,6 +91,12 @@ const AddStaff = () => {
         }
     };
 
+    const handleSalaryChange = (e, setFieldValue) => {
+        const value = e.target.value.replace(/\D/g, "");
+        setFieldValue("salary", value);
+        setSalary(new Intl.NumberFormat("vi-VN").format(value));
+    };
+
     return (
         <>
             <NavbarApp/>
@@ -100,8 +112,8 @@ const AddStaff = () => {
                     <FormikForm>
                         <div className="row">
                             <div className="col-md-6">
-                                <div className="mb-3">
-                                    <label className="form-label" style={{fontSize: '1.1rem'}}>Mã nhân viên</label>
+                                <div className="mb-2">
+                                    <label className="form-label" style={{fontSize: '1.2rem'}}>Mã nhân viên</label>
                                     <Field type="text" name="codeStaff" className="form-control form-control-lg"/>
                                     <ErrorMessage name="codeStaff" component="div" className="text-danger small"/>
                                 </div>
@@ -141,14 +153,21 @@ const AddStaff = () => {
                                 <div className="mb-3">
                                     <label className="form-label" style={{fontSize: '1.1rem'}}>Lương</label>
                                     <div className="input-group">
-                                        <Field type="number" name="salary" className="form-control form-control-lg"/>
+                                        <Field
+                                            type="text"
+                                            name="salary"
+                                            className="form-control form-control-lg"
+                                            value={salary}
+                                            onChange={handleSalaryChange}
+                                            placeholder="Nhập lương"
+                                        />
                                         <span className="input-group-text">VNĐ</span>
                                     </div>
                                     <ErrorMessage name="salary" component="div" className="text-danger small"/>
                                 </div>
 
                                 <div className="mb-3">
-                                    <label className="form-label" style={{fontSize: '1.1rem'}}>Ngày bắt đầu</label>
+                                    <label className="form-label" style={{fontSize: '1.1rem'}}>Ngày làm việc</label>
                                     <Field type="date" name="startDate" className="form-control form-control-lg"/>
                                     <ErrorMessage name="startDate" component="div" className="text-danger small"/>
                                 </div>

@@ -9,11 +9,13 @@ import {NavbarApp} from "../common/Navbar";
 import Footer from "../common/Footer";
 
 const EditStaff = () => {
+    const token = localStorage.getItem("jwtToken");
     const {id} = useParams();
     const navigate = useNavigate();
     const [staffData, setStaffData] = useState(null);
 
     useEffect(() => {
+        if (!token) navigate("/login");
         axios
             .get(`http://localhost:8080/api/staff/${id}`, {
                 headers: {Authorization: `Bearer ${localStorage.getItem('jwtToken')}`}
