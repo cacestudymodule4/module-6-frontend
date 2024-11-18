@@ -55,6 +55,7 @@ export const Floor = () => {
     }
 
     const handleSearch = async (values) => {
+        setCurrentPage(1);
         try {
             const data = {
                 name: values?.name,

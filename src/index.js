@@ -54,7 +54,7 @@ root.render(
                 <Route path="/contract/add" element={<AddContract/>}/>
                 <Route path="/contract/list" element={<Contract/>}/>
                 <Route path="/contract/detail/:id" element={<ContractDetail/>}/>
-                <Route path="/contract/edit/" element={<EditContract/>}/>
+                <Route path="/contract/edit/:id" element={<EditContract/>}/>
                 <Route path="/user/detail" element={<UserInfo/>}/>
                 <Route path="/salary" element={<Salary/>}/>
                 <Route path="/report" element={<Chart8Component/>}/>

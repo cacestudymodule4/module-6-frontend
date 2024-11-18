@@ -169,15 +169,15 @@ function AddContract() {
                     const today = new Date().setHours(0, 0, 0, 0);
                     const checkDay = new Date(checkDayDate).setHours(0, 0, 0, 0);
                     if (!startDate) {
-                        return this.createError({ message: 'Ngày bắt đầu là bắt buộc' });
+                        return this.createError({message: 'Ngày bắt đầu là bắt buộc'});
                     }
                     if (checkDay === today) {
                         if (startDate < today) {
-                            return this.createError({ message: 'Ngày bắt đầu không được nhỏ hơn ngày hiện tại' });
+                            return this.createError({message: 'Ngày bắt đầu không được nhỏ hơn ngày hiện tại'});
                         }
                     } else if (checkDay > today) {
                         if (startDate < checkDay) {
-                            return this.createError({ message: `Mặt bằng này đang được thuê,ngày bắt đầu phải sau ngày ${checkDayDate.toLocaleDateString()}` });
+                            return this.createError({message: `Mặt bằng này đang được thuê,ngày bắt đầu phải sau ngày ${checkDayDate.toLocaleDateString()}`});
                         }
                     }
 
@@ -240,7 +240,6 @@ function AddContract() {
             console.log(err);
         }
     }
-
 
     return (
         <>
@@ -663,7 +662,6 @@ function AddContract() {
             <Modal show={showCusModal} className={"modal-contract-custom"}>
                 <Modal.Header closeButton onClick={() => setShowCusModal(false)}>
                     <Modal.Title>Xác Nhận</Modal.Title>
-
                 </Modal.Header>
                 <Modal.Body>
                     <div className={"search-fixed"}>

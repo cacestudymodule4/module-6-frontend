@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from "react";
+import React, {useState, useEffect, useRef} from "react";
 import axios from "axios";
 import {useNavigate} from "react-router-dom";
 import {FaRedo, FaSearch, FaFilter} from 'react-icons/fa';  // Import icon từ react-icons
@@ -10,31 +10,35 @@ import '../../assets/css/Contract.css';
 import {NavbarApp} from "../common/Navbar";
 import Footer from "../common/Footer";
 import moment from "moment/moment";
+import Pagination from "react-bootstrap/Pagination";
 
 function Contract() {
     const navigate = useNavigate();
     const [showDeleteModal, setShowDeleteModal] = useState(false);
     const [contractToDelete, setContractToDelete] = useState(null);
     const [shouldRefresh, setShouldRefresh] = useState(false);
-    const [pageSize] = useState(1);
+    const [pageSize] = useState(5);
     const [totalPages, setTotalPages] = useState(0);
-    const [page, setPage] = useState(1);
-    const [filteredCustomers, setFilteredCustomers] = useState([]);
+    const [currentPage, setCurrentPage] = useState(1);
+    const [filteredContract, setFilteredContract] = useState([]);
+    const [searchParams, setSearchParams] = useState({});
+    const formikRef = useRef(null);
     const token = localStorage.getItem('jwtToken');
     useEffect(() => {
         if (!token) navigate("/login")
+
         async function getContract() {
             try {
                 const response = await axios.get("http://localhost:8080/api/contract/list-page", {
                     params: {
-                        page: page - 1,
+                        page: currentPage - 1,
                         size: pageSize,
                     },
                     headers: {
                         Authorization: `Bearer ${localStorage.getItem('jwtToken')}` // Thêm Authorization nếu cần
                     }
                 });
-                setFilteredCustomers(response.data.content);
+                setFilteredContract(response.data.content);
                 setTotalPages(response.data.totalPages);
             } catch (err) {
                 console.log(err);
@@ -42,38 +46,58 @@ function Contract() {
         }
 
         getContract();
-    }, [shouldRefresh, page, pageSize]);
+    }, [shouldRefresh, pageSize]);
 
     const handleReload = () => {
         setShouldRefresh(prev => !prev)
+        setCurrentPage(1);
+        if (formikRef.current) {
+            formikRef.current.resetForm();
+        }
     }
     const handleSearch = async (value) => {
         try {
+            setCurrentPage(1);
             const data = {
-                taxCode: `%${value.taxCode}%`,
-                nameCustomer: `%${value.nameCustomer}%`,
-                startDateStr: value.startDate,
-                endDateStr: value.endDate,
-                page: page - 1,
-                size: pageSize,
+                taxCode: value?.taxCode,
+                nameCustomer: value?.nameCustomer,
+                startDateStr: value?.startDate,
+                endDateStr: value?.endDate,
             };
 
             const response = await axios.get("http://localhost:8080/api/contract/search", {
                 headers: {Authorization: `Bearer ${localStorage.getItem('jwtToken')}`},
                 params: data,
             });
-
-            setFilteredCustomers(response.data.content);
+            setFilteredContract(response.data.content);
             setTotalPages(response.data.totalPages);
-
+            setSearchParams(data);
         } catch (err) {
             console.log(err);
         }
     };
 
-    const handlePageChange = (newPage) => {
-        if (newPage >= 1 && newPage <= totalPages) {
-            setPage(newPage);
+    const handlePageChange = async (page) => {
+        if (page >= 1 && page <= totalPages) {
+            setCurrentPage(page);
+            try {
+                const params = Object.keys(searchParams).length > 0
+                    ? {...searchParams, page: page - 1}
+                    : {page: page - 1, size: pageSize};
+
+                const res = await axios.get(
+                    Object.keys(searchParams).length > 0
+                        ? `http://localhost:8080/api/contract/search`
+                        : `http://localhost:8080/api/contract/list-page`,
+                    {
+                        headers: {Authorization: `Bearer ${localStorage.getItem('jwtToken')}`},
+                        params,
+                    }
+                );
+                setFilteredContract(res.data.content);
+            } catch (error) {
+                toast.error("Có gì đó sai sai!");
+            }
         }
     };
 
@@ -111,11 +135,11 @@ function Contract() {
         }
     }
     const handleFilter = async (value) => {
+        setCurrentPage(1);
+
         try {
             const data = {
                 selectedFilter: value.selectedFilter,
-                page: page - 1,
-                size: pageSize,
             }
             const resp = await axios.get(`http://localhost:8080/api/contract/filter`, {
                     headers: {Authorization: `Bearer ${localStorage.getItem('jwtToken')}`},
@@ -123,7 +147,8 @@ function Contract() {
                 },
             )
             if (resp.status === 200) {
-                setFilteredCustomers(resp.data.content);
+                setFilteredContract(resp.data.content);
+                setTotalPages(resp.data.totalPages);
             }
         } catch (err) {
             console.log(err)
@@ -138,6 +163,7 @@ function Contract() {
                     style={{color: "white", height: "70px"}}>
                     Danh sách hợp đồng</h2>
                 <Formik
+                    innerRef={formikRef}
                     initialValues={{
                         taxCode: "",
                         nameCustomer: "",
@@ -195,6 +221,7 @@ function Contract() {
                     initialValues={{
                         selectedFilter: "",
                     }}
+                    innerRef={formikRef}
                     onSubmit={handleFilter}>
                     {() => (
                         <FormikForm className="mb-3">
@@ -226,7 +253,7 @@ function Contract() {
                         onClick={handleReload}>
                     <FaRedo/>
                 </Button>
-                {filteredCustomers.length === 0 ? (<h1 className={"text-center mt-5"}>Danh sách trống </h1>) :
+                {filteredContract.length === 0 ? (<h1 className={"text-center mt-5"}>Danh sách trống </h1>) :
                     <>
                         <Table striped bordered hover>
                             <thead className={"custom-table text-white text-center"}>
@@ -241,7 +268,7 @@ function Contract() {
                             </tr>
                             </thead>
                             <tbody>
-                            {filteredCustomers.map((contract, index) => (
+                            {filteredContract.map((contract, index) => (
                                 <tr key={contract.id}>
                                     <td className="text-center">{contract.code}</td>
                                     <td className="text-center">{contract.customer.name}</td>
@@ -275,15 +302,26 @@ function Contract() {
                             ))}
                             </tbody>
                         </Table>
-                        <div className="d-flex justify-content-center align-items-center"
-                             style={{marginBottom: "20px"}}>
-                            <button className="btn btn-outline-success" onClick={() => handlePageChange(page - 1)}
-                                    disabled={page === 1}>Trang trước
-                            </button>
-                            <span style={{marginRight: "20px", marginLeft: "20px"}}>Trang {page} / {totalPages}</span>
-                            <button className="btn btn-outline-success" onClick={() => handlePageChange(page + 1)}
-                                    disabled={page === totalPages}>Trang sau
-                            </button>
+                        <div className="d-flex justify-content-center">
+                            <Pagination>
+                                <Pagination.Prev
+                                    onClick={() => handlePageChange(currentPage - 1)}
+                                    disabled={currentPage === 1}
+                                />
+                                {[...Array(totalPages).keys()].map((pageNumber) => (
+                                    <Pagination.Item
+                                        key={pageNumber + 1}
+                                        active={pageNumber + 1 === currentPage}
+                                        onClick={() => handlePageChange(pageNumber + 1)}
+                                    >
+                                        {pageNumber + 1}
+                                    </Pagination.Item>
+                                ))}
+                                <Pagination.Next
+                                    onClick={() => handlePageChange(currentPage + 1)}
+                                    disabled={currentPage === totalPages}
+                                />
+                            </Pagination>
                         </div>
 
                     </>}
