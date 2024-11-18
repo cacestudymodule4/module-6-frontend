@@ -34,13 +34,9 @@ const UserInfo = () => {
     const dispatch = useDispatch();
     const [isDialogOpen, setIsDialogOpen] = useState(false);
     useEffect(() => {
-        if (!token) {
-            navigate("/login");
-        }
+        if (!token) navigate("/login");
         dispatch({type: USER_INFO_REQUEST});
-        if (error) {
-            toast.error("Không thể tải thông tin người dùng", {position: "top-right", autoClose: 3000});
-        }
+        if (error) toast.error("Không thể tải thông tin người dùng", {position: "top-right", autoClose: 3000});
     }, [userInfo, error]);
     const openDialog = () => setIsDialogOpen(true);
     const closeDialog = () => setIsDialogOpen(false);

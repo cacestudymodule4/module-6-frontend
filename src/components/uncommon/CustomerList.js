@@ -28,6 +28,8 @@ const customerSchema = Yup.object().shape({
 });
 
 function CustomerList() {
+    const token = localStorage.getItem('jwtToken');
+    const navigate = useNavigate();
     const [customers, setCustomers] = useState([]);
     const [filteredCustomers, setFilteredCustomers] = useState([]);
     const [isModalOpen, setIsModalOpen] = useState(false);
@@ -60,10 +62,14 @@ function CustomerList() {
     };
 
     useEffect(() => {
-        fetchCustomers();  // Gọi hàm fetch khi component mount
+        if (!token) navigate("/login")
+        if (searchName || searchIdentification) {
+            handleCombinedSearch(page - 1);
+        } else {
+            fetchCustomers(page);
+        }
     }, [page]);
 
-    const navigate = useNavigate();
     const handleNavigateToAddCustomer = () => {
         navigate('/customer/add');
     };
@@ -79,6 +85,7 @@ function CustomerList() {
             setFilteredCustomers(filteredCustomers.filter(customer => customer.id !== customerToDelete.id));
             closeModal();
             toast.success("Xóa thành công")
+            fetchCustomers();
         } catch (error) {
             console.error('Có lỗi khi xóa khách hàng:', error);
         }
@@ -124,7 +131,7 @@ function CustomerList() {
                 setFilteredCustomers(filteredCustomers.map(customer => customer.id === editedCustomer.id ? response.data : customer));
                 setEditingCustomer(null);
                 setErrors({});
-                toast.success("Chỉnh sửa thành công");
+                toast.success("Cập nhật thành công");
             }
         } catch (error) {
             if (error.inner) {
@@ -151,13 +158,13 @@ function CustomerList() {
         setErrors({});
     };
 
-    const handleCombinedSearch = async (page = 0) => {
+    const handleCombinedSearch = async (newPage = 0) => {
         try {
             const response = await axios.get('http://localhost:8080/api/customers/search', {
                 params: {
                     name: searchName,
                     identification: searchIdentification,
-                    page: page,
+                    page: newPage,
                     size: pageSize,
                 },
                 headers: {Authorization: `Bearer ${localStorage.getItem('jwtToken')}`}
@@ -171,39 +178,46 @@ function CustomerList() {
     };
 
     const handleReload = () => {
-        fetchCustomers(page);
+        setPage(1);
+        setSearchName('');
+        setSearchIdentification('');
+        fetchCustomers();
     };
 
     const handlePageChange = (newPage) => {
-        setPage(newPage);
-    };
+        if (newPage >= 1 && newPage <= totalPages) {
+            setPage(newPage);
+        }
+    }
     return (
         <>
             <NavbarApp/>
             <div className="customer-list container mt-5">
                 <h2 className="text-center mb-5 bg-success text-white py-4">Danh sách khách hàng</h2>
-                <div className="d-flex justify-content-between align-items-center mb-3">
+                <div className="d-flex justify-content-center align-items-center mb-3">
+                    <input
+                        type="text"
+                        className="form-control me-2"
+                        placeholder="Tìm kiếm theo tên"
+                        value={searchName}
+                        onChange={(e) => setSearchName(e.target.value)}
+                        style={{maxWidth: "250px"}}
+                    />
+                    <input
+                        type="text"
+                        className="form-control me-2"
+                        placeholder="Tìm kiếm theo CMND"
+                        value={searchIdentification}
+                        onChange={(e) => setSearchIdentification(e.target.value)}
+                        style={{maxWidth: "250px"}}
+                    />
+                    <button className="btn btn-success customer-id-search" onClick={() => handleCombinedSearch(0)}>
+                        <FaSearch/>
+                    </button>
+                </div>
+                <div className="d-flex mb-3">
                     <button className="btn btn-success" onClick={handleNavigateToAddCustomer}>Thêm mới</button>
-                    <button className="btn btn-success" onClick={handleReload}><TbReload/></button>
-                    <div className="d-flex align-items-center">
-                        <input
-                            type="text"
-                            className="form-control mr-2"
-                            placeholder="Tìm kiếm theo tên"
-                            value={searchName}
-                            onChange={(e) => setSearchName(e.target.value)}
-                        />
-                        <input
-                            type="text"
-                            className="form-control mr-2"
-                            placeholder="Tìm kiếm theo CMND"
-                            value={searchIdentification}
-                            onChange={(e) => setSearchIdentification(e.target.value)}
-                        />
-                        <button className="btn btn-success customer-id-search" onClick={() => handleCombinedSearch(0)}>
-                            <FaSearch/>
-                        </button>
-                    </div>
+                    <button className="btn btn-success ms-2" onClick={handleReload}><TbReload/></button>
                 </div>
                 <div className="table-responsive">
                     <table className="table table-hover table-bordered border-success">

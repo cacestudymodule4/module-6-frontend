@@ -6,6 +6,8 @@ import '../../assets/css/Contract.css';
 import {NavbarApp} from "../common/Navbar";
 import Footer from "../common/Footer";
 import axios from "axios";
+import ContractPdfButton from "./ContractPdfButton";
+
 
 function ContractDetail() {
     const navigate = useNavigate();
@@ -30,6 +32,7 @@ function ContractDetail() {
                 console.log(err);
             }
         }
+
         getContract();
     }, []);
     return (
@@ -294,6 +297,7 @@ function ContractDetail() {
                     </Card>
                 </Form>
             </div>
+            <ContractPdfButton contractId={contract.id}></ContractPdfButton>
             <Footer/>
         </>
     );

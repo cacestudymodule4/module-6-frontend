@@ -11,22 +11,32 @@ import {NavbarApp} from "../common/Navbar";
 import Footer from "../common/Footer";
 
 function Staff() {
+    const token = localStorage.getItem('jwtToken');
     const navigate = useNavigate();
     const [staffList, setStaffList] = useState([]);
     const [filteredStaffList, setFilteredStaffList] = useState([]);
     const [staffDelete, setStaffDelete] = useState(null);
     const [isModalOpen, setIsModalOpen] = useState(false);
+    const [currentPage, setCurrentPage] = useState(0);
+    const [totalPages, setTotalPages] = useState(1);
+    const pageSize = 4;
 
-    useEffect(() => {
-        axios.get('http://localhost:8080/api/staff/list', {
+    const fetchStaffList = () => {
+        axios.get(`http://localhost:8080/api/staff/list?page=${currentPage}&size=${pageSize}`, {
             headers: {Authorization: `Bearer ${localStorage.getItem('jwtToken')}`}
         })
             .then(response => {
-                setStaffList(response.data);
-                setFilteredStaffList(response.data);
+                setStaffList(response.data.content);
+                setFilteredStaffList(response.data.content);
+                setTotalPages(response.data.totalPages);
             })
             .catch(error => toast.error("Lỗi khi tải danh sách nhân viên"));
-    }, [staffList]);
+    };
+
+    useEffect(() => {
+        if (!token) navigate('/login');
+        fetchStaffList();
+    }, [currentPage]);
 
     const handleOpenModal = (staff) => {
         setStaffDelete(staff);
@@ -48,9 +58,9 @@ function Staff() {
             await axios.delete(`http://localhost:8080/api/staff/delete/${staffDelete.id}`, {
                 headers: {Authorization: `Bearer ${localStorage.getItem('jwtToken')}`}
             });
-            setStaffList(staffList.filter(emp => emp.id !== staffDelete.id));
-            handleCloseModal();
             toast.success("Nhân viên đã được xóa thành công!");
+            handleCloseModal();
+            fetchStaffList();
         } catch (error) {
             toast.error("Có lỗi xảy ra khi xóa nhân viên");
         }
@@ -65,6 +75,8 @@ function Staff() {
             codeStaff: `%${values.codeStaff}%`,
             name: `%${values.name}%`,
             position: `%${values.position}%`,
+            page: currentPage,
+            size: pageSize,
         };
         try {
             const response = await axios.get('http://localhost:8080/api/staff/search', {
@@ -72,7 +84,8 @@ function Staff() {
                 params: data
             });
             if (response.status === 200) {
-                setFilteredStaffList(response.data);
+                setFilteredStaffList(response.data.content);
+                setTotalPages(response.data.totalPages);
             }
         } catch (error) {
             console.error(error);
@@ -82,6 +95,24 @@ function Staff() {
 
     const handleEditStaff = (id) => {
         navigate(`/staff/edit/${id}`);
+        setCurrentPage(0);
+        fetchStaffList();
+    };
+
+    const handlePageChange = (newPage) => {
+
+        if (newPage >= 0 && newPage < totalPages) {
+            setCurrentPage(newPage);
+            handleSearch({
+                codeStaff: "",
+                name: "",
+                position: "",
+            });
+        }
+    };
+
+    const formatCurrency = (value) => {
+        return value ? new Intl.NumberFormat('vi-VN').format(value) : '0';
     }
 
     return (
@@ -102,7 +133,7 @@ function Staff() {
                     {() => (
                         <FormikForm className="mb-3 custom-search">
                             <Form.Group className="mb-3" controlId="formSearch">
-                                <Form.Label className="small-label">Tìm theo mã nhân viên</Form.Label>
+                                <Form.Label className="small-label">Tìm kiếm theo mã nhân viên</Form.Label>
                                 <Field
                                     as={Form.Control}
                                     type="text"
@@ -167,7 +198,7 @@ function Staff() {
                             <th className="text-center">Email</th>
                             <th className="text-center">Lương</th>
                             <th className="text-center">Ngày làm việc</th>
-                            <th className="text-center">Vị trí</th>
+                            <th className="text-center">Bộ phận</th>
                             <th className="text-center">Hành động</th>
                         </tr>
                         </thead>
@@ -182,12 +213,10 @@ function Staff() {
                                 <td className="text-center">{staff.address}</td>
                                 <td className="text-center">{staff.phone}</td>
                                 <td className="text-center">{staff.email}</td>
-                                <td className="text-center">{staff.salary}</td>
+                                <td className="text-center">{formatCurrency(staff.salary)} VNĐ</td>
                                 <td className="text-center">{moment(staff.startDate, 'YYYY-MM-DD').format('DD-MM-YYYY')}</td>
                                 <td className="text-center">{staff.position}</td>
                                 <td className="text-center">
-                                    <button className="btn btn-info btn-sm me-2" style={{fontSize: '0.9rem'}}>Xem
-                                    </button>
                                     <button
                                         className="btn btn-warning btn-sm me-2"
                                         style={{fontSize: '0.9rem'}}
@@ -195,7 +224,7 @@ function Staff() {
                                         Cập nhật
                                     </button>
                                     <button
-                                        className="btn btn-danger btn-sm"
+                                        className="btn btn-danger btn-sm me-2"
                                         onClick={() => handleOpenModal(staff)}
                                         style={{fontSize: '0.9rem'}}>
                                         Xóa
@@ -207,7 +236,21 @@ function Staff() {
                     </table>
                 </div>
 
-                <ToastContainer position="top-right" autoClose={5000}/>
+                <div className="d-flex justify-content-center align-items-center">
+                    <button
+                        className="btn btn-secondary"
+                        onClick={() => handlePageChange(currentPage - 1)}
+                        disabled={currentPage === 0}>
+                        Trước
+                    </button>
+                    <span className="mx-3">Trang {currentPage + 1} / {totalPages}</span>
+                    <button
+                        className="btn btn-secondary"
+                        onClick={() => handlePageChange(currentPage + 1)}
+                        disabled={currentPage === totalPages - 1}>
+                        Sau
+                    </button>
+                </div>
 
                 <Modal show={isModalOpen} onHide={handleCloseModal} centered>
                     <Modal.Header closeButton>
@@ -216,7 +259,7 @@ function Staff() {
                     <Modal.Body>
                         <p style={{fontSize: '1.1rem'}}>
                             Bạn có chắc chắn muốn xóa nhân viên
-                            <span style={{color: 'red'}}>"{staffDelete?.name}"</span>
+                            <span style={{color: 'red'}}>"{staffDelete?.name}?"</span>
                         </p>
                     </Modal.Body>
                     <Modal.Footer>
@@ -224,7 +267,9 @@ function Staff() {
                         <Button variant="secondary" onClick={handleCloseModal} style={{fontSize: '1rem'}}>Hủy</Button>
                     </Modal.Footer>
                 </Modal>
+
             </div>
+            <ToastContainer/>
             <Footer/>
         </>
     );
