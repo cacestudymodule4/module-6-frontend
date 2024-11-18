@@ -9,11 +9,13 @@ import {NavbarApp} from "../common/Navbar";
 import Footer from "../common/Footer";
 
 const EditStaff = () => {
+    const token = localStorage.getItem("jwtToken");
     const {id} = useParams();
     const navigate = useNavigate();
     const [staffData, setStaffData] = useState(null);
 
     useEffect(() => {
+        if (!token) navigate("/login");
         axios
             .get(`http://localhost:8080/api/staff/${id}`, {
                 headers: {Authorization: `Bearer ${localStorage.getItem('jwtToken')}`}
@@ -75,62 +77,81 @@ const EditStaff = () => {
                     onSubmit={handleSubmit}>
 
                     <FormikForm>
-                        <div className="mb-2">
-                            <label className="form-label" style={{fontSize: '1.2rem'}}>Tên</label>
-                            <Field type="text" name="name" className="form-control form-control-lg"/>
-                            <ErrorMessage name="name" component="div" className="text-danger small"/>
+                        <div className="row">
+                            <div className="col-md-6">
+                                <div className="mb-3">
+                                    <label className="form-label" style={{fontSize: '1.1rem'}}>Tên</label>
+                                    <Field type="text" name="name" className="form-control form-control-lg"/>
+                                    <ErrorMessage name="name" component="div" className="text-danger small"/>
+                                </div>
+
+                                <div className="mb-3">
+                                    <label className="form-label" style={{fontSize: '1.1rem'}}>Email</label>
+                                    <Field type="email" name="email" className="form-control form-control-lg"/>
+                                    <ErrorMessage name="email" component="div" className="text-danger small"/>
+                                </div>
+
+                                <div className="mb-3">
+                                    <label className="form-label" style={{fontSize: '1.1rem'}}>Địa chỉ</label>
+                                    <Field type="text" name="address" className="form-control form-control-lg"/>
+                                    <ErrorMessage name="address" component="div" className="text-danger small"/>
+                                </div>
+
+                                <div className="mb-3">
+                                    <label className="form-label" style={{fontSize: '1.1rem'}}>Điện thoại</label>
+                                    <Field type="text" name="phone" className="form-control form-control-lg"/>
+                                    <ErrorMessage name="phone" component="div" className="text-danger small"/>
+                                </div>
+                            </div>
+
+                            <div className="col-md-6">
+                                <div className="mb-3">
+                                    <label className="form-label" style={{fontSize: '1.1rem'}}>Ngày sinh</label>
+                                    <Field type="date" name="birthDate" className="form-control form-control-lg"/>
+                                    <ErrorMessage name="birthDate" component="div" className="text-danger small"/>
+                                </div>
+
+                                <div className="mb-3">
+                                    <label className="form-label" style={{fontSize: '1.1rem'}}>Ngày làm việc</label>
+                                    <Field type="date" name="startDate" className="form-control form-control-lg"/>
+                                    <ErrorMessage name="startDate" component="div" className="text-danger small"/>
+                                </div>
+
+                                <div className="mb-3">
+                                    <label className="form-label" style={{fontSize: '1.1rem'}}>Lương</label>
+                                    <div className="input-group">
+                                        <Field type="number" name="salary" className="form-control form-control-lg"/>
+                                        <span className="input-group-text">VNĐ</span>
+                                    </div>
+                                    <ErrorMessage name="salary" component="div" className="text-danger small"/>
+                                </div>
+
+                                <div className="mb-3">
+                                    <label className="form-label" style={{fontSize: '1.1rem'}}>Bộ phận</label>
+                                    <Field as="select" name="position" className="form-control form-control-lg">
+                                        <option value="Manager">Quản lý</option>
+                                        <option value="Staff">Nhân viên</option>
+                                        <option value="HR">Nhân sự</option>
+                                        <option value="IT">IT</option>
+                                    </Field>
+                                    <ErrorMessage name="position" component="div" className="text-danger small"/>
+                                </div>
+                            </div>
                         </div>
 
-                        <div className="mb-2">
-                            <label className="form-label" style={{fontSize: '1.2rem'}}>Ngày sinh</label>
-                            <Field type="date" name="birthDate" className="form-control form-control-lg"/>
-                            <ErrorMessage name="birthDate" component="div" className="text-danger small"/>
-                        </div>
 
-                        <div className="mb-2">
-                            <label className="form-label" style={{fontSize: '1.2rem'}}>Địa chỉ</label>
-                            <Field type="text" name="address" className="form-control form-control-lg"/>
-                            <ErrorMessage name="address" component="div" className="text-danger small"/>
-                        </div>
-
-                        <div className="mb-2">
-                            <label className="form-label" style={{fontSize: '1.2rem'}}>Điện thoại</label>
-                            <Field type="text" name="phone" className="form-control form-control-lg"/>
-                            <ErrorMessage name="phone" component="div" className="text-danger small"/>
-                        </div>
-
-                        <div className="mb-2">
-                            <label className="form-label" style={{fontSize: '1.2rem'}}>Email</label>
-                            <Field type="email" name="email" className="form-control form-control-lg"/>
-                            <ErrorMessage name="email" component="div" className="text-danger small"/>
-                        </div>
-
-                        <div className="mb-2">
-                            <label className="form-label" style={{fontSize: '1.2rem'}}>Lương</label>
-                            <Field type="number" name="salary" className="form-control form-control-lg"/>
-                            <ErrorMessage name="salary" component="div" className="text-danger small"/>
-                        </div>
-
-                        <div className="mb-2">
-                            <label className="form-label" style={{fontSize: '1.2rem'}}>Ngày làm việc</label>
-                            <Field type="date" name="startDate" className="form-control form-control-lg"/>
-                            <ErrorMessage name="startDate" component="div" className="text-danger small"/>
-                        </div>
-
-                        <div className="mb-2">
-                            <label className="form-label" style={{fontSize: '1.2rem'}}>Vị trí</label>
-                            <Field type="text" name="position" className="form-control form-control-lg"/>
-                            <ErrorMessage name="position" component="div" className="text-danger small"/>
-                        </div>
-
-                        <div className="d-flex justify-content-end">
+                        <div className="d-flex justify-content-end mt-3">
                             <button
                                 type="button"
-                                className="btn btn-success btn-lg me-2"
+                                className="btn btn-outline-success btn-lg me-2"
                                 onClick={() => navigate("/staff/list")}>
+                                <i className="bi bi-arrow-left-circle me-2"></i>
                                 Trở lại
                             </button>
-                            <button type="submit" className="btn btn-success btn-lg">Hoàn Thành</button>
+
+                            <button type="submit" className="btn btn-outline-success btn-lg">
+                                Hoàn Thành <i className="bi bi-plus-circle"></i>
+                            </button>
                         </div>
 
                     </FormikForm>

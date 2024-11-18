@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useEffect} from "react";
 import axios from "axios";
 import {useNavigate} from "react-router-dom";
 import {Formik, Form, Field, ErrorMessage} from "formik";
@@ -7,7 +7,12 @@ import Footer from "../common/Footer";
 import {NavbarApp} from "../common/Navbar";
 
 const StaffRegister = () => {
+    const token = localStorage.getItem("jwtToken");
     const navigate = useNavigate();
+
+    useEffect(() => {
+        if (!token) navigate("/login");
+    })
 
     const validationSchema = Yup.object().shape({
         username: Yup.string().required("Tên người dùng không được để trống"),
