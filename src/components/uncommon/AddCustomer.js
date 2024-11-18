@@ -25,7 +25,14 @@ const AddCustomer = () => {
         },
         validationSchema: Yup.object({
             name: Yup.string().required('Tên khách hàng là bắt buộc'),
-            birthday: Yup.date().required('Ngày sinh là bắt buộc'),
+            birthday: Yup.date().required('Ngày sinh là bắt buộc')
+                .test('age', 'Khách hàng phải trên 18 tuổi', (value) => {
+                const today = new Date();
+                const birthDate = new Date(value);
+                const age = today.getFullYear() - birthDate.getFullYear();
+                const month = today.getMonth() - birthDate.getMonth();
+                return age > 18 || (age === 18 && month >= 0);
+            }),
             identification: Yup.string().required('Số chứng minh thư là bắt buộc')
                 .matches(/^[0-9]{9,12}$/, "CMND phải chứa 9-12 chữ số"),
             address: Yup.string().required('Địa chỉ là bắt buộc'),
@@ -47,7 +54,8 @@ const AddCustomer = () => {
                 }
             } catch (error) {
                 if (error.response) {
-                    setError(error.response.data);
+                    toast.error(error.response.data);
+                    // setError(error.response.data?)
                 } else {
                     setError('Có lỗi kết nối với máy chủ. Vui lòng thử lại sau.');
                 }
@@ -60,8 +68,7 @@ const AddCustomer = () => {
             <NavbarApp/>
             <div className="container mt-5" style={{marginBottom: '50px'}}>
                 <h2 className="text-center mb-5 bg-success text-white py-4">Thêm Mới Khách Hàng</h2>
-                {/* Hiển thị thông báo lỗi nếu có */}
-                {error && <div className="alert alert-danger">{error}</div>}
+                {/*{error && <div className="alert alert-danger">{error}</div>}*/}
                 <form onSubmit={formik.handleSubmit}>
                     {/* Row 1: Name and Birthday */}
                     <div className="row mb-3">
