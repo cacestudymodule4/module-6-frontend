@@ -11,6 +11,7 @@ import {NavbarApp} from "../common/Navbar";
 import Footer from "../common/Footer";
 
 function Staff() {
+    const token = localStorage.getItem('jwtToken');
     const navigate = useNavigate();
     const [staffList, setStaffList] = useState([]);
     const [filteredStaffList, setFilteredStaffList] = useState([]);
@@ -22,7 +23,7 @@ function Staff() {
 
     const fetchStaffList = () => {
         axios.get(`http://localhost:8080/api/staff/list?page=${currentPage}&size=${pageSize}`, {
-            headers: { Authorization: `Bearer ${localStorage.getItem('jwtToken')}` }
+            headers: {Authorization: `Bearer ${localStorage.getItem('jwtToken')}`}
         })
             .then(response => {
                 setStaffList(response.data.content);
@@ -33,6 +34,7 @@ function Staff() {
     };
 
     useEffect(() => {
+        if (!token) navigate('/login');
         fetchStaffList();
     }, [currentPage]);
 
@@ -54,7 +56,7 @@ function Staff() {
 
         try {
             await axios.delete(`http://localhost:8080/api/staff/delete/${staffDelete.id}`, {
-                headers: { Authorization: `Bearer ${localStorage.getItem('jwtToken')}` }
+                headers: {Authorization: `Bearer ${localStorage.getItem('jwtToken')}`}
             });
             toast.success("Nhân viên đã được xóa thành công!");
             handleCloseModal();
@@ -108,6 +110,10 @@ function Staff() {
             });
         }
     };
+
+    const formatCurrency = (value) => {
+        return value ? new Intl.NumberFormat('vi-VN').format(value) : '0';
+    }
 
     return (
         <>
@@ -207,7 +213,7 @@ function Staff() {
                                 <td className="text-center">{staff.address}</td>
                                 <td className="text-center">{staff.phone}</td>
                                 <td className="text-center">{staff.email}</td>
-                                <td className="text-center">{staff.salary}</td>
+                                <td className="text-center">{formatCurrency(staff.salary)} VNĐ</td>
                                 <td className="text-center">{moment(staff.startDate, 'YYYY-MM-DD').format('DD-MM-YYYY')}</td>
                                 <td className="text-center">{staff.position}</td>
                                 <td className="text-center">
@@ -230,14 +236,14 @@ function Staff() {
                     </table>
                 </div>
 
-                <div className="d-flex justify-content-between">
+                <div className="d-flex justify-content-center align-items-center">
                     <button
                         className="btn btn-secondary"
                         onClick={() => handlePageChange(currentPage - 1)}
                         disabled={currentPage === 0}>
                         Trước
                     </button>
-                    <span className="my-auto">Trang {currentPage + 1} / {totalPages}</span>
+                    <span className="mx-3">Trang {currentPage + 1} / {totalPages}</span>
                     <button
                         className="btn btn-secondary"
                         onClick={() => handlePageChange(currentPage + 1)}
