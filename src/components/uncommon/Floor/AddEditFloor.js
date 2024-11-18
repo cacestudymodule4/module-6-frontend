@@ -49,7 +49,8 @@ export const AddEditFloor = () => {
             <div className="container mt-5 mb-5">
                 <h2 className="text-center mb-5 bg-success align-content-center"
                     style={{ color: "white", height: "70px" }}>
-                    Thêm mới hợp đồng</h2>
+                    {floor ? "Chỉnh sửa tầng" : "Thêm mới tầng"}
+                </h2>
                 <Formik
                     initialValues={{
                         id: floor?.id || null,
