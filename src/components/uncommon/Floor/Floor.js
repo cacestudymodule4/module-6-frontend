@@ -18,6 +18,7 @@ export const Floor = () => {
     const [showDeleteModal, setShowDeleteModal] = useState(false);
     const [currentFloor, setCurrentFloor] = useState({});
     const [shouldRefresh, setShouldRefresh] = useState(false);
+    const [searchParams, setSearchParams] = useState({});
 
     const formikRef = useRef(null);
 
@@ -47,6 +48,7 @@ export const Floor = () => {
     const handleReload = () => {
         setShouldRefresh(prev => !prev);
         setCurrentPage(1);
+        setSearchParams({});
         if (formikRef.current) {
             formikRef.current.resetForm();
         }
@@ -67,6 +69,7 @@ export const Floor = () => {
             });
             setFloor(res.data.content);
             setTotalPages(res.data.totalPages);
+            setSearchParams(data);
         } catch (err) {
             console.log(err);
         }
@@ -95,10 +98,22 @@ export const Floor = () => {
         if (page >= 1 && page <= totalPages) {
             setCurrentPage(page);
             try {
-                const res = await axios.get(`http://localhost:8080/api/floor/list?page=${page - 1}`
-                    , {
+                let res;
+                if (Object.keys(searchParams).length > 0) {
+                    res = await axios.get(`http://localhost:8080/api/floor/search`, {
+                        headers: {
+                            Authorization: `Bearer ${localStorage.getItem('jwtToken')}`
+                        },
+                        params: {
+                            ...searchParams,
+                            page: page - 1
+                        }
+                    });
+                } else {
+                    res = await axios.get(`http://localhost:8080/api/floor/list?page=${page - 1}`, {
                         headers: { Authorization: `Bearer ${localStorage.getItem('jwtToken')}` }
                     });
+                }
                 setFloor(res.data.content);
             } catch (error) {
                 toast.error("Có gì đó sai sai!")
