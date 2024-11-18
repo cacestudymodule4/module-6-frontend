@@ -94,5 +94,4 @@ select option.small-text {
         pointer-events: none; /* Không cho phép nhấn vào */
         background-color: #f0f0f0 !important; /* Màu nền nhẹ để chỉ rõ ô này chỉ để đọc */
         cursor: not-allowed !important; /* Đổi con trỏ chuột thành kiểu "không cho phép" */
-
 }
