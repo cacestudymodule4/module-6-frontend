@@ -5,20 +5,33 @@ import {useNavigate} from "react-router-dom";
 import '../../assets/css/Contract.css';
 import {NavbarApp} from "../common/Navbar";
 import Footer from "../common/Footer";
+import axios from "axios";
 
 function ContractDetail() {
     const navigate = useNavigate();
     const {id} = useParams();  // Lấy id từ URL
-    const location = useLocation();  // Lấy state từ location
-    const [contract, setContract] = useState(location.state?.contract || null);
+    const [contract, setContract] = useState({});
     const currentDay = new Date();
-    const startDate = new Date(contract.startDate);
     const endDate = new Date(contract.endDate);
     const status = endDate > currentDay ? 'Còn hiệu lực' : 'Het hiệu lực';
-    const price = contract.ground.price
     const handleClick = () => {
         navigate('/contract/list');
     };
+    useEffect(() => {
+        async function getContract() {
+            try {
+                const response = await axios.get(`http://localhost:8080/api/contract/findContract/${id}`
+                    , {
+                        headers: {Authorization: `Bearer ${localStorage.getItem('jwtToken')}`}
+                    });
+                setContract(response.data);
+                console.log(response.data);
+            } catch (err) {
+                console.log(err);
+            }
+        }
+        getContract();
+    }, []);
     return (
         <>
             <NavbarApp/>
@@ -37,7 +50,7 @@ function ContractDetail() {
                                         <Form.Control
                                             className={"custom-date-input"}
                                             type="text"
-                                            value={contract.customer.name}
+                                            value={contract.customer?.name || ''}
                                             readOnly
                                         />
                                     </Form.Group>
@@ -48,7 +61,7 @@ function ContractDetail() {
                                         <Form.Control
                                             className={"custom-date-input"}
                                             type="text"
-                                            value={contract.customer.identification}
+                                            value={contract.customer?.identification || ''}
                                             readOnly
                                         />
                                     </Form.Group>
@@ -59,7 +72,7 @@ function ContractDetail() {
                                         <Form.Control
                                             className={"custom-date-input"}
                                             type="text"
-                                            value={contract.customer.address}
+                                            value={contract.customer?.address || ''}
                                             readOnly
                                         />
                                     </Form.Group>
@@ -72,7 +85,7 @@ function ContractDetail() {
                                         <Form.Control
                                             className={"custom-date-input"}
                                             type="date"
-                                            value={contract.customer.birthday}
+                                            value={contract.customer?.birthday || ''}
                                             readOnly
                                         />
                                     </Form.Group>
@@ -83,7 +96,7 @@ function ContractDetail() {
                                         <Form.Control
                                             className={"custom-date-input"}
                                             type="email"
-                                            value={contract.customer.email}
+                                            value={contract.customer?.email || ''}
                                             readOnly
                                         />
                                     </Form.Group>
@@ -94,7 +107,7 @@ function ContractDetail() {
                                         <Form.Control
                                             className={"custom-date-input"}
                                             type="text"
-                                            value={contract.customer.phone}
+                                            value={contract.customer?.phone || ''}
                                             readOnly
                                         />
                                     </Form.Group>
@@ -137,7 +150,7 @@ function ContractDetail() {
                                         <Form.Control
                                             className={"custom-date-input"}
                                             type="text"
-                                            value={"MB" + contract.ground.name}
+                                            value={"MB" + contract.ground?.name || ''}
                                             readOnly
                                         />
                                     </Form.Group>
@@ -185,7 +198,7 @@ function ContractDetail() {
                                         <Form.Control
                                             type="text"
                                             className={"custom-date-input"}
-                                            value={contract.ground.price + " VNĐ"}
+                                            value={contract.ground?.price + " VNĐ" || ''}
                                             readOnly
                                         />
                                     </Form.Group>
@@ -228,7 +241,7 @@ function ContractDetail() {
                                         <Form.Control
                                             type="text"
                                             className={"custom-date-input"}
-                                            value={contract.staff.name}
+                                            value={contract.staff?.name || ''}
                                             readOnly
                                         />
                                     </Form.Group>
@@ -240,7 +253,7 @@ function ContractDetail() {
                                         <Form.Control
                                             type="text"
                                             className={"custom-date-input"}
-                                            value={contract.staff.phone}
+                                            value={contract.staff?.phone || ''}
                                             readOnly
                                         />
                                     </Form.Group>
@@ -251,7 +264,7 @@ function ContractDetail() {
                                         <Form.Control
                                             type="email"
                                             className={"custom-date-input"}
-                                            value={contract.staff.email}
+                                            value={contract.staff?.email || ''}
                                             readOnly
                                         />
                                     </Form.Group>

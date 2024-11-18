@@ -25,8 +25,8 @@ function AddContract() {
     const [showCusModal, setShowCusModal] = useState(false);
     const [showStaffModal, setShowStaffModal] = useState(false);
     const [showGroundModal, setShowGroundModal] = useState(false);
-    const [listContract, setListContract] = useState([]);
-    const [totalPrice, setTotalPrice] = useState(null);
+    const [totalPrice, setTotalPrice] = useState(0);
+    const [checkDay, setCheckDay] = useState('1000-01-01');
     useEffect(() => {
         async function getStaff() {
             try {
@@ -45,8 +45,7 @@ function AddContract() {
                     , {
                         headers: {Authorization: `Bearer ${localStorage.getItem('jwtToken')}`}
                     });
-                setListContract(response.data);
-                console.log(response.data);
+
             } catch (err) {
                 console.log(err);
             }
@@ -65,7 +64,7 @@ function AddContract() {
 
         async function getGround() {
             try {
-                const response = await axios.get("http://localhost:8080/api/ground/list-rent", {
+                const response = await axios.get("http://localhost:8080/api/contract/list-rent", {
                     headers: {Authorization: `Bearer ${localStorage.getItem('jwtToken')}`}
                 })
                 setGround(response.data);
@@ -141,14 +140,15 @@ function AddContract() {
         deposit: '',
         content: ''
     };
+    const checkDayDate = new Date(checkDay);
     const validationSchema = Yup.object().shape({
+
         content: Yup.string()
             .min(5, "Tối thiểu 5 ký tự")
             .max(300, "Tối đa 300 ký tự")
             .required('Không được trống'),
         deposit: Yup.number()
             .min(totalPrice, "Tiền cọc phải lớn hơn hoặc bằng 10% tổng tiền")
-            .max(totalPrice, "Tối đa số bằng tổng số tiền")
             .required('Không được trống'),
         staff: Yup.string()
             .required("Không được trống"),
@@ -162,7 +162,29 @@ function AddContract() {
             .max(60, 'Kỳ hạng tối đa 60 tháng'),
         startDay: Yup.date()
             .required('Ngày bắt đầu là bắt buộc')
-            .min(new Date(), 'Ngày bắt đầu không được nhỏ hơn ngày hiện tại'),
+            .test(
+                'is-valid-start-day',
+                function (value) {
+                    const startDate = value ? new Date(value).setHours(0, 0, 0, 0) : null;
+                    const today = new Date().setHours(0, 0, 0, 0);
+                    const checkDay = new Date(checkDayDate).setHours(0, 0, 0, 0);
+                    if (!startDate) {
+                        return this.createError({ message: 'Ngày bắt đầu là bắt buộc' });
+                    }
+                    if (checkDay === today) {
+                        if (startDate < today) {
+                            return this.createError({ message: 'Ngày bắt đầu không được nhỏ hơn ngày hiện tại' });
+                        }
+                    } else if (checkDay > today) {
+                        if (startDate < checkDay) {
+                            return this.createError({ message: `Mặt bằng này đang được thuê,ngày bắt đầu phải sau ngày ${checkDayDate.toLocaleDateString()}` });
+                        }
+                    }
+
+                    return true;
+                }
+            )
+
     });
     // =================Tìm trong modal===============//
     const handleSearchCus = async (value) => {
@@ -195,12 +217,30 @@ function AddContract() {
                     headers: {Authorization: `Bearer ${localStorage.getItem('jwtToken')}`},
                 },
             )
+
             setGround(res.data);
         } catch
             (err) {
             console.log(err);
         }
     }
+    const checkGround = async (ground) => {
+        setPriceGround(ground.price);
+        setGroundSelected(ground);
+        setTotalPrice(term * ground.price);
+        setShowGroundModal(false);
+        try {
+            const res = await axios.get(`http://localhost:8080/api/contract/checkDay?day=${ground.name}`,
+                {headers: {Authorization: `Bearer ${localStorage.getItem('jwtToken')}`},})
+            const checkDay = res.data;
+            setCheckDay(checkDay)
+            console.log(checkDay)
+
+        } catch (err) {
+            console.log(err);
+        }
+    }
+
 
     return (
         <>
@@ -223,7 +263,8 @@ function AddContract() {
                                 <Col md={3}>
                                     <Form.Group className="mb-3">
                                         <Form.Label>
-                                            <Button variant={"success"} style={{marginRight: "30px"}} onClick={() => setShowCusModal(true)}>
+                                            <Button variant={"success"} style={{marginRight: "30px"}}
+                                                    onClick={() => setShowCusModal(true)}>
                                                 Chon khách hàng
                                             </Button> </Form.Label>
                                         <Field
@@ -237,7 +278,7 @@ function AddContract() {
                                         <ErrorMessage
                                             name="customer"
                                             component="div"
-                                            className="error-message text-danger"
+                                            className="error-message text-danger message-error"
                                         />
                                     </Form.Group>
                                 </Col>
@@ -249,7 +290,7 @@ function AddContract() {
                                         <Field
                                             as={Form.Control}
                                             type="text"
-                                            className="form-control custom-date-input readonly-input "
+                                            className="form-control custom-date-input readonly-input input-info "
                                             value={customerSelected ? customerSelected.phone : ""}
                                             readOnly
                                         />
@@ -264,7 +305,7 @@ function AddContract() {
                                         <Field
                                             as={Form.Control}
                                             type="text"
-                                            className="form-control custom-date-input readonly-input "
+                                            className="form-control custom-date-input readonly-input input-info "
                                             name={"emailCus"}
                                             value={customerSelected ? customerSelected.email : ""}
                                             readOnly
@@ -280,7 +321,7 @@ function AddContract() {
                                         <Field
                                             as={Form.Control}
                                             type="text"
-                                            className="form-control custom-date-input readonly-input "
+                                            className="form-control custom-date-input readonly-input input-info "
                                             name={"adrCus"}
                                             value={customerSelected ? customerSelected.address : ""}
                                             readOnly
@@ -308,7 +349,7 @@ function AddContract() {
                                         <ErrorMessage
                                             name="staff"
                                             component="div"
-                                            className="error-message text-danger"
+                                            className="error-message text-danger message-error"
                                         />
                                     </Form.Group>
                                 </Col>
@@ -320,7 +361,7 @@ function AddContract() {
                                         </Form.Label>
                                         <Field
                                             type="text"
-                                            className="form-control custom-date-input readonly-input "
+                                            className="form-control custom-date-input readonly-input input-info "
                                             value={staffSelected ? staffSelected.phone : ""}
                                             readOnly
                                         />
@@ -335,7 +376,7 @@ function AddContract() {
                                         <Field
                                             as={Form.Control}
                                             type="text"
-                                            className="form-control custom-date-input readonly-input "
+                                            className="form-control custom-date-input readonly-input input-info "
                                             value={staffSelected ? staffSelected.email : ""}
                                             readOnly
                                         />
@@ -350,7 +391,7 @@ function AddContract() {
                                         <Field
                                             as={Form.Control}
                                             type="text"
-                                            className="form-control custom-date-input readonly-input "
+                                            className="form-control custom-date-input readonly-input input-info "
                                             value={staffSelected ? staffSelected.address : ""}
                                             readOnly
                                         />
@@ -377,7 +418,7 @@ function AddContract() {
                                         <ErrorMessage
                                             name="ground"
                                             component="div"
-                                            className="error-message text-danger"
+                                            className="error-message text-danger message-error"
                                         />
                                     </Form.Group>
                                 </Col>
@@ -389,7 +430,7 @@ function AddContract() {
                                         <Field
                                             as={Form.Control}
                                             type="text"
-                                            className="form-control custom-date-input readonly-input "
+                                            className="form-control custom-date-input readonly-input input-info "
                                             value={groundSelected ? groundSelected.area + " m²" : ""}
                                             readOnly
                                         />
@@ -404,7 +445,7 @@ function AddContract() {
                                         <Field
                                             as={Form.Control}
                                             type="text"
-                                            className="form-control custom-date-input readonly-input "
+                                            className="form-control custom-date-input readonly-input input-info "
                                             value={groundSelected ? groundSelected.floor.name : ""}
                                             readOnly
                                         />
@@ -418,7 +459,7 @@ function AddContract() {
                                         <Field
                                             as={Form.Control}
                                             type="text"
-                                            className="form-control custom-date-input readonly-input "
+                                            className="form-control custom-date-input readonly-input input-info"
                                             value={groundSelected ? groundSelected.price + " VNĐ" : ""}
 
                                             readOnly
@@ -444,7 +485,7 @@ function AddContract() {
                                         <ErrorMessage
                                             name="term"
                                             component="div"
-                                            className="error-message text-danger"
+                                            className="error-message text-danger message-error"
                                         />
                                     </Form.Group>
                                 </Col>
@@ -464,8 +505,9 @@ function AddContract() {
                                         <ErrorMessage
                                             name="startDay"
                                             component="div"
-                                            className="error-message text-danger"
+                                            className="error-message text-danger message-error"
                                         />
+
                                     </Form.Group>
                                 </Col>
                                 <Col md={3}>
@@ -476,7 +518,7 @@ function AddContract() {
                                             type="date"
                                             name="endDay"
                                             value={endDay}
-                                            className={"custom-date-input readonly-input"}
+                                            className={"custom-date-input input-info readonly-input"}
                                             readOnly
                                         />
                                         <ErrorMessage
@@ -492,7 +534,7 @@ function AddContract() {
                                         <Field
                                             as={Form.Control}
                                             type="text"
-                                            className={"custom-date-input"}
+                                            className={"custom-date-input input-info"}
                                             value={totalPrice + " VNĐ"}
                                             readOnly
                                         />
@@ -512,7 +554,7 @@ function AddContract() {
                                         <ErrorMessage
                                             name="deposit"
                                             component="div"
-                                            className="error-message text-danger"
+                                            className="error-message text-danger message-error"
                                         />
                                     </Form.Group>
                                 </Col>
@@ -531,7 +573,7 @@ function AddContract() {
                                         <ErrorMessage
                                             name="content"
                                             component="div"
-                                            className="error-message text-danger"
+                                            className="error-message text-danger message-error"
                                         />
                                     </Form.Group>
                                 </Col>
@@ -737,11 +779,7 @@ function AddContract() {
                                         <td className="text-center">
                                             <Button variant="info" type="button"
                                                     onClick={() => {
-                                                        setPriceGround(ground.price);
-                                                        setGroundSelected(ground);
-                                                        setTotalPrice(term * ground.price);
-                                                        setShowGroundModal(false);
-                                                        console.log(customerSelected)
+                                                        checkGround(ground)
                                                     }}
                                             >
                                                 Chọn

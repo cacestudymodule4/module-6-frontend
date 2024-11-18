@@ -16,35 +16,38 @@ function Contract() {
     const [showDeleteModal, setShowDeleteModal] = useState(false);
     const [contractToDelete, setContractToDelete] = useState(null);
     const [shouldRefresh, setShouldRefresh] = useState(false);
-    const [pageSize] = useState(4);
+    const [pageSize] = useState(1);
     const [totalPages, setTotalPages] = useState(0);
     const [page, setPage] = useState(1);
     const [filteredCustomers, setFilteredCustomers] = useState([]);
+    const token = localStorage.getItem('jwtToken');
     useEffect(() => {
+        if (!token) navigate("/login")
         async function getContract() {
             try {
-                const response = await axios.get("http://localhost:8080/api/contract/list-1"
-                    , {
-                        params: {
-                            page: page - 1,
-                            size: pageSize,
-                        },
-                        headers: {Authorization: `Bearer ${localStorage.getItem('jwtToken')}`}
-                    });
+                const response = await axios.get("http://localhost:8080/api/contract/list-page", {
+                    params: {
+                        page: page - 1,
+                        size: pageSize,
+                    },
+                    headers: {
+                        Authorization: `Bearer ${localStorage.getItem('jwtToken')}` // Thêm Authorization nếu cần
+                    }
+                });
                 setFilteredCustomers(response.data.content);
                 setTotalPages(response.data.totalPages);
-                console.log(response.data);
             } catch (err) {
                 console.log(err);
             }
         }
 
         getContract();
-    }, [shouldRefresh, page]);
+    }, [shouldRefresh, page, pageSize]);
+
     const handleReload = () => {
         setShouldRefresh(prev => !prev)
     }
-    const handleSearch = async (value, page = 1) => {
+    const handleSearch = async (value) => {
         try {
             const data = {
                 taxCode: `%${value.taxCode}%`,
@@ -53,31 +56,43 @@ function Contract() {
                 endDateStr: value.endDate,
                 page: page - 1,
                 size: pageSize,
-            }
-            console.log(page)
-            console.log(pageSize)
-            const response = await axios.get(`http://localhost:8080/api/contract/search`, {
-                    headers: {Authorization: `Bearer ${localStorage.getItem('jwtToken')}`},
-                    params: data
-                },
-            )
-            console.log(response.data)
+            };
+
+            const response = await axios.get("http://localhost:8080/api/contract/search", {
+                headers: { Authorization: `Bearer ${localStorage.getItem('jwtToken')}` },
+                params: data,
+            });
+
             setFilteredCustomers(response.data.content);
             setTotalPages(response.data.totalPages);
-            setPage(page);
 
-        } catch
-            (err) {
+        } catch (err) {
             console.log(err);
         }
-    }
+    };
+
+    const handlePageChange = (newPage) => {
+        if (newPage >= 1 && newPage <= totalPages) {
+            setPage(newPage);
+        }
+    };
+
     const handleAddContract = () => {
         navigate('/contract/add')
     }
-    const isContractActive = (dayend) => {
+    const isContractActive = (dayend, dayStart) => {
         const currentDate = new Date();
         const contractEndDate = new Date(dayend);
-        return contractEndDate > currentDate;
+        const contractStartDate = new Date(dayStart);
+        if (contractStartDate > currentDate) {
+            return "Chưa có hiệu lực"
+        }
+        if (contractEndDate < currentDate) {
+            return "Hết hiệu lực"
+        }
+        if (contractStartDate < currentDate) {
+            return "Có hiệu lực"
+        }
     };
     const handleDeleteClick = (contract) => {
         setContractToDelete(contract);
@@ -114,9 +129,7 @@ function Contract() {
             console.log(err)
         }
     }
-    const handlePageChange = (newPage) => {
-        setPage(newPage);
-    };
+
     return (
         <>
             <NavbarApp/>
@@ -197,7 +210,7 @@ function Contract() {
                                     </option>
                                     <option value="Hết hiệu lực">Hết hiệu lực
                                     </option>
-                                    <option value="Chưa có hệu lực">Chưa có hiệu lực
+                                    <option value="Chưa có hiệu lực">Chưa có hiệu lực
                                     </option>
 
                                 </Field>
@@ -234,20 +247,20 @@ function Contract() {
                                     <td className="text-center">{contract.customer.name}</td>
                                     <td className="text-center">{contract.ground.name}</td>
                                     <td className="text-center">
-                                        {isContractActive(contract.endDate) ? "Có hiệu lực" : "Hết hiệu lực"}
+                                        {isContractActive(contract.endDate, contract.startDate)}
                                     </td>
                                     <td className="text-center">{moment(contract.startDate, 'YYYY-MM-DD').format('DD-MM-YYYY')}</td>
                                     <td className="text-center">{moment(contract.endDate, 'YYYY-MM-DD').format('DD-MM-YYYY')}</td>
                                     <td className="text-center">
                                         <Button variant="info" type="submit"
-                                                onClick={() => navigate(`/contract/detail/${contract.id}`, {state: {contract}})}
+                                                onClick={() => navigate(`/contract/detail/${contract.id}`)}
                                         >
                                             Chi tiết
                                         </Button>
                                     </td>
                                     <td className="text-center">
                                         <Button variant="warning" type="submit"
-                                                onClick={() => navigate(`/contract/edit`, {state: {contract}})}
+                                                onClick={() => navigate(`/contract/edit/${contract.id}`)}
                                         >
                                             Sửa
                                         </Button>
