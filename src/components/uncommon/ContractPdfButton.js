@@ -4,7 +4,7 @@ import {formatDate} from "./Salary";
 import {useNavigate} from "react-router-dom";
 
 function ContractPdfButton({contractId}) {
-    const token = localStorage.getItem("token");
+    const token = localStorage.getItem("jwtToken");
     const navigate = useNavigate();
     const downloadPdf = async () => {
         try {

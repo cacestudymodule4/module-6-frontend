@@ -30,7 +30,7 @@ function AddContract() {
     useEffect(() => {
         async function getStaff() {
             try {
-                const response = await axios.get("http://localhost:8080/api/staff/list", {
+                const response = await axios.get("http://localhost:8080/api/staff/list-add", {
                     headers: {Authorization: `Bearer ${localStorage.getItem('jwtToken')}`}
                 })
                 setStaff(response.data);

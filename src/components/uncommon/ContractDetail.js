@@ -1,6 +1,6 @@
 import React, {useState, useEffect} from 'react';
 import {Form, Button, Row, Col, Card} from 'react-bootstrap';
-import {useLocation, useParams} from 'react-router-dom';
+import {useParams} from 'react-router-dom';
 import {useNavigate} from "react-router-dom";
 import '../../assets/css/Contract.css';
 import {NavbarApp} from "../common/Navbar";
@@ -11,7 +11,7 @@ import ContractPdfButton from "./ContractPdfButton";
 
 function ContractDetail() {
     const navigate = useNavigate();
-    const {id} = useParams();  // Lấy id từ URL
+    const {id} = useParams();
     const [contract, setContract] = useState({});
     const currentDay = new Date();
     const endDate = new Date(contract.endDate);
@@ -40,7 +40,6 @@ function ContractDetail() {
             <NavbarApp/>
             <div className="container mt-5">
                 <h2 className="text-center mb-5" style={{color: "#6d757d"}}>Chi tiết hợp đồng</h2>
-                <Form>
                     <Card className="mb-4">
                         <Card.Header>
                             <h5>Thông tin khách hàng</h5>
@@ -295,9 +294,8 @@ function ContractDetail() {
                             </Row>
                         </Card.Body>
                     </Card>
-                </Form>
             </div>
-            <ContractPdfButton contractId={contract.id}></ContractPdfButton>
+            <ContractPdfButton contractId={contract.id}>123</ContractPdfButton>
             <Footer/>
         </>
     );

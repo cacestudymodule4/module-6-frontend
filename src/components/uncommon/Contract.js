@@ -59,7 +59,7 @@ function Contract() {
             };
 
             const response = await axios.get("http://localhost:8080/api/contract/search", {
-                headers: { Authorization: `Bearer ${localStorage.getItem('jwtToken')}` },
+                headers: {Authorization: `Bearer ${localStorage.getItem('jwtToken')}`},
                 params: data,
             });
 
@@ -252,7 +252,7 @@ function Contract() {
                                     <td className="text-center">{moment(contract.startDate, 'YYYY-MM-DD').format('DD-MM-YYYY')}</td>
                                     <td className="text-center">{moment(contract.endDate, 'YYYY-MM-DD').format('DD-MM-YYYY')}</td>
                                     <td className="text-center">
-                                        <Button variant="info" type="submit"
+                                        <Button variant="info" type="button"
                                                 onClick={() => navigate(`/contract/detail/${contract.id}`)}
                                         >
                                             Chi tiết
