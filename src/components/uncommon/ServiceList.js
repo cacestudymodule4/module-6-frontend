@@ -60,11 +60,7 @@ const ServiceList = () => {
         setEditIndex(null);
         setEditFormData({ name: '', price: '', unit: '' });
     };
-
-    const handleEditChange = (e) => {
-        const { name, value } = e.target;
-        setEditFormData((prevData) => ({ ...prevData, [name]: value }));
-    };
+    
 
     const saveEdit = async (serviceId) => {
         try {
@@ -112,7 +108,7 @@ const ServiceList = () => {
     };
 
     const handleViewService = (serviceId) => {
-        navigate(`/service/view/${serviceId}`);
+        navigate(`/service/detail/${serviceId}`);
     };
 
     return (
