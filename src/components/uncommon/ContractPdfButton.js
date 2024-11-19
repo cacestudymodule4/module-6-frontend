@@ -1,4 +1,4 @@
-import React, {useEffect} from "react";
+import React, {useEffect, useState} from "react";
 import axios from "axios";
 import {formatDate} from "./Salary";
 import {useNavigate} from "react-router-dom";
@@ -6,7 +6,9 @@ import {useNavigate} from "react-router-dom";
 function ContractPdfButton({contractId}) {
     const token = localStorage.getItem("jwtToken");
     const navigate = useNavigate();
+    const [isDownload, setIsDownload] = useState(false);
     const downloadPdf = async () => {
+        setIsDownload(true);
         try {
             const response = await axios.get(`http://localhost:8080/contracts/${contractId}/pdf`, {
                 headers: {Authorization: `Bearer ${localStorage.getItem('jwtToken')}`},
@@ -22,15 +24,17 @@ function ContractPdfButton({contractId}) {
             window.URL.revokeObjectURL(url);
         } catch (error) {
             console.error("Có lỗi xảy ra khi tải file PDF:", error);
+
         }
+        setIsDownload(false);
     };
     useEffect(() => {
         if (!token) navigate("/login");
     })
     return (
-        <button className="btn btn-success" onClick={downloadPdf}>
-            Tải xuống PDF
-        </button>
+        <button className="btn btn-success" onClick={downloadPdf} disabled={isDownload}>
+            {isDownload ? "Đang tải xuống" : "Tải xuống PDF"}
+        < /button>
     );
 }
 
