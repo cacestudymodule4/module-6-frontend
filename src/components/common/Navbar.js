@@ -35,6 +35,7 @@ export const NavbarApp = () => {
                                     <Nav.Link href="/home">Trang chủ</Nav.Link>
                                     <Nav.Link href="/floor/list">Quản lý tầng</Nav.Link>
                                     <Nav.Link href="/contract/list">Quản lý hợp đồng</Nav.Link>
+                                    <Nav.Link href="/customer/list">Quản lý khách hàng</Nav.Link>
                                     <NavDropdown
                                         title="Dropdown"
                                         id={`offcanvasNavbarDropdown-expand-${expand}`}

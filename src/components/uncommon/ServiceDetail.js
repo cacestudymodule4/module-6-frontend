@@ -38,21 +38,49 @@ const ServiceDetail = () => {
                 <h2 className="text-center mb-5 bg-success text-white py-4">Chi tiết Dịch vụ</h2>
 
                 {/* Thông tin chi tiết dịch vụ */}
-                <div className="service-info bg-light p-4 mb-5 rounded">
-                    <h4 className="text-success">Thông tin dịch vụ</h4>
+                <div
+                    style={{
+                        backgroundColor: '#f8f9fa',
+                        padding: '30px',
+                        marginBottom: '30px',
+                        borderRadius: '8px',
+                        boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)',
+                    }}
+                >
+                    <h4
+                        style={{
+                            fontSize: '2rem',
+                            fontWeight: 'bold',
+                            color: '#28a745',
+                            marginBottom: '20px',
+                        }}
+                    >
+                        Thông tin dịch vụ
+                    </h4>
                     {service ? (
-                        <>
-                            <p><strong>Tên dịch vụ:</strong> {service.name}</p>
-                            <p><strong>Giá:</strong> {service.price}</p>
-                            <p><strong>Đơn vị:</strong> {service.unit}</p>
-                        </>
+                        <div style={{ display: 'flex', justifyContent: 'space-between', gap: '20px' }}>
+                            <div style={{ flex: 1 }}>
+                                <p style={{ margin: '5px 0', fontSize: '1.5rem', fontWeight: 'bold', color: 'black' }}>
+                                    Tên dịch vụ:
+                                </p>
+                                <p style={{ margin: '5px 0', fontSize: '1.5rem', color: '#333' }}>{service.name}</p>
+                            </div>
+                            <div style={{ flex: 1 }}>
+                                <p style={{ margin: '5px 0', fontSize: '1.5rem', fontWeight: 'bold', color: 'black' }}>Giá:</p>
+                                <p style={{ margin: '5px 0', fontSize: '1.5rem', color: '#333' }}>{service.price}</p>
+                            </div>
+                            <div style={{ flex: 1 }}>
+                                <p style={{ margin: '5px 0', fontSize: '1.5rem', fontWeight: 'bold', color: 'black' }}>Đơn vị:</p>
+                                <p style={{ margin: '5px 0', fontSize: '1.5rem', color: '#333' }}>{service.unit}</p>
+                            </div>
+                        </div>
                     ) : (
-                        <p>Đang tải thông tin dịch vụ...</p>
+                        <p style={{ fontSize: '1.5rem', color: '#666' }}>Đang tải thông tin dịch vụ...</p>
                     )}
                 </div>
 
                 {/* Danh sách mặt bằng liên kết */}
-                <h4 className="text-success mb-3">Danh sách mặt bằng liên kết</h4>
+                <h4 className="text-success mb-3">Danh sách mặt sử dụng</h4>
                 {grounds && grounds.length > 0 ? (
                     <div className="table-responsive">
                         <Table striped bordered hover>

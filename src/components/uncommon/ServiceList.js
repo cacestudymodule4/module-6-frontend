@@ -141,10 +141,10 @@ const ServiceList = () => {
                     <Table striped bordered hover>
                         <thead className="table-success">
                         <tr className="text-center">
-                            <th>STT</th>
-                            <th>Tên Dịch Vụ</th>
-                            <th>Giá</th>
-                            <th>Đơn vị</th>
+                            <th style={{ width: '50px' }}>STT</th>
+                            <th style={{ width: '200px' }}>Tên Dịch Vụ</th>
+                            <th style={{ width: '150px' }}>Giá</th>
+                            <th style={{ width: '150px' }}>Đơn vị</th>
                             <th colSpan={3}>Hành Động</th>
                         </tr>
                         </thead>
@@ -153,24 +153,71 @@ const ServiceList = () => {
                             services.map((service, index) => (
                                 <tr key={service.id} className="text-center">
                                     <td>{(currentPage * pageSize) + index + 1}</td>
-                                    <td>{service.name}</td>
-                                    <td>{service.price}</td>
-                                    <td>{service.unit}</td>
-                                    <td style={{ width: '80px' }}>
-                                        <button className="btn btn-info" onClick={() => handleViewService(service.id)}>Xem</button>
-                                    </td>
-                                    <td style={{ width: '80px' }}>
+                                    <td style={{ minWidth: '50px' }}>
                                         {editIndex === index ? (
-                                            <button className="btn btn-primary" onClick={() => saveEdit(service.id)}>Lưu</button>
+                                            <input
+                                                type="text"
+                                                value={editFormData.name}
+                                                onChange={(e) => setEditFormData({
+                                                    ...editFormData,
+                                                    name: e.target.value
+                                                })}
+                                                className="form-control"
+                                            />
                                         ) : (
-                                            <button className="btn btn-warning" onClick={() => startEditing(index, service)}>Sửa</button>
+                                            service.name
                                         )}
                                     </td>
-                                    <td style={{ width: '80px' }}>
+                                    <td>
+                                        {editIndex === index ? (
+                                            <input
+                                                type="number"
+                                                value={editFormData.price}
+                                                onChange={(e) => setEditFormData({
+                                                    ...editFormData,
+                                                    price: e.target.value
+                                                })}
+                                                className="form-control"
+                                            />
+                                        ) : (
+                                            service.price
+                                        )}
+                                    </td>
+                                    <td>
+                                        {editIndex === index ? (
+                                            <input
+                                                type="text"
+                                                value={editFormData.unit}
+                                                onChange={(e) => setEditFormData({
+                                                    ...editFormData,
+                                                    unit: e.target.value
+                                                })}
+                                                className="form-control"
+                                            />
+                                        ) : (
+                                            service.unit
+                                        )}
+                                    </td>
+                                    <td style={{width: '80px'}}>
+                                        <button className="btn btn-info"
+                                                onClick={() => handleViewService(service.id)}>Xem
+                                        </button>
+                                    </td>
+                                    <td style={{width: '80px'}}>
+                                        {editIndex === index ? (
+                                            <button className="btn btn-primary"
+                                                    onClick={() => saveEdit(service.id)}>Lưu</button>
+                                        ) : (
+                                            <button className="btn btn-warning"
+                                                    onClick={() => startEditing(index, service)}>Sửa</button>
+                                        )}
+                                    </td>
+                                    <td style={{width: '80px'}}>
                                         {editIndex === index ? (
                                             <button className="btn btn-secondary" onClick={cancelEditing}>Hủy</button>
                                         ) : (
-                                            <button className="btn btn-danger" onClick={() => openDeleteModal(service.id)}>Xóa</button>
+                                            <button className="btn btn-danger"
+                                                    onClick={() => openDeleteModal(service.id)}>Xóa</button>
                                         )}
                                     </td>
                                 </tr>
@@ -213,7 +260,7 @@ const ServiceList = () => {
                 </Modal.Footer>
             </Modal>
 
-            <Footer />
+            <Footer/>
         </>
     );
 };
