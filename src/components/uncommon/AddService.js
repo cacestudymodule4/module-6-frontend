@@ -1,14 +1,14 @@
-import React, { useState } from 'react';
-import { NavbarApp } from "../common/Navbar";
+import React, {useState} from 'react';
+import {NavbarApp} from "../common/Navbar";
 import Footer from "../common/Footer";
 import axios from 'axios';
-import { toast } from "react-toastify";
+import {toast} from "react-toastify";
 
 const AddService = () => {
-    const [serviceData, setServiceData] = useState({ name: '', price: '', unit: '' });
+    const [serviceData, setServiceData] = useState({name: '', price: '', unit: ''});
 
     const handleChange = (e) => {
-        const { name, value } = e.target;
+        const {name, value} = e.target;
         setServiceData((prevData) => ({
             ...prevData,
             [name]: value,
@@ -19,10 +19,10 @@ const AddService = () => {
         e.preventDefault();
         try {
             await axios.post('http://localhost:8080/api/services/add', serviceData, {
-                headers: { Authorization: `Bearer ${localStorage.getItem('jwtToken')}` },
+                headers: {Authorization: `Bearer ${localStorage.getItem('jwtToken')}`},
             });
             toast.success("Thêm mới dịch vụ thành công");
-            setServiceData({ name: '', price: '', unit: '' });
+            setServiceData({name: '', price: '', unit: ''});
         } catch (error) {
             console.error("Lỗi khi thêm dịch vụ:", error);
             toast.error("Thêm mới dịch vụ thất bại");
@@ -31,7 +31,7 @@ const AddService = () => {
 
     return (
         <>
-            <NavbarApp />
+            <NavbarApp/>
             <div className="container mt-5">
                 <h2 className="text-center mb-5 bg-success text-white py-4">Thêm mới dịch vụ</h2>
                 <form className="form-group" onSubmit={handleSubmit}>
@@ -74,7 +74,7 @@ const AddService = () => {
                     <button type="submit" className="btn btn-success">Thêm Mới</button>
                 </form>
             </div>
-            <Footer />
+            <Footer/>
         </>
     );
 };

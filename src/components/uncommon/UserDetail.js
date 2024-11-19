@@ -55,7 +55,7 @@ const UserInfo = () => {
                                                 <input
                                                     type="text"
                                                     className="form-control"
-                                                    value={userInfo?.fullName || ''}
+                                                    value={userInfo?.name || ''}
                                                     disabled
                                                 />
                                                 <label>Họ và tên</label>
@@ -110,10 +110,10 @@ const UserInfo = () => {
                                                 <input
                                                     type="text"
                                                     className="form-control"
-                                                    value={userInfo?.id || ''}
+                                                    value={userInfo?.birthday || ''}
                                                     disabled
                                                 />
-                                                <label>ID</label>
+                                                <label>Sinh nhật</label>
                                             </div>
                                         </div>
                                     </div>

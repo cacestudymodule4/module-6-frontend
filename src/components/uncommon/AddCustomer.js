@@ -10,7 +10,6 @@ import Footer from "../common/Footer";
 
 const AddCustomer = () => {
     const navigate = useNavigate();
-    const [error, setError] = useState(null);  // State để lưu thông báo lỗi
 
     const formik = useFormik({
         initialValues: {
@@ -55,9 +54,6 @@ const AddCustomer = () => {
             } catch (error) {
                 if (error.response) {
                     toast.error(error.response.data);
-                    // setError(error.response.data?)
-                } else {
-                    setError('Có lỗi kết nối với máy chủ. Vui lòng thử lại sau.');
                 }
             }
         },

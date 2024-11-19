@@ -1,6 +1,6 @@
 import React, {useState, useEffect} from 'react';
 import axios from 'axios';
-import {Modal, Button} from 'react-bootstrap'; // Import Modal và Button từ react-bootstrap
+import {Modal, Button} from 'react-bootstrap';
 import {useNavigate} from "react-router-dom";
 import '../../assets/css/CustomerList.css';
 import {FaSearch} from "react-icons/fa";
