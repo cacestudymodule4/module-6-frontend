@@ -1,12 +1,12 @@
-import React, { useState, useEffect } from 'react';
-import { Table, Button, Modal } from 'react-bootstrap';
-import { NavbarApp } from "../common/Navbar";
+import React, {useState, useEffect} from 'react';
+import {Table, Button, Modal} from 'react-bootstrap';
+import {NavbarApp} from "../common/Navbar";
 import Footer from "../common/Footer";
-import { FaSearch } from 'react-icons/fa';
-import { TbReload } from 'react-icons/tb';
+import {FaSearch} from 'react-icons/fa';
+import {TbReload} from 'react-icons/tb';
 import axios from 'axios';
-import { toast } from "react-toastify";
-import { useNavigate } from "react-router-dom";
+import {toast} from "react-toastify";
+import {useNavigate} from "react-router-dom";
 
 const ServiceList = () => {
     const [services, setServices] = useState([]);
@@ -15,7 +15,7 @@ const ServiceList = () => {
     const [totalPages, setTotalPages] = useState(0);
     const [searchName, setSearchName] = useState('');
     const [editIndex, setEditIndex] = useState(null);
-    const [editFormData, setEditFormData] = useState({ name: '', price: '', unit: '' });
+    const [editFormData, setEditFormData] = useState({name: '', price: '', unit: ''});
     const [serviceToDelete, setServiceToDelete] = useState(null);
     const [showDeleteModal, setShowDeleteModal] = useState(false);
 
@@ -30,7 +30,7 @@ const ServiceList = () => {
         try {
             const response = await axios.get(`http://localhost:8080/api/services/list`, {
                 params: { page, size: pageSize, name: searchName },
-                headers: { Authorization: `Bearer ${localStorage.getItem('jwtToken')}` },
+                headers: { Authorization: `Bearer ${localStorage.getItem('jwtToken')}` }
             });
             setServices(response.data.content);
             setTotalPages(response.data.totalPages);
@@ -58,12 +58,12 @@ const ServiceList = () => {
 
     const startEditing = (index, service) => {
         setEditIndex(index);
-        setEditFormData({ name: service.name, price: service.price, unit: service.unit });
+        setEditFormData({name: service.name, price: service.price, unit: service.unit});
     };
 
     const cancelEditing = () => {
         setEditIndex(null);
-        setEditFormData({ name: '', price: '', unit: '' });
+        setEditFormData({name: '', price: '', unit: ''});
     };
 
     const saveEdit = async (serviceId) => {
@@ -115,7 +115,7 @@ const ServiceList = () => {
 
     return (
         <>
-            <NavbarApp />
+            <NavbarApp/>
             <div className="service-list container mt-5">
                 <h2 className="text-center mb-5 bg-success text-white py-4">Danh sách dịch vụ</h2>
 

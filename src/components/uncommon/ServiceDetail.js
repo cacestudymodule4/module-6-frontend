@@ -1,13 +1,13 @@
-import React, { useState, useEffect } from 'react';
-import { Table } from 'react-bootstrap';
-import { useParams, useNavigate } from 'react-router-dom';
+import React, {useState, useEffect} from 'react';
+import {Table} from 'react-bootstrap';
+import {useParams, useNavigate} from 'react-router-dom';
 import axios from 'axios';
 import { toast } from 'react-toastify';
 import { NavbarApp } from "../common/Navbar";
 import Footer from "../common/Footer";
 
 const ServiceDetail = () => {
-    const { serviceId } = useParams();
+    const {serviceId} = useParams();
     const [service, setService] = useState(null);
     const [grounds, setGrounds] = useState([]);
     const navigate = useNavigate();
@@ -20,7 +20,7 @@ const ServiceDetail = () => {
     const fetchServiceDetail = async () => {
         try {
             const response = await axios.get(`http://localhost:8080/api/services/detail/${serviceId}`, {
-                headers: { Authorization: `Bearer ${localStorage.getItem('jwtToken')}` },
+                headers: {Authorization: `Bearer ${localStorage.getItem('jwtToken')}`},
             });
             setService(response.data.service);
             setGrounds(response.data.grounds);
