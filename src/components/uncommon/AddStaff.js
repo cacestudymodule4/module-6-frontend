@@ -187,9 +187,9 @@ const AddStaff = () => {
                                     <label className="form-label" style={{fontSize: '1.1rem'}}>Bộ phận</label>
                                     <Field as="select" name="position" className="form-control form-control-lg">
                                         <option value="">-- Chọn bộ phận --</option>
-                                        <option value="Manager">Quản lý</option>
-                                        <option value="Staff">Nhân viên</option>
-                                        <option value="HR">Nhân sự</option>
+                                        <option value="Quản lý">Quản lý</option>
+                                        <option value="Nhân viên">Nhân viên</option>
+                                        <option value="Nhân sự">Nhân sự</option>
                                         <option value="IT">IT</option>
                                     </Field>
                                     <ErrorMessage name="position" component="div" className="text-danger small"/>

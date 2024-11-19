@@ -34,7 +34,6 @@ export const NavbarApp = () => {
                                 <Nav className="justify-content-end flex-grow-1 pe-3">
                                     <Nav.Link href="/home">Trang chủ</Nav.Link>
                                     <Nav.Link href="/floor/list">Quản lý tầng</Nav.Link>
-                                    <Nav.Link href="/staff/list">Nhân Viên</Nav.Link>
                                     <Nav.Link href="/contract/list">Quản lý hợp đồng</Nav.Link>
                                     <Nav.Link href="/customer/list">Quản lý khách hàng</Nav.Link>
                                     <NavDropdown
@@ -50,6 +49,9 @@ export const NavbarApp = () => {
                                         <NavDropdown.Divider/>
                                         <NavDropdown.Item href="/user/detail">
                                             Thông tin người dùng
+                                        </NavDropdown.Item>
+                                        <NavDropdown.Item href="/staff/list">
+                                            Nhân viên
                                         </NavDropdown.Item>
                                         {userRole === "ADMIN" ?
                                             <NavDropdown.Item href="/building/edit">Sửa toà nhà</NavDropdown.Item> : ""}

@@ -215,6 +215,23 @@ function Staff() {
                                 <td className="text-center">{moment(staff.startDate, 'YYYY-MM-DD').format('DD-MM-YYYY')}</td>
                                 <td className="text-center">{staff.position}</td>
                                 <td className="text-center">
+
+                                    <div className="mb-2">
+                                        {staff.hasAccount ? (
+                                            <span className="badge bg-success">Đã có tài khoản</span>
+                                        ) : (
+                                            <>
+                                                <span className="badge bg-danger">Chưa có tài khoản</span>
+                                                <br/>
+                                                <a
+                                                    href={`/register?staffId=${staff.id}`}
+                                                    className="btn btn-sm btn-primary mt-2">
+                                                    Đăng ký tài khoản
+                                                </a>
+                                            </>
+                                        )}
+                                    </div>
+
                                     <button
                                         className="btn btn-warning btn-sm me-2"
                                         style={{fontSize: '0.9rem'}}
