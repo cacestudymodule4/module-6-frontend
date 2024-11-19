@@ -72,8 +72,11 @@ function CustomerList() {
                 headers: {Authorization: `Bearer ${localStorage.getItem('jwtToken')}`}
             });
             console.log("Dữ liệu khách hàng:", response.data);
-            setCustomers(response.data.content);
-            setFilteredCustomers(response.data.content);
+            const sortedCustomers = response.data.content.sort((a, b) =>
+                a.name.trim().localeCompare(b.name.trim(), 'vi', { sensitivity: 'base' })
+            );
+            setCustomers(sortedCustomers);
+            setFilteredCustomers(sortedCustomers);
             setTotalPages(response.data.totalPages);
         } catch (error) {
             console.error('Có lỗi khi lấy danh sách khách hàng:', error);

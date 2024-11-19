@@ -1,13 +1,13 @@
-import React, { useState, useEffect } from 'react';
-import { Table } from 'react-bootstrap';
-import { useParams, useNavigate } from 'react-router-dom';
+import React, {useState, useEffect} from 'react';
+import {Table} from 'react-bootstrap';
+import {useParams, useNavigate} from 'react-router-dom';
 import axios from 'axios';
-import { toast } from 'react-toastify';
-import { NavbarApp } from "../common/Navbar";
+import {toast} from 'react-toastify';
+import {NavbarApp} from "../common/Navbar";
 import Footer from "../common/Footer";
 
 const ServiceDetail = () => {
-    const { serviceId } = useParams();
+    const {serviceId} = useParams();
     const [service, setService] = useState(null);
     const [grounds, setGrounds] = useState([]);
     const navigate = useNavigate();
@@ -16,11 +16,10 @@ const ServiceDetail = () => {
     useEffect(() => {
         fetchServiceDetail();
     }, [serviceId]);
-
     const fetchServiceDetail = async () => {
         try {
             const response = await axios.get(`http://localhost:8080/api/services/detail/${serviceId}`, {
-                headers: { Authorization: `Bearer ${localStorage.getItem('jwtToken')}` },
+                headers: {Authorization: `Bearer ${localStorage.getItem('jwtToken')}`},
             });
             setService(response.data.service);
             setGrounds(response.data.grounds);
@@ -29,10 +28,9 @@ const ServiceDetail = () => {
             toast.error("Không thể tải thông tin dịch vụ.");
         }
     };
-
     return (
         <>
-            <NavbarApp />
+            <NavbarApp/>
             <div className="service-detail container mt-5">
                 {/* Tiêu đề */}
                 <h2 className="text-center mb-5 bg-success text-white py-4">Chi tiết Dịch vụ</h2>
@@ -58,24 +56,30 @@ const ServiceDetail = () => {
                         Thông tin dịch vụ
                     </h4>
                     {service ? (
-                        <div style={{ display: 'flex', justifyContent: 'space-between', gap: '20px' }}>
-                            <div style={{ flex: 1 }}>
-                                <p style={{ margin: '5px 0', fontSize: '1.5rem', fontWeight: 'bold', color: 'black' }}>
+                        <div style={{display: 'flex', justifyContent: 'space-between', gap: '20px'}}>
+                            <div style={{flex: 1}}>
+                                <p style={{margin: '5px 0', fontSize: '1.5rem', fontWeight: 'bold', color: 'black'}}>
                                     Tên dịch vụ:
                                 </p>
-                                <p style={{ margin: '5px 0', fontSize: '1.5rem', color: '#333' }}>{service.name}</p>
+                                <p style={{margin: '5px 0', fontSize: '1.5rem', color: '#333'}}>{service.name}</p>
                             </div>
-                            <div style={{ flex: 1 }}>
-                                <p style={{ margin: '5px 0', fontSize: '1.5rem', fontWeight: 'bold', color: 'black' }}>Giá:</p>
-                                <p style={{ margin: '5px 0', fontSize: '1.5rem', color: '#333' }}>{service.price}</p>
+                            <div style={{flex: 1}}>
+                                <p style={{
+                                    margin: '5px 0',
+                                    fontSize: '1.5rem',
+                                    fontWeight: 'bold',
+                                    color: 'black'
+                                }}>Giá:</p>
+                                <p style={{margin: '5px 0', fontSize: '1.5rem', color: '#333'}}>{service.price}</p>
                             </div>
-                            <div style={{ flex: 1 }}>
-                                <p style={{ margin: '5px 0', fontSize: '1.5rem', fontWeight: 'bold', color: 'black' }}>Đơn vị:</p>
-                                <p style={{ margin: '5px 0', fontSize: '1.5rem', color: '#333' }}>{service.unit}</p>
+                            <div style={{flex: 1}}>
+                                <p style={{margin: '5px 0', fontSize: '1.5rem', fontWeight: 'bold', color: 'black'}}>Đơn
+                                    vị:</p>
+                                <p style={{margin: '5px 0', fontSize: '1.5rem', color: '#333'}}>{service.unit}</p>
                             </div>
                         </div>
                     ) : (
-                        <p style={{ fontSize: '1.5rem', color: '#666' }}>Đang tải thông tin dịch vụ...</p>
+                        <p style={{fontSize: '1.5rem', color: '#666'}}>Đang tải thông tin dịch vụ...</p>
                     )}
                 </div>
 
@@ -108,11 +112,11 @@ const ServiceDetail = () => {
                     <p>Không có mặt bằng nào liên kết với dịch vụ này.</p>
                 )}
 
-                <div className="d-flex justify-content-center mt-4" style={{ marginBottom: "20px" }}>
+                <div className="d-flex justify-content-center mt-4" style={{marginBottom: "20px"}}>
                     <button className="btn btn-secondary" onClick={() => navigate(-1)}>Quay lại</button>
                 </div>
             </div>
-            <Footer />
+            <Footer/>
         </>
     );
 };

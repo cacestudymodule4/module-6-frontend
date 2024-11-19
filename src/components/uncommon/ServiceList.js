@@ -1,12 +1,12 @@
-import React, { useState, useEffect } from 'react';
-import { Table, Button, Modal } from 'react-bootstrap';
-import { NavbarApp } from "../common/Navbar";
+import React, {useState, useEffect} from 'react';
+import {Table, Button, Modal} from 'react-bootstrap';
+import {NavbarApp} from "../common/Navbar";
 import Footer from "../common/Footer";
-import { FaSearch } from 'react-icons/fa';
-import { TbReload } from 'react-icons/tb';
+import {FaSearch} from 'react-icons/fa';
+import {TbReload} from 'react-icons/tb';
 import axios from 'axios';
-import { toast } from "react-toastify";
-import { useNavigate } from "react-router-dom";
+import {toast} from "react-toastify";
+import {useNavigate} from "react-router-dom";
 
 const ServiceList = () => {
     const [services, setServices] = useState([]);
@@ -15,7 +15,7 @@ const ServiceList = () => {
     const [totalPages, setTotalPages] = useState(0);
     const [searchName, setSearchName] = useState('');
     const [editIndex, setEditIndex] = useState(null);
-    const [editFormData, setEditFormData] = useState({ name: '', price: '', unit: '' });
+    const [editFormData, setEditFormData] = useState({name: '', price: '', unit: ''});
     const [serviceToDelete, setServiceToDelete] = useState(null);
     const [showDeleteModal, setShowDeleteModal] = useState(false);
 
@@ -29,8 +29,8 @@ const ServiceList = () => {
     const fetchServices = async (page) => {
         try {
             const response = await axios.get(`http://localhost:8080/api/services/list`, {
-                params: { page, size: pageSize, name: searchName },
-                headers: { Authorization: `Bearer ${localStorage.getItem('jwtToken')}` },
+                params: {page, size: pageSize, name: searchName},
+                headers: {Authorization: `Bearer ${localStorage.getItem('jwtToken')}`},
             });
             setServices(response.data.content);
             setTotalPages(response.data.totalPages);
@@ -58,18 +58,18 @@ const ServiceList = () => {
 
     const startEditing = (index, service) => {
         setEditIndex(index);
-        setEditFormData({ name: service.name, price: service.price, unit: service.unit });
+        setEditFormData({name: service.name, price: service.price, unit: service.unit});
     };
 
     const cancelEditing = () => {
         setEditIndex(null);
-        setEditFormData({ name: '', price: '', unit: '' });
+        setEditFormData({name: '', price: '', unit: ''});
     };
 
     const saveEdit = async (serviceId) => {
         try {
             await axios.put(`http://localhost:8080/api/services/update/${serviceId}`, editFormData, {
-                headers: { Authorization: `Bearer ${localStorage.getItem('jwtToken')}` },
+                headers: {Authorization: `Bearer ${localStorage.getItem('jwtToken')}`},
             });
             toast.success("Cập nhật thành công");
             fetchServices(currentPage);
@@ -94,7 +94,7 @@ const ServiceList = () => {
     const confirmDeleteService = async () => {
         try {
             await axios.delete(`http://localhost:8080/api/services/delete/${serviceToDelete}`, {
-                headers: { Authorization: `Bearer ${localStorage.getItem('jwtToken')}` },
+                headers: {Authorization: `Bearer ${localStorage.getItem('jwtToken')}`},
             });
             toast.success("Xóa thành công");
             fetchServices(currentPage);
@@ -115,13 +115,13 @@ const ServiceList = () => {
 
     return (
         <>
-            <NavbarApp />
+            <NavbarApp/>
             <div className="service-list container mt-5">
                 <h2 className="text-center mb-5 bg-success text-white py-4">Danh sách dịch vụ</h2>
 
                 <div className="d-flex mb-3">
                     <button className="btn btn-success" onClick={handleNavigateToAddService}>Thêm mới</button>
-                    <button className="btn btn-secondary ms-2" onClick={handleReload}><TbReload /> Tải lại</button>
+                    <button className="btn btn-secondary ms-2" onClick={handleReload}><TbReload/> Tải lại</button>
                 </div>
 
                 <div className="d-flex justify-content-center align-items-center mb-3">
@@ -133,7 +133,7 @@ const ServiceList = () => {
                         onChange={(e) => setSearchName(e.target.value)}
                     />
                     <button className="btn btn-success ms-2" onClick={handleSearch}>
-                        <FaSearch /> Tìm kiếm
+                        <FaSearch/> Tìm kiếm
                     </button>
                 </div>
 
@@ -141,10 +141,10 @@ const ServiceList = () => {
                     <Table striped bordered hover>
                         <thead className="table-success">
                         <tr className="text-center">
-                            <th style={{ width: '50px' }}>STT</th>
-                            <th style={{ width: '200px' }}>Tên Dịch Vụ</th>
-                            <th style={{ width: '150px' }}>Giá</th>
-                            <th style={{ width: '150px' }}>Đơn vị</th>
+                            <th style={{width: '50px'}}>STT</th>
+                            <th style={{width: '200px'}}>Tên Dịch Vụ</th>
+                            <th style={{width: '150px'}}>Giá</th>
+                            <th style={{width: '150px'}}>Đơn vị</th>
                             <th colSpan={3}>Hành Động</th>
                         </tr>
                         </thead>
@@ -153,7 +153,7 @@ const ServiceList = () => {
                             services.map((service, index) => (
                                 <tr key={service.id} className="text-center">
                                     <td>{(currentPage * pageSize) + index + 1}</td>
-                                    <td style={{ minWidth: '50px' }}>
+                                    <td style={{minWidth: '50px'}}>
                                         {editIndex === index ? (
                                             <input
                                                 type="text"
