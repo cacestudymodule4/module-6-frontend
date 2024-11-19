@@ -48,7 +48,6 @@ function AddContract() {
                 setContractEdit(response.data);
                 setStartDay(response.data.startDate);
                 setTerm(response.data.term);
-
             } catch (err) {
                 console.log(err);
             }
@@ -84,7 +83,7 @@ function AddContract() {
             console.log(value.startDay);
             console.log(value.endDay)
             console.log(customerSelected)
-            const res = await axios.put(`http://localhost:8080/api/contract/save`,  data,{
+            const res = await axios.put(`http://localhost:8080/api/contract/save`, data, {
                     headers: {Authorization: `Bearer ${localStorage.getItem('jwtToken')}`},
                 },
             )
@@ -133,12 +132,12 @@ function AddContract() {
             const calculatedEndDate = calculateEndDate(startDate, term);  // Tính toán endDate
             setEndDay(calculatedEndDate);  // Cập nhật endDay
         }
-      checkGround();
+        checkGround();
     };
     const initialValues = {
         customerEdit: customerSelected || contractEdit.customer,
         staffEdit: staffSelected || contractEdit.staff,
-        term:term || contractEdit?.term,
+        term: term || contractEdit?.term,
         customer: customerSelected?.name || contractEdit?.customer?.name,
         staff: staffSelected?.name || contractEdit?.staff?.name,
         startDay: startDay || contractEdit?.startDate,

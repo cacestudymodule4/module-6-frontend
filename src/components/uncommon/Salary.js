@@ -214,7 +214,7 @@ const Salary = () => {
                                     </div>
                                     <div className="justify-content-center align-items-center mt-3">
                                         <div className="d-flex justify-content-center">
-                                            <Link className="btn btn-dark" to="/home">Quay lại</Link>
+                                            <Link className="btn btn-secondary" to="/home">Quay lại</Link>
                                         </div>
                                     </div>
                                 </div>

@@ -2,7 +2,7 @@ import "bootstrap/dist/css/bootstrap.css";
 import React, {useEffect} from 'react';
 import {Formik, Form, Field, ErrorMessage} from 'formik';
 import * as Yup from "yup";
-import {Link, useNavigate} from "react-router-dom";
+import {useNavigate} from "react-router-dom";
 import {useDispatch, useSelector} from "react-redux";
 import {LOGIN} from "../../redux/actions";
 import {toast} from "react-toastify";
