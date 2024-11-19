@@ -19,8 +19,19 @@ const Login = () => {
         password: ''
     };
     const validationSchema = Yup.object({
-        username: Yup.string().required('Vui lòng nhập tên người dùng'),
-        password: Yup.string().required('Vui lòng nhập mật khẩu')
+        username: Yup.string()
+            .required('Vui lòng nhập tên người dùng')
+            .test(
+                'is-valid-username',
+                'Tên người dùng phải là tài khoản, số điện thoại hoặc email hợp lệ',
+                (value) => {
+                    if (!value) return false;
+                    const isUsername = new RegExp("^[a-zA-Z0-9_]+$").test(value);
+                    const isEmail = new RegExp("^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,4}$").test(value);
+                    return isUsername || isEmail;
+                }
+            ),
+        password: Yup.string().required('Vui lòng nhập mật khẩu'),
     });
     const handleSubmit = (values) => {
         dispatch({type: LOGIN, payload: values});
@@ -58,13 +69,13 @@ const Login = () => {
                                                     {({isValid}) => (
                                                         <Form>
                                                             <div className="form-floating mb-4">
-                                                                <Field name="email"
+                                                                <Field name="username"
                                                                        className="form-control form-control-lg"
                                                                        placeholder="name@example.com"
                                                                        style={{padding: '1.2rem 1rem'}}
                                                                 />
-                                                                <label htmlFor="email">Email</label>
-                                                                <ErrorMessage name="email" component="div"
+                                                                <label htmlFor="username">Email</label>
+                                                                <ErrorMessage name="username" component="div"
                                                                               className="text-danger mt-1"/>
                                                             </div>
                                                             <div className="form-floating mb-4">
