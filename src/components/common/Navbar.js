@@ -11,7 +11,7 @@ export const NavbarApp = () => {
                 <Navbar key={expand} expand={expand} className="bg-body-tertiary" bg="success" data-bs-theme="success"
                         sticky="top">
                     <Container>
-                        <Navbar.Brand href="#">
+                        <Navbar.Brand href="/home">
                             <img
                                 alt=""
                                 src="https://quanlychungcuhaiphong.vn/upload/icon/9-3-2024/lexico-53-70.png"
@@ -37,15 +37,14 @@ export const NavbarApp = () => {
                                     <Nav.Link href="/contract/list">Quản lý hợp đồng</Nav.Link>
                                     <Nav.Link href="/customer/list">Quản lý khách hàng</Nav.Link>
                                     <NavDropdown
-                                        title="Dropdown"
+                                        title="Lựa chọn"
                                         id={`offcanvasNavbarDropdown-expand-${expand}`}
                                     >
-                                        <NavDropdown.Item href="#action3">Action</NavDropdown.Item>
                                         <NavDropdown.Item href="/salary">
                                             Bảng lương
                                         </NavDropdown.Item>
                                         <NavDropdown.Divider/>
-                                        <NavDropdown.Item href="report">
+                                        <NavDropdown.Item href="/report">
                                             Doanh thu
                                         </NavDropdown.Item>
                                         {userRole === "ADMIN" ?
