@@ -18,9 +18,7 @@ const ServiceList = () => {
     const [editFormData, setEditFormData] = useState({name: '', price: '', unit: ''});
     const [serviceToDelete, setServiceToDelete] = useState(null);
     const [showDeleteModal, setShowDeleteModal] = useState(false);
-
     const navigate = useNavigate();
-
 
     useEffect(() => {
         fetchServices(currentPage); // When page changes, fetch services for that page
@@ -30,7 +28,7 @@ const ServiceList = () => {
         try {
             const response = await axios.get(`http://localhost:8080/api/services/list`, {
                 params: {page, size: pageSize, name: searchName},
-                headers: {Authorization: `Bearer ${localStorage.getItem('jwtToken')}`},
+                headers: {Authorization: `Bearer ${localStorage.getItem('jwtToken')}`}
             });
             setServices(response.data.content);
             setTotalPages(response.data.totalPages);

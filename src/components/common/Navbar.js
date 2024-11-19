@@ -43,9 +43,12 @@ export const NavbarApp = () => {
                                         <NavDropdown.Item href="/salary">
                                             Bảng lương
                                         </NavDropdown.Item>
-                                        <NavDropdown.Divider/>
                                         <NavDropdown.Item href="/report">
                                             Doanh thu
+                                        </NavDropdown.Item>
+                                        <NavDropdown.Divider/>
+                                        <NavDropdown.Item href="/user/detail">
+                                            Thông tin người dùng
                                         </NavDropdown.Item>
                                         {userRole === "ADMIN" ?
                                             <NavDropdown.Item href="/building/edit">Sửa toà nhà</NavDropdown.Item> : ""}
