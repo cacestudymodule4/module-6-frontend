@@ -34,6 +34,7 @@ export const NavbarApp = () => {
                                 <Nav className="justify-content-end flex-grow-1 pe-3">
                                     <Nav.Link href="/home">Trang chủ</Nav.Link>
                                     <Nav.Link href="/floor/list">Quản lý tầng</Nav.Link>
+                                    <Nav.Link href="/staff/list">Nhân Viên</Nav.Link>
                                     <NavDropdown
                                         title="Dropdown"
                                         id={`offcanvasNavbarDropdown-expand-${expand}`}

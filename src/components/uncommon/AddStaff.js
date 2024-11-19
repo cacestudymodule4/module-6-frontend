@@ -83,7 +83,6 @@ const AddStaff = () => {
 
             if (response.status === 200 || response.status === 201) {
                 toast.success("Nhân viên mới đã được thêm thành công!!!");
-                // setIsAddModalOpen(false);
                 navigate('/staff/list');
             }
         } catch (error) {
