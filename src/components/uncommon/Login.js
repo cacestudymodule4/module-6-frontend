@@ -15,20 +15,18 @@ const Login = () => {
     const {isAuthenticated, error, isLoggingIn} = useSelector(state => state.auth);
     const token = localStorage.getItem('jwtToken');
     const initialValues = {
-        email: '',
+        username: '',
         password: ''
     };
     const validationSchema = Yup.object({
-        email: Yup.string().email('Email không hợp lệ').required('Vui lòng nhập email'),
+        username: Yup.string().required('Vui lòng nhập tên người dùng'),
         password: Yup.string().required('Vui lòng nhập mật khẩu')
     });
     const handleSubmit = (values) => {
         dispatch({type: LOGIN, payload: values});
     };
     useEffect(() => {
-        if (token) {
-            navigate("/home");
-        }
+        if (token) navigate("/home");
         if (isAuthenticated) {
             navigate("/home");
             toast.success("Đăng nhập thành công", {position: "top-right", autoClose: 3000});
@@ -60,7 +58,7 @@ const Login = () => {
                                                     {({isValid}) => (
                                                         <Form>
                                                             <div className="form-floating mb-4">
-                                                                <Field type="email" name="email"
+                                                                <Field name="email"
                                                                        className="form-control form-control-lg"
                                                                        placeholder="name@example.com"
                                                                        style={{padding: '1.2rem 1rem'}}
