@@ -27,7 +27,10 @@ function AddContract() {
     const [showGroundModal, setShowGroundModal] = useState(false);
     const [totalPrice, setTotalPrice] = useState(0);
     const [checkDay, setCheckDay] = useState('1000-01-01');
+    const token = localStorage.getItem("jwtToken");
+
     useEffect(() => {
+        if (!token) navigate("/login")
         async function getStaff() {
             try {
                 const response = await axios.get("http://localhost:8080/api/staff/list-add", {
@@ -264,8 +267,8 @@ function AddContract() {
                                         <Form.Label>
                                             <Button variant={"success"} style={{marginRight: "30px"}}
                                                     onClick={() => setShowCusModal(true)}>
-                                                Chon khách hàng
-                                            </Button> </Form.Label>
+                                                Chọn khách hàng <span className="text-danger">*</span>
+                                            </Button></Form.Label>
                                         <Field
                                             as={Form.Control}
                                             type="text"
@@ -336,7 +339,7 @@ function AddContract() {
                                         <Form.Label>
                                             <Button variant={"success"} style={{marginRight: "30px"}}
                                                     onClick={() => setShowStaffModal(true)}>
-                                                Chon nhân viên
+                                                Chọn nhân viên <span className="text-danger">*</span>
                                             </Button> </Form.Label>
                                         <Field
                                             type="text"
@@ -405,7 +408,7 @@ function AddContract() {
                                         <Form.Label>
                                             <Button variant={"success"} style={{marginRight: "30px"}}
                                                     onClick={() => setShowGroundModal(true)}>
-                                                Chon mặt bằng
+                                                Chọn mặt bằng <span className="text-danger">*</span>
                                             </Button> </Form.Label>
                                         <Field
                                             type="text"
@@ -470,7 +473,8 @@ function AddContract() {
                             <Row>
                                 <Col md={3}>
                                     <Form.Group className="mb-3">
-                                        <Form.Label>Nhập kỳ hạng (tháng)</Form.Label>
+                                        <Form.Label>Nhập kỳ hạng (tháng)<span
+                                            className="text-danger">*</span></Form.Label>
                                         <Field
                                             as={Form.Control}
                                             type="number"
@@ -490,7 +494,8 @@ function AddContract() {
                                 </Col>
                                 <Col md={3}>
                                     <Form.Group className="mb-3">
-                                        <Form.Label>Chọn ngày bắt đầu thuê</Form.Label>
+                                        <Form.Label>Chọn ngày bắt đầu thuê <span
+                                            className="text-danger">*</span></Form.Label>
                                         <Field
                                             as={Form.Control}
                                             type="date"
@@ -561,7 +566,7 @@ function AddContract() {
                             <Row>
                                 <Col md={12}>
                                     <Form.Group className="mb-3">
-                                        <Form.Label>Nội dung</Form.Label>
+                                        <Form.Label>Nội dung <span className="text-danger">*</span></Form.Label>
                                         <Field
                                             as="textarea"
                                             rows={4}
@@ -678,13 +683,18 @@ function AddContract() {
                                             name="searchCus"
                                         />
                                     </Form.Group>
-                                    <Button style={{marginRight: "68%"}} variant="secondary" type="submit"
+                                    <Button style={{position:"absolute",right:"68%"}} variant="secondary" type="submit"
                                             className={"search-contract-btn "}>
                                         <FaSearch></FaSearch>
                                     </Button>
+                                    <Button variant="success"
+                                            style={{marginRight:"56%",marginTop:"10px",fontSize:"small"}}
+                                            onClick={ navigate('/customer/add')}>
+                                        Đăng ký</Button>
                                 </FormikForm>
                             )}
                         </Formik>
+
                     </div>
                     <div className="modal-content-scroll">
                         {customer.length === 0 ? (<h1 className={"text-center mt-5"}>Danh sách trống </h1>) :

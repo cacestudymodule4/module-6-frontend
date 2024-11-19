@@ -29,6 +29,7 @@ import './assets/css/styles.css';
 import StaffRegister from "./components/uncommon/StaffRegister";
 import AddService from "./components/uncommon/AddService";
 import ServiceDetail from "./components/uncommon/ServiceDetail";
+import RoomFacilities from "./components/uncommon/RoomFacilities";
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
@@ -62,6 +63,8 @@ root.render(
                 <Route path="/service/list" element={<ServiceList/>}/>
                 <Route path="/service/add" element={<AddService/>}/>
                 <Route path="/service/detail/:serviceId" element={<ServiceDetail />} />
+                <Route path="/facilities/list" element={<RoomFacilities/>}/>
+
 
             </Routes>
         </BrowserRouter>
