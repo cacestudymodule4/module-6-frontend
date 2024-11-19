@@ -10,17 +10,22 @@ import Footer from "../common/Footer";
 
 const AddCustomer = () => {
     const navigate = useNavigate();
-
+    const token = localStorage.getItem('jwtToken');
+    const getDefaultBirthday = () => {
+        const today = new Date();
+        today.setFullYear(today.getFullYear() - 18);
+        return today.toISOString().split('T')[0];
+    };
     const formik = useFormik({
         initialValues: {
             name: '',
-            birthday: '',
             identification: '',
             address: '',
             phone: '',
             email: '',
             company: '',
             website: '',
+            birthday: getDefaultBirthday()
         },
         validationSchema: Yup.object({
             name: Yup.string().required('Tên khách hàng là bắt buộc'),
@@ -42,6 +47,7 @@ const AddCustomer = () => {
             website: Yup.string(),
         }),
         onSubmit: async (values) => {
+            if (!token) navigate("/login")
             try {
                 const response = await axios.post('http://localhost:8080/api/customers/add', values, {
                     headers: {Authorization: `Bearer ${localStorage.getItem('jwtToken')}`},
@@ -58,18 +64,17 @@ const AddCustomer = () => {
             }
         },
     });
-
     return (
         <>
             <NavbarApp/>
             <div className="container mt-5" style={{marginBottom: '50px'}}>
                 <h2 className="text-center mb-5 bg-success text-white py-4">Thêm Mới Khách Hàng</h2>
-                {/*{error && <div className="alert alert-danger">{error}</div>}*/}
                 <form onSubmit={formik.handleSubmit}>
                     {/* Row 1: Name and Birthday */}
                     <div className="row mb-3">
                         <div className="col-md-6">
-                            <label htmlFor="name" className="form-label">Tên khách hàng</label>
+                            <label htmlFor="name" className="form-label">Tên khách hàng<span
+                                className="text-danger">(*)</span></label>
                             <input
                                 type="text"
                                 className="form-control"
@@ -84,7 +89,8 @@ const AddCustomer = () => {
                             )}
                         </div>
                         <div className="col-md-6">
-                            <label htmlFor="birthday" className="form-label">Ngày sinh</label>
+                            <label htmlFor="birthday" className="form-label">Ngày sinh<span
+                                className="text-danger">(*)</span></label>
                             <input
                                 type="date"
                                 className="form-control"
@@ -92,7 +98,7 @@ const AddCustomer = () => {
                                 name="birthday"
                                 onChange={formik.handleChange}
                                 onBlur={formik.handleBlur}
-                                value={formik.values.birthday}
+                                value={formik.values.birthday || getDefaultBirthday()}
                             />
                             {formik.touched.birthday && formik.errors.birthday && (
                                 <div className="text-danger">{formik.errors.birthday}</div>
@@ -103,7 +109,8 @@ const AddCustomer = () => {
                     {/* Row 2: Identification and Address */}
                     <div className="row mb-3">
                         <div className="col-md-6">
-                            <label htmlFor="identification" className="form-label">Số chứng minh thư</label>
+                            <label htmlFor="identification" className="form-label">Số chứng minh thư<span
+                                className="text-danger">(*)</span></label>
                             <input
                                 type="text"
                                 className="form-control"
@@ -118,7 +125,8 @@ const AddCustomer = () => {
                             )}
                         </div>
                         <div className="col-md-6">
-                            <label htmlFor="address" className="form-label">Địa chỉ</label>
+                            <label htmlFor="address" className="form-label">Địa chỉ<span
+                                className="text-danger">(*)</span></label>
                             <input
                                 type="text"
                                 className="form-control"
@@ -137,7 +145,8 @@ const AddCustomer = () => {
                     {/* Row 3: Phone and Email */}
                     <div className="row mb-3">
                         <div className="col-md-6">
-                            <label htmlFor="phone" className="form-label">Số điện thoại</label>
+                            <label htmlFor="phone" className="form-label">Số điện thoại<span
+                                className="text-danger">(*)</span></label>
                             <input
                                 type="text"
                                 className="form-control"
@@ -152,7 +161,8 @@ const AddCustomer = () => {
                             )}
                         </div>
                         <div className="col-md-6">
-                            <label htmlFor="email" className="form-label">Email</label>
+                            <label htmlFor="email" className="form-label">Email<span
+                                className="text-danger">(*)</span></label>
                             <input
                                 type="email"
                                 className="form-control"
@@ -171,7 +181,8 @@ const AddCustomer = () => {
                     {/* Row 4: Company and Website */}
                     <div className="row mb-3">
                         <div className="col-md-6">
-                            <label htmlFor="company" className="form-label">Công ty</label>
+                            <label htmlFor="company" className="form-label">Công ty<span
+                                className="text-danger">(*)</span></label>
                             <input
                                 type="text"
                                 className="form-control"

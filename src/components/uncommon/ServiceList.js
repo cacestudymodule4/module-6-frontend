@@ -21,25 +21,30 @@ const ServiceList = () => {
 
     const navigate = useNavigate();
 
+
     useEffect(() => {
-        fetchServices(currentPage);
+        fetchServices(currentPage); // When page changes, fetch services for that page
     }, [currentPage]);
 
     const fetchServices = async (page) => {
         try {
             const response = await axios.get(`http://localhost:8080/api/services/list`, {
-                params: {page, size: pageSize, name: searchName},
-                headers: {Authorization: `Bearer ${localStorage.getItem('jwtToken')}`}
+                params: { page, size: pageSize, name: searchName },
+                headers: { Authorization: `Bearer ${localStorage.getItem('jwtToken')}` }
             });
             setServices(response.data.content);
             setTotalPages(response.data.totalPages);
+            if (response.data.content.length === 0 && searchName) {
+                toast.info("Không tìm thấy dịch vụ phù hợp.");
+            }
         } catch (error) {
             console.error("Lỗi khi tải danh sách dịch vụ:", error);
+            toast.error("Không thể tải dữ liệu dịch vụ.");
         }
     };
 
     const handleSearch = () => {
-        fetchServices(0);
+        fetchServices(0); // Reset to page 0 when searching
     };
 
     const handleReload = () => {
@@ -61,20 +66,17 @@ const ServiceList = () => {
         setEditFormData({name: '', price: '', unit: ''});
     };
 
-
     const saveEdit = async (serviceId) => {
         try {
             await axios.put(`http://localhost:8080/api/services/update/${serviceId}`, editFormData, {
-                headers: {Authorization: `Bearer ${localStorage.getItem('jwtToken')}`}
+                headers: { Authorization: `Bearer ${localStorage.getItem('jwtToken')}` },
             });
             toast.success("Cập nhật thành công");
             fetchServices(currentPage);
             cancelEditing();
         } catch (error) {
             console.error("Lỗi khi cập nhật dịch vụ:", error);
-            const errorMessage = error.response && error.response.data
-                ? error.response.data
-                : "Cập nhật thất bại";
+            const errorMessage = error.response?.data || "Cập nhật thất bại";
             toast.error(errorMessage);
         }
     };
@@ -92,7 +94,7 @@ const ServiceList = () => {
     const confirmDeleteService = async () => {
         try {
             await axios.delete(`http://localhost:8080/api/services/delete/${serviceToDelete}`, {
-                headers: {Authorization: `Bearer ${localStorage.getItem('jwtToken')}`}
+                headers: { Authorization: `Bearer ${localStorage.getItem('jwtToken')}` },
             });
             toast.success("Xóa thành công");
             fetchServices(currentPage);
@@ -116,10 +118,12 @@ const ServiceList = () => {
             <NavbarApp/>
             <div className="service-list container mt-5">
                 <h2 className="text-center mb-5 bg-success text-white py-4">Danh sách dịch vụ</h2>
+
                 <div className="d-flex mb-3">
                     <button className="btn btn-success" onClick={handleNavigateToAddService}>Thêm mới</button>
-                    <button className="btn btn-success ms-2" onClick={handleReload}><TbReload/></button>
+                    <button className="btn btn-secondary ms-2" onClick={handleReload}><TbReload /> Tải lại</button>
                 </div>
+
                 <div className="d-flex justify-content-center align-items-center mb-3">
                     <input
                         type="text"
@@ -129,17 +133,18 @@ const ServiceList = () => {
                         onChange={(e) => setSearchName(e.target.value)}
                     />
                     <button className="btn btn-success ms-2" onClick={handleSearch}>
-                        <FaSearch/>
+                        <FaSearch /> Tìm kiếm
                     </button>
                 </div>
+
                 <div className="table-responsive">
                     <Table striped bordered hover>
                         <thead className="table-success">
                         <tr className="text-center">
-                            <th>STT</th>
-                            <th>Tên Dịch Vụ</th>
-                            <th>Giá</th>
-                            <th>Đơn vị</th>
+                            <th style={{ width: '50px' }}>STT</th>
+                            <th style={{ width: '200px' }}>Tên Dịch Vụ</th>
+                            <th style={{ width: '150px' }}>Giá</th>
+                            <th style={{ width: '150px' }}>Đơn vị</th>
                             <th colSpan={3}>Hành Động</th>
                         </tr>
                         </thead>
@@ -148,15 +153,57 @@ const ServiceList = () => {
                             services.map((service, index) => (
                                 <tr key={service.id} className="text-center">
                                     <td>{(currentPage * pageSize) + index + 1}</td>
-                                    <td>{service.name}</td>
-                                    <td>{service.price}</td>
-                                    <td>{service.unit}</td>
-                                    <td style={{width: '80px', textAlign: 'center'}}>
+                                    <td style={{ minWidth: '50px' }}>
+                                        {editIndex === index ? (
+                                            <input
+                                                type="text"
+                                                value={editFormData.name}
+                                                onChange={(e) => setEditFormData({
+                                                    ...editFormData,
+                                                    name: e.target.value
+                                                })}
+                                                className="form-control"
+                                            />
+                                        ) : (
+                                            service.name
+                                        )}
+                                    </td>
+                                    <td>
+                                        {editIndex === index ? (
+                                            <input
+                                                type="number"
+                                                value={editFormData.price}
+                                                onChange={(e) => setEditFormData({
+                                                    ...editFormData,
+                                                    price: e.target.value
+                                                })}
+                                                className="form-control"
+                                            />
+                                        ) : (
+                                            service.price
+                                        )}
+                                    </td>
+                                    <td>
+                                        {editIndex === index ? (
+                                            <input
+                                                type="text"
+                                                value={editFormData.unit}
+                                                onChange={(e) => setEditFormData({
+                                                    ...editFormData,
+                                                    unit: e.target.value
+                                                })}
+                                                className="form-control"
+                                            />
+                                        ) : (
+                                            service.unit
+                                        )}
+                                    </td>
+                                    <td style={{width: '80px'}}>
                                         <button className="btn btn-info"
                                                 onClick={() => handleViewService(service.id)}>Xem
                                         </button>
                                     </td>
-                                    <td style={{width: '80px', textAlign: 'center'}}>
+                                    <td style={{width: '80px'}}>
                                         {editIndex === index ? (
                                             <button className="btn btn-primary"
                                                     onClick={() => saveEdit(service.id)}>Lưu</button>
@@ -165,7 +212,7 @@ const ServiceList = () => {
                                                     onClick={() => startEditing(index, service)}>Sửa</button>
                                         )}
                                     </td>
-                                    <td style={{width: '80px', textAlign: 'center'}}>
+                                    <td style={{width: '80px'}}>
                                         {editIndex === index ? (
                                             <button className="btn btn-secondary" onClick={cancelEditing}>Hủy</button>
                                         ) : (
@@ -173,22 +220,22 @@ const ServiceList = () => {
                                                     onClick={() => openDeleteModal(service.id)}>Xóa</button>
                                         )}
                                     </td>
-
                                 </tr>
                             ))
                         ) : (
                             <tr>
-                                <td colSpan="7" className="text-center">Không có dịch vụ nào</td>
+                                <td colSpan="7" className="text-center">Không có dịch vụ nào được tìm thấy.</td>
                             </tr>
                         )}
                         </tbody>
                     </Table>
                 </div>
+
                 <div className="d-flex justify-content-center mb-4">
                     <button
                         className="btn btn-outline-success"
                         onClick={() => handlePageChange(currentPage - 1)}
-                        disabled={currentPage === 0}
+                        disabled={currentPage === 0 || totalPages === 0}
                     >
                         Trang trước
                     </button>
@@ -196,14 +243,12 @@ const ServiceList = () => {
                     <button
                         className="btn btn-outline-success"
                         onClick={() => handlePageChange(currentPage + 1)}
-                        disabled={currentPage === totalPages - 1}
+                        disabled={currentPage === totalPages - 1 || totalPages === 0}
                     >
                         Trang sau
                     </button>
                 </div>
             </div>
-
-            {/* Modal xác nhận xóa */}
             <Modal show={showDeleteModal} onHide={closeDeleteModal}>
                 <Modal.Header closeButton>
                     <Modal.Title>Xác nhận xóa</Modal.Title>

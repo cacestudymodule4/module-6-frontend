@@ -13,7 +13,16 @@ import moment from "moment/moment";
 
 const customerSchema = Yup.object().shape({
     name: Yup.string().required("Tên khách hàng là bắt buộc"),
-    birthday: Yup.date().required("Ngày sinh là bắt buộc"),
+    birthday: Yup.date()
+        .required("Ngày sinh là bắt buộc")
+        .test(
+            "is-18-years-old",
+            "Khách hàng phải đủ 18 tuổi",
+            (value) => {
+                if (!value) return false; // Nếu không có giá trị
+                return moment().diff(moment(value), 'years') >= 18; // Kiểm tra tuổi
+            }
+        ),
     identification: Yup.string()
         .matches(/^[0-9]{9,12}$/, "CMND phải chứa 9-12 chữ số")
         .required("CMND là bắt buộc"),
@@ -42,6 +51,16 @@ function CustomerList() {
     const [pageSize] = useState(5);
     const [totalPages, setTotalPages] = useState(0);
     const [page, setPage] = useState(1);
+    const formatPhoneNumber = (phoneNumber) => {
+        const cleaned = ('' + phoneNumber).replace(/\D/g, '');
+        const match = cleaned.match(/^(\d{3})(\d{3})(\d{4})$/);
+        return match ? `${match[1]}.${match[2]}.${match[3]}` : phoneNumber;
+    };
+    const formatIdentification = (identification) => {
+        const cleaned = ('' + identification).replace(/\D/g, '');
+        const match = cleaned.match(/^(\d{3})(\d{3})(\d{3,4})$/);
+        return match ? `${match[1]}.${match[2]}.${match[3]}` : identification;
+    };
 
     const fetchCustomers = async () => {
         try {
@@ -314,11 +333,11 @@ function CustomerList() {
                                                 {errors.company && <div className="text-danger">{errors.company}</div>}
                                             </td>
                                             <td>
-                                                <button className="btn btn-success" onClick={handleSaveEdit}>Lưu
+                                                <button className="btn btn-primary" onClick={handleSaveEdit}>Lưu
                                                 </button>
                                             </td>
                                             <td>
-                                                <button className="btn btn-danger" onClick={handleCancelEdit}>Hủy
+                                                <button className="btn btn-secondary" onClick={handleCancelEdit}>Hủy
                                                 </button>
                                             </td>
                                         </>
@@ -326,9 +345,9 @@ function CustomerList() {
                                         <>
                                             <td>{customer.name}</td>
                                             <td>{moment(customer.birthday).format('DD-MM-YYYY')}</td>
-                                            <td>{customer.identification}</td>
+                                            <td>{formatIdentification(customer.identification)}</td>
                                             <td>{customer.address}</td>
-                                            <td>{customer.phone}</td>
+                                            <td>{formatPhoneNumber(customer.phone)}</td>
                                             <td>{customer.email}</td>
                                             <td>{customer.company}</td>
                                             <td>

@@ -35,44 +35,58 @@ const AddService = () => {
             <div className="container mt-5">
                 <h2 className="text-center mb-5 bg-success text-white py-4">Thêm mới dịch vụ</h2>
                 <form className="form-group" onSubmit={handleSubmit}>
-                    <div className="mb-3">
-                        <label htmlFor="name" className="form-label">Tên Dịch Vụ</label>
-                        <input
-                            type="text"
-                            id="name"
-                            name="name"
-                            className="form-control"
-                            value={serviceData.name}
-                            onChange={handleChange}
-                            required
-                        />
+                    <div className="row mb-3">
+                        {/* Tên Dịch Vụ */}
+                        <div className="col-md-4">
+                            <label htmlFor="name" className="form-label">Tên Dịch Vụ</label>
+                            <input
+                                type="text"
+                                id="name"
+                                name="name"
+                                className="form-control"
+                                value={serviceData.name}
+                                onChange={handleChange}
+                                required
+                            />
+                        </div>
+
+                        {/* Giá */}
+                        <div className="col-md-4">
+                            <label htmlFor="price" className="form-label">Giá</label>
+                            <input
+                                type="number"
+                                id="price"
+                                name="price"
+                                className="form-control"
+                                value={serviceData.price}
+                                onChange={handleChange}
+                                required
+                            />
+                        </div>
+
+                        {/* Đơn vị */}
+                        <div className="col-md-4">
+                            <label htmlFor="unit" className="form-label">Đơn vị</label>
+                            <input
+                                type="text"
+                                id="unit"
+                                name="unit"
+                                className="form-control"
+                                value={serviceData.unit}
+                                onChange={handleChange}
+                                required
+                            />
+                        </div>
                     </div>
-                    <div className="mb-3">
-                        <label htmlFor="price" className="form-label">Giá</label>
-                        <input
-                            type="number"
-                            id="price"
-                            name="price"
-                            className="form-control"
-                            value={serviceData.price}
-                            onChange={handleChange}
-                            required
-                        />
+
+                    {/* Nút Thêm Mới */}
+                    <div className="row">
+                        <div className="col-md-12 text-center">
+                            <button type="submit" className="btn btn-success">Thêm Mới</button>
+                        </div>
                     </div>
-                    <div className="mb-3">
-                        <label htmlFor="unit" className="form-label">Đơn vị</label>
-                        <input
-                            type="text"
-                            id="unit"
-                            name="unit"
-                            className="form-control"
-                            value={serviceData.unit}
-                            onChange={handleChange}
-                            required
-                        />
-                    </div>
-                    <button type="submit" className="btn btn-success">Thêm Mới</button>
                 </form>
+                <div className="mt-5"></div>
             </div>
             <Footer/>
         </>
