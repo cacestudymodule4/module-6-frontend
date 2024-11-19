@@ -1,6 +1,6 @@
 import React, {useState, useEffect} from 'react';
 import axios from 'axios';
-import {Modal, Button} from 'react-bootstrap'; // Import Modal và Button từ react-bootstrap
+import {Modal, Button} from 'react-bootstrap';
 import {useNavigate} from "react-router-dom";
 import '../../assets/css/CustomerList.css';
 import {FaSearch} from "react-icons/fa";
@@ -13,7 +13,16 @@ import moment from "moment/moment";
 
 const customerSchema = Yup.object().shape({
     name: Yup.string().required("Tên khách hàng là bắt buộc"),
-    birthday: Yup.date().required("Ngày sinh là bắt buộc"),
+    birthday: Yup.date()
+        .required("Ngày sinh là bắt buộc")
+        .test(
+            "is-18-years-old",
+            "Khách hàng phải đủ 18 tuổi",
+            (value) => {
+                if (!value) return false; // Nếu không có giá trị
+                return moment().diff(moment(value), 'years') >= 18; // Kiểm tra tuổi
+            }
+        ),
     identification: Yup.string()
         .matches(/^[0-9]{9,12}$/, "CMND phải chứa 9-12 chữ số")
         .required("CMND là bắt buộc"),
@@ -28,6 +37,8 @@ const customerSchema = Yup.object().shape({
 });
 
 function CustomerList() {
+    const token = localStorage.getItem('jwtToken');
+    const navigate = useNavigate();
     const [customers, setCustomers] = useState([]);
     const [filteredCustomers, setFilteredCustomers] = useState([]);
     const [isModalOpen, setIsModalOpen] = useState(false);
@@ -40,6 +51,16 @@ function CustomerList() {
     const [pageSize] = useState(5);
     const [totalPages, setTotalPages] = useState(0);
     const [page, setPage] = useState(1);
+    const formatPhoneNumber = (phoneNumber) => {
+        const cleaned = ('' + phoneNumber).replace(/\D/g, '');
+        const match = cleaned.match(/^(\d{3})(\d{3})(\d{4})$/);
+        return match ? `${match[1]}.${match[2]}.${match[3]}` : phoneNumber;
+    };
+    const formatIdentification = (identification) => {
+        const cleaned = ('' + identification).replace(/\D/g, '');
+        const match = cleaned.match(/^(\d{3})(\d{3})(\d{3,4})$/);
+        return match ? `${match[1]}.${match[2]}.${match[3]}` : identification;
+    };
 
     const fetchCustomers = async () => {
         try {
@@ -60,6 +81,7 @@ function CustomerList() {
     };
 
     useEffect(() => {
+        if (!token) navigate("/login")
         if (searchName || searchIdentification) {
             handleCombinedSearch(page - 1);
         } else {
@@ -67,7 +89,6 @@ function CustomerList() {
         }
     }, [page]);
 
-    const navigate = useNavigate();
     const handleNavigateToAddCustomer = () => {
         navigate('/customer/add');
     };
@@ -129,7 +150,7 @@ function CustomerList() {
                 setFilteredCustomers(filteredCustomers.map(customer => customer.id === editedCustomer.id ? response.data : customer));
                 setEditingCustomer(null);
                 setErrors({});
-                toast.success("Chỉnh sửa thành công");
+                toast.success("Cập nhật thành công");
             }
         } catch (error) {
             if (error.inner) {
@@ -173,10 +194,12 @@ function CustomerList() {
         } catch (error) {
             console.error('Có lỗi khi tìm kiếm khách hàng:', error);
         }
-        };
+    };
 
     const handleReload = () => {
         setPage(1);
+        setSearchName('');
+        setSearchIdentification('');
         fetchCustomers();
     };
 
@@ -190,28 +213,30 @@ function CustomerList() {
             <NavbarApp/>
             <div className="customer-list container mt-5">
                 <h2 className="text-center mb-5 bg-success text-white py-4">Danh sách khách hàng</h2>
-                <div className="d-flex justify-content-between align-items-center mb-3">
+                <div className="d-flex justify-content-center align-items-center mb-3">
+                    <input
+                        type="text"
+                        className="form-control me-2"
+                        placeholder="Tìm kiếm theo tên"
+                        value={searchName}
+                        onChange={(e) => setSearchName(e.target.value)}
+                        style={{maxWidth: "250px"}}
+                    />
+                    <input
+                        type="text"
+                        className="form-control me-2"
+                        placeholder="Tìm kiếm theo CMND"
+                        value={searchIdentification}
+                        onChange={(e) => setSearchIdentification(e.target.value)}
+                        style={{maxWidth: "250px"}}
+                    />
+                    <button className="btn btn-success customer-id-search" onClick={() => handleCombinedSearch(0)}>
+                        <FaSearch/>
+                    </button>
+                </div>
+                <div className="d-flex mb-3">
                     <button className="btn btn-success" onClick={handleNavigateToAddCustomer}>Thêm mới</button>
-                    <button className="btn btn-success" onClick={handleReload}><TbReload/></button>
-                    <div className="d-flex align-items-center">
-                        <input
-                            type="text"
-                            className="form-control mr-2"
-                            placeholder="Tìm kiếm theo tên"
-                            value={searchName}
-                            onChange={(e) => setSearchName(e.target.value)}
-                        />
-                        <input
-                            type="text"
-                            className="form-control mr-2"
-                            placeholder="Tìm kiếm theo CMND"
-                            value={searchIdentification}
-                            onChange={(e) => setSearchIdentification(e.target.value)}
-                        />
-                        <button className="btn btn-success customer-id-search" onClick={() => handleCombinedSearch(0)}>
-                            <FaSearch/>
-                        </button>
-                    </div>
+                    <button className="btn btn-success ms-2" onClick={handleReload}><TbReload/></button>
                 </div>
                 <div className="table-responsive">
                     <table className="table table-hover table-bordered border-success">
@@ -308,11 +333,11 @@ function CustomerList() {
                                                 {errors.company && <div className="text-danger">{errors.company}</div>}
                                             </td>
                                             <td>
-                                                <button className="btn btn-success" onClick={handleSaveEdit}>Lưu
+                                                <button className="btn btn-primary" onClick={handleSaveEdit}>Lưu
                                                 </button>
                                             </td>
                                             <td>
-                                                <button className="btn btn-danger" onClick={handleCancelEdit}>Hủy
+                                                <button className="btn btn-secondary" onClick={handleCancelEdit}>Hủy
                                                 </button>
                                             </td>
                                         </>
@@ -320,9 +345,9 @@ function CustomerList() {
                                         <>
                                             <td>{customer.name}</td>
                                             <td>{moment(customer.birthday).format('DD-MM-YYYY')}</td>
-                                            <td>{customer.identification}</td>
+                                            <td>{formatIdentification(customer.identification)}</td>
                                             <td>{customer.address}</td>
-                                            <td>{customer.phone}</td>
+                                            <td>{formatPhoneNumber(customer.phone)}</td>
                                             <td>{customer.email}</td>
                                             <td>{customer.company}</td>
                                             <td>

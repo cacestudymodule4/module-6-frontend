@@ -27,6 +27,8 @@ import {Floor} from './components/uncommon/Floor/Floor';
 import {AddEditFloor} from './components/uncommon/Floor/AddEditFloor';
 import './assets/css/styles.css';
 import StaffRegister from "./components/uncommon/StaffRegister";
+import AddService from "./components/uncommon/AddService";
+import ServiceDetail from "./components/uncommon/ServiceDetail";
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
@@ -52,12 +54,15 @@ root.render(
                 <Route path="/contract/add" element={<AddContract/>}/>
                 <Route path="/contract/list" element={<Contract/>}/>
                 <Route path="/contract/detail/:id" element={<ContractDetail/>}/>
-                <Route path="/contract/edit/" element={<EditContract/>}/>
+                <Route path="/contract/edit/:id" element={<EditContract/>}/>
                 <Route path="/user/detail" element={<UserInfo/>}/>
                 <Route path="/salary" element={<Salary/>}/>
                 <Route path="/report" element={<Chart8Component/>}/>
                 <Route path="/*" element={<Login/>}/>
                 <Route path="/service/list" element={<ServiceList/>}/>
+                <Route path="/service/add" element={<AddService/>}/>
+                <Route path="/service/detail/:serviceId" element={<ServiceDetail />} />
+
             </Routes>
         </BrowserRouter>
     </Provider>

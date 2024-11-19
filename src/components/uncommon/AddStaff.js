@@ -11,12 +11,11 @@ import {NavbarApp} from "../common/Navbar";
 const AddStaff = () => {
     const token = localStorage.getItem("jwtToken");
     const navigate = useNavigate();
-    const [isAddModalOpen, setIsAddModalOpen] = useState(false);
 
     const initialValues = {
         name: "",
         gender: true,
-        birthDate: "",
+        birthday: "",
         address: "",
         phone: "",
         email: "",
@@ -39,7 +38,7 @@ const AddStaff = () => {
             .min(1, "Tên phải có ít nhất 1 ký tự")
             .max(50, "Tên không được vượt quá 50 ký tự"),
 
-        birthDate: Yup.date()
+        birthday: Yup.date()
             .required("Xin vui lòng nhập ngày sinh")
             .max(new Date(), "Ngày sinh không được ở tương lai"),
 
@@ -134,8 +133,8 @@ const AddStaff = () => {
 
                                 <div className="mb-3">
                                     <label className="form-label" style={{fontSize: '1.1rem'}}>Ngày sinh</label>
-                                    <Field type="date" name="birthDate" className="form-control form-control-lg"/>
-                                    <ErrorMessage name="birthDate" component="div" className="text-danger small"/>
+                                    <Field type="date" name="birthday" className="form-control form-control-lg"/>
+                                    <ErrorMessage name="birthday" component="div" className="text-danger small"/>
                                 </div>
 
                                 <div className="mb-3">

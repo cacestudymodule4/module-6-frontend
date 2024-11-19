@@ -13,7 +13,6 @@ import Footer from "../common/Footer";
 function Staff() {
     const token = localStorage.getItem('jwtToken');
     const navigate = useNavigate();
-    const [staffList, setStaffList] = useState([]);
     const [filteredStaffList, setFilteredStaffList] = useState([]);
     const [staffDelete, setStaffDelete] = useState(null);
     const [isModalOpen, setIsModalOpen] = useState(false);
@@ -26,7 +25,6 @@ function Staff() {
             headers: {Authorization: `Bearer ${localStorage.getItem('jwtToken')}`}
         })
             .then(response => {
-                setStaffList(response.data.content);
                 setFilteredStaffList(response.data.content);
                 setTotalPages(response.data.totalPages);
             })
@@ -208,7 +206,7 @@ function Staff() {
                                 <td className="text-center">{index + 1}</td>
                                 <td className="text-center">{staff.codeStaff}</td>
                                 <td className="text-center">{staff.name}</td>
-                                <td className="text-center">{moment(staff.birthDate, 'YYYY-MM-DD').format('DD-MM-YYYY')}</td>
+                                <td className="text-center">{moment(staff.birthday, 'YYYY-MM-DD').format('DD-MM-YYYY')}</td>
                                 <td className="text-center">{staff.gender ? 'Nam' : 'Nữ'}</td>
                                 <td className="text-center">{staff.address}</td>
                                 <td className="text-center">{staff.phone}</td>
