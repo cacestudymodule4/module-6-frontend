@@ -34,7 +34,6 @@ export const NavbarApp = () => {
                                 <Nav className="justify-content-end flex-grow-1 pe-3">
                                     <Nav.Link href="/home">Trang chủ</Nav.Link>
                                     <Nav.Link href="/floor/list">Quản lý tầng</Nav.Link>
-                                    <Nav.Link href="/ground/list">Quản lý mặt bằng</Nav.Link>
                                     <Nav.Link href="/contract/list">Quản lý hợp đồng</Nav.Link>
                                     <Nav.Link href="/customer/list">Quản lý khách hàng</Nav.Link>
                                     <NavDropdown
