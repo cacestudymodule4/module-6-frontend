@@ -55,7 +55,7 @@ const UserInfo = () => {
                                                 <input
                                                     type="text"
                                                     className="form-control"
-                                                    value={userInfo?.name || ''}
+                                                    value={userInfo?.staff?.name || ''}
                                                     disabled
                                                 />
                                                 <label>Họ và tên</label>
@@ -66,7 +66,7 @@ const UserInfo = () => {
                                                 <input
                                                     type="text"
                                                     className="form-control"
-                                                    value={userInfo?.email || ''}
+                                                    value={userInfo?.staff?.email || ''}
                                                     disabled
                                                 />
                                                 <label>Email</label>
@@ -77,7 +77,7 @@ const UserInfo = () => {
                                                 <input
                                                     type="text"
                                                     className="form-control"
-                                                    value={userInfo?.phone || ''}
+                                                    value={userInfo?.staff?.phone || ''}
                                                     disabled
                                                 />
                                                 <label>Số điện thoại</label>
@@ -88,7 +88,7 @@ const UserInfo = () => {
                                                 <input
                                                     type="text"
                                                     className="form-control"
-                                                    value={userInfo?.identification || ''}
+                                                    value={userInfo?.staff?.identification || ''}
                                                     disabled
                                                 />
                                                 <label>CMND/CCCD</label>
@@ -99,7 +99,7 @@ const UserInfo = () => {
                                                 <input
                                                     type="text"
                                                     className="form-control"
-                                                    value={userInfo?.gender ? 'Nam' : 'Nữ'}
+                                                    value={userInfo?.staff?.gender ? 'Nam' : 'Nữ'}
                                                     disabled
                                                 />
                                                 <label>Giới tính</label>
@@ -110,7 +110,7 @@ const UserInfo = () => {
                                                 <input
                                                     type="text"
                                                     className="form-control"
-                                                    value={userInfo?.birthday || ''}
+                                                    value={userInfo?.staff?.birthday || ''}
                                                     disabled
                                                 />
                                                 <label>Sinh nhật</label>
