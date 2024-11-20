@@ -32,7 +32,7 @@ const Chart8Component = () => {
                     }],
                     chart: {
                         type: 'bar',
-                        height: 40 * Object.keys(map).length,
+                        height: 41 * Object.keys(map).length,
                         toolbar: {
                             show: true
                         }
@@ -145,8 +145,8 @@ const Chart8Component = () => {
                             </div>
                         </div>
                     </div>
-                    <div className={"d-flex justify-content-center"}>
-                        <Link className={"btn btn-dark btn-lg"} to="/home">Quay lại</Link>
+                    <div className={"d-flex justify-content-center mt-4"}>
+                        <Link className={"btn btn-secondary"} to="/home">Quay lại</Link>
                     </div>
                 </div>
             </section>
