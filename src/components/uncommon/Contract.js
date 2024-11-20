@@ -1,7 +1,7 @@
 import React, {useState, useEffect, useRef} from "react";
 import axios from "axios";
 import {useNavigate} from "react-router-dom";
-import {FaRedo, FaSearch, FaFilter} from 'react-icons/fa';  // Import icon từ react-icons
+import {FaRedo, FaSearch, FaFilter} from 'react-icons/fa';
 import {Table, Modal, Button, Form} from 'react-bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import {toast} from "react-toastify";

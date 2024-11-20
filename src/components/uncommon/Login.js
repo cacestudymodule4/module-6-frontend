@@ -2,7 +2,7 @@ import "bootstrap/dist/css/bootstrap.css";
 import React, {useEffect} from 'react';
 import {Formik, Form, Field, ErrorMessage} from 'formik';
 import * as Yup from "yup";
-import {Link, useNavigate} from "react-router-dom";
+import {useNavigate} from "react-router-dom";
 import {useDispatch, useSelector} from "react-redux";
 import {LOGIN} from "../../redux/actions";
 import {toast} from "react-toastify";
@@ -15,20 +15,30 @@ const Login = () => {
     const {isAuthenticated, error, isLoggingIn} = useSelector(state => state.auth);
     const token = localStorage.getItem('jwtToken');
     const initialValues = {
-        email: '',
+        username: '',
         password: ''
     };
     const validationSchema = Yup.object({
-        email: Yup.string().email('Email không hợp lệ').required('Vui lòng nhập email'),
-        password: Yup.string().required('Vui lòng nhập mật khẩu')
+        username: Yup.string()
+            .required('Vui lòng nhập tên người dùng')
+            .test(
+                'is-valid-username',
+                'Tên người dùng phải là tài khoản, số điện thoại hoặc email hợp lệ',
+                (value) => {
+                    if (!value) return false;
+                    const isUsername = new RegExp("^[a-zA-Z0-9_]+$").test(value);
+                    const isPhoneNumber = new RegExp("^[0-9]{10}$").test(value);
+                    const isEmail = new RegExp("^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,4}$").test(value);
+                    return isUsername || isEmail;
+                }
+            ),
+        password: Yup.string().required('Vui lòng nhập mật khẩu'),
     });
     const handleSubmit = (values) => {
         dispatch({type: LOGIN, payload: values});
     };
     useEffect(() => {
-        if (token) {
-            navigate("/home");
-        }
+        if (token) navigate("/home");
         if (isAuthenticated) {
             navigate("/home");
             toast.success("Đăng nhập thành công", {position: "top-right", autoClose: 3000});
@@ -60,13 +70,13 @@ const Login = () => {
                                                     {({isValid}) => (
                                                         <Form>
                                                             <div className="form-floating mb-4">
-                                                                <Field type="email" name="email"
+                                                                <Field name="username"
                                                                        className="form-control form-control-lg"
                                                                        placeholder="name@example.com"
                                                                        style={{padding: '1.2rem 1rem'}}
                                                                 />
-                                                                <label htmlFor="email">Email</label>
-                                                                <ErrorMessage name="email" component="div"
+                                                                <label htmlFor="username">Email</label>
+                                                                <ErrorMessage name="username" component="div"
                                                                               className="text-danger mt-1"/>
                                                             </div>
                                                             <div className="form-floating mb-4">

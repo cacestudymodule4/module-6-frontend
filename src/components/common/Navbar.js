@@ -36,6 +36,7 @@ export const NavbarApp = () => {
                                     <Nav.Link href="/floor/list">Quản lý tầng</Nav.Link>
                                     <Nav.Link href="/ground/list">Quản lý mặt bằng</Nav.Link>
                                     <Nav.Link href="/contract/list">Quản lý hợp đồng</Nav.Link>
+                                    <Nav.Link href="/customer/list">Quản lý khách hàng</Nav.Link>
                                     <NavDropdown
                                         title="Lựa chọn"
                                         id={`offcanvasNavbarDropdown-expand-${expand}`}
@@ -43,9 +44,12 @@ export const NavbarApp = () => {
                                         <NavDropdown.Item href="/salary">
                                             Bảng lương
                                         </NavDropdown.Item>
-                                        <NavDropdown.Divider />
                                         <NavDropdown.Item href="/report">
                                             Doanh thu
+                                        </NavDropdown.Item>
+                                        <NavDropdown.Divider />
+                                        <NavDropdown.Item href="/user/detail">
+                                            Thông tin người dùng
                                         </NavDropdown.Item>
                                         {userRole === "ADMIN" ?
                                             <NavDropdown.Item href="/building/edit">Sửa toà nhà</NavDropdown.Item> : ""}
