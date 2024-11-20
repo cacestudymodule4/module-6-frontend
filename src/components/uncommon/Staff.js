@@ -113,6 +113,31 @@ function Staff() {
         return value ? new Intl.NumberFormat('vi-VN').format(value) : '0';
     }
 
+    const handleRegisterAccount = async (staff) => {
+        const data = {
+            ...staff,
+            gender: !!staff.gender,
+            salary: Number(staff.salary),
+            birthday: new Date(staff.birthday).toISOString().split('T')[0],
+            startDate: new Date(staff.startDate).toISOString().split('T')[0],
+            username: staff.email,
+            password: ""
+        };
+
+        console.log(data)
+        try {
+            const response = await axios.post(`http://localhost:8080/api/register`, data, {
+                headers: {Authorization: `Bearer ${token}`},
+            });
+            const staffData = response.data;
+            navigate('/register', {state: {staff: staffData}});
+            // toast.success("Tài khoản đã được đăng ký thành công!");
+        } catch (error) {
+            console.error(error);
+            toast.error("Không thể đăng ký tài khoản!");
+        }
+    };
+
     return (
         <>
             <NavbarApp/>
@@ -153,11 +178,11 @@ function Staff() {
                             </Form.Group>
 
                             <Form.Group className="mb-3" controlId="formSearch">
-                                <Form.Label className="small-label">Tìm kiếm theo vị trí</Form.Label>
+                                <Form.Label className="small-label">Tìm kiếm theo bộ phận</Form.Label>
                                 <Field
                                     as={Form.Control}
                                     type="text"
-                                    placeholder="Nhập vị trí"
+                                    placeholder="Nhập bộ phận"
                                     name="position"
                                     style={{marginBottom: '0.5rem'}}
                                 />
@@ -223,11 +248,11 @@ function Staff() {
                                             <>
                                                 <span className="badge bg-danger">Chưa có tài khoản</span>
                                                 <br/>
-                                                <a
-                                                    href={`/register?staffId=${staff.id}`}
-                                                    className="btn btn-sm btn-primary mt-2">
+                                                <button
+                                                    className="btn btn-sm btn-primary mt-2"
+                                                    onClick={() => handleRegisterAccount(staff)}>
                                                     Đăng ký tài khoản
-                                                </a>
+                                                </button>
                                             </>
                                         )}
                                     </div>
