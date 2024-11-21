@@ -33,6 +33,7 @@ export const NavbarApp = () => {
                                 <Nav className="justify-content-end flex-grow-1 pe-3">
                                     <Nav.Link href="/home">Trang chủ</Nav.Link>
                                     <Nav.Link href="/floor/list">Quản lý tầng</Nav.Link>
+                                    <Nav.Link href="/ground/list">Quản lý mặt bằng</Nav.Link>
                                     <Nav.Link href="/contract/list">Quản lý hợp đồng</Nav.Link>
                                     <Nav.Link href="/customer/list">Quản lý khách hàng</Nav.Link>
                                     <NavDropdown
@@ -44,6 +45,9 @@ export const NavbarApp = () => {
                                         </NavDropdown.Item>
                                         <NavDropdown.Item href="/report">
                                             Doanh thu
+                                        </NavDropdown.Item>
+                                        <NavDropdown.Item href="/facilities/list">
+                                            Trang thiết bị
                                         </NavDropdown.Item>
                                         <NavDropdown.Divider/>
                                         <NavDropdown.Item href="/user/detail">
@@ -57,6 +61,13 @@ export const NavbarApp = () => {
                                         </NavDropdown.Item>
                                         {userRole === "ADMIN" ?
                                             <NavDropdown.Item href="/building/edit">Sửa toà nhà</NavDropdown.Item> : ""}
+                                        <NavDropdown.Item href="/staff/list">Nhân viên</NavDropdown.Item>
+                                        {userRole === "ADMIN" ?
+                                            <NavDropdown.Item href="/staff/add">Thêm nhân viên</NavDropdown.Item> : ""}
+                                        <NavDropdown.Divider/>
+                                        <NavDropdown.Item href="/logout">
+                                            Đăng xuất
+                                        </NavDropdown.Item>
                                     </NavDropdown>
                                 </Nav>
                             </Offcanvas.Body>

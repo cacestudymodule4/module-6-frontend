@@ -38,6 +38,7 @@ import EditGroundService from "./components/uncommon/EditGroundService";
 import RoomFacilities from "./components/uncommon/RoomFacilities";
 import AddFacilities from "./components/uncommon/AddFacilities";
 import EditRoomFacilities from "./components/uncommon/EditRoomFacilities";
+import ChangePassword from "./components/uncommon/ChangePassword";
 
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
@@ -57,7 +58,7 @@ root.render(
                 <Route path="/staff/list" element={<Staff/>}/>
                 <Route path="/staff/add" element={<AddStaff/>}/>
                 <Route path="/staff/edit/:id" element={<EditStaff/>}/>
-                <Route path="/register" element={<StaffRegister/>}/>
+                <Route path="/staff/password" element={<ChangePassword/>}/>
                 <Route path="/login" element={<Login/>}/>
                 <Route path="/logout" element={<Logout/>}/>
                 <Route path="/user/detail" element={<UserInfo/>}/>
