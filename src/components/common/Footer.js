@@ -30,21 +30,21 @@ const Footer = () => {
                         </div>
                     </Col>
                     <Col md={4}>
-                        <h3 className='fw-bold'>Useful Links</h3>
+                        <h3 className='fw-bold'>Liên kết hữu ích</h3>
                         <div className="links">
-                            <Button variant="link" href="#" style={{ color: 'white', fontWeight: 'bold' }}>Home</Button>
+                            <Button variant="link" href="/home" style={{ color: 'white', fontWeight: 'bold' }}>Trang chủ</Button>
                             <br />
-                            <Button variant="link" href="#" style={{ color: 'white', fontWeight: 'bold' }}>About</Button>
+                            <Button variant="link" href="/floor/list" style={{ color: 'white', fontWeight: 'bold' }}>Quản lý tầng</Button>
                             <br />
-                            <Button variant="link" href="#"
-                                style={{ color: 'white', fontWeight: 'bold' }}>Services</Button>
+                            <Button variant="link" href="/ground/list"
+                                style={{ color: 'white', fontWeight: 'bold' }}>Quản lý mặt bằng</Button>
                             <br />
-                            <Button variant="link" href="#"
-                                style={{ color: 'white', fontWeight: 'bold' }}>Contact</Button>
+                            <Button variant="link" href="/report"
+                                style={{ color: 'white', fontWeight: 'bold' }}>Báo cáo</Button>
                         </div>
                     </Col>
                     <Col md={4}>
-                        <h3 className='fw-bold'>Follow Us</h3>
+                        <h3 className='fw-bold'>Theo dõi chúng tôi</h3>
                         <div style={iconContainerStyle}>
                             <a href="https://facebook.com" target="_blank" rel="noopener noreferrer" style={iconStyle}>
                                 <FaFacebookF />
