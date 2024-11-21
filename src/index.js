@@ -39,7 +39,6 @@ import RoomFacilities from "./components/uncommon/RoomFacilities";
 import AddFacilities from "./components/uncommon/AddFacilities";
 import EditRoomFacilities from "./components/uncommon/EditRoomFacilities";
 
-
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
     // <React.StrictMode>
