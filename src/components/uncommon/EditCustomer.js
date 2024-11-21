@@ -71,7 +71,14 @@ function EditCustomer() {
                 navigate('/customer/list');
             }
         } catch (error) {
-            if (error.response) {
+            if (error.name === "ValidationError") {
+                const validationErrors = {};
+                error.inner.forEach((err) => {
+                    validationErrors[err.path] = err.message;
+                });
+                setErrors(validationErrors);
+                toast.error("Dữ liệu không hợp lệ.");
+            } else if (error.response) {
                 toast.error(error.response.data);
             }
         }
@@ -199,8 +206,8 @@ function EditCustomer() {
                                         type="radio"
                                         name="gender"
                                         id="genderMale"
-                                        value="true" // Lưu chuỗi
-                                        checked={customer.gender === true} // So sánh Boolean
+                                        value="true"
+                                        checked={customer.gender === true}
                                         onChange={(e) => handleChange({target: {name: "gender", value: true}})}
                                     />
                                     <label className="form-check-label" htmlFor="genderMale">
@@ -213,7 +220,7 @@ function EditCustomer() {
                                         type="radio"
                                         name="gender"
                                         id="genderFemale"
-                                        value="false" // Lưu chuỗi
+                                        value="false"
                                         checked={customer.gender === false} // So sánh Boolean
                                         onChange={(e) => handleChange({target: {name: "gender", value: false}})}
                                     />
