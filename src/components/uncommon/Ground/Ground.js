@@ -87,11 +87,12 @@ export const Ground = () => {
                 , {
                     headers: { Authorization: `Bearer ${localStorage.getItem('jwtToken')}` }
                 });
+
             toast.success("Xoá thành công");
             handleReload();
             setShowDeleteModal(false);
         } catch (error) {
-            console.log(error);
+            toast.error(error.response.data || "Có lỗi, vui lòng kiểm tra lại!");
         }
     }
 
