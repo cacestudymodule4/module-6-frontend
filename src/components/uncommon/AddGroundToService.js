@@ -6,6 +6,7 @@ import {toast} from "react-toastify";
 import {useNavigate, useParams} from "react-router-dom";
 
 const AddGroundToService = () => {
+    const token = localStorage.getItem("jwtToken");
     const {serviceId} = useParams();
     const [grounds, setGrounds] = useState([]);
     const [selectedGroundId, setSelectedGroundId] = useState('');
@@ -17,6 +18,7 @@ const AddGroundToService = () => {
     const navigate = useNavigate();
 
     useEffect(() => {
+        if (!token) navigate("login")
         const fetchGrounds = async () => {
             try {
                 const response = await axios.get(`http://localhost:8080/api/services/not-using-service/${serviceId}`, {
@@ -64,16 +66,18 @@ const AddGroundToService = () => {
     return (
         <>
             <NavbarApp/>
-            <div className="container mt-5">
-                <h2 className="text-center mb-5 bg-success text-white py-4">Thêm mặt bằng vào dịch vụ</h2>
+            <div className="container my-5 rounded p-4" style={{maxWidth: '1000px'}}>
+                <h2 className="text-center mb-5 bg-success text-white py-3 fs-3 rounded shadow">
+                    Thêm mặt bằng vào dịch vụ
+                </h2>
                 <form className="form-group" onSubmit={handleSubmit}>
-                    <div className="row mb-3">
-                        {/* Chọn Mặt Bằng */}
+                    <div className="row mb-4">
+
                         <div className="col-md-6">
-                            <label htmlFor="groundId" className="form-label">Chọn Mặt Bằng</label>
+                            <label htmlFor="groundId" className="form-label fs-5">Chọn Mặt Bằng</label>
                             <select
                                 id="groundId"
-                                className="form-select"
+                                className="form-select form-select-lg"
                                 value={selectedGroundId}
                                 onChange={(e) => setSelectedGroundId(e.target.value)}
                                 required
@@ -87,45 +91,49 @@ const AddGroundToService = () => {
                             </select>
                         </div>
 
-                        {/* Consumption */}
                         <div className="col-md-3">
-                            <label htmlFor="consumption" className="form-label">Lượng tiêu thụ</label>
+                            <label htmlFor="consumption" className="form-label fs-5">Lượng tiêu thụ</label>
                             <input
                                 type="number"
                                 id="consumption"
                                 name="consumption"
-                                className="form-control"
+                                className="form-control form-control-lg"
                                 value={formData.consumption}
                                 onChange={handleChange}
                                 required
                             />
                         </div>
 
-                        {/* Start Date */}
                         <div className="col-md-3">
-                            <label htmlFor="startDate" className="form-label">Ngày bắt đầu</label>
+                            <label htmlFor="startDate" className="form-label fs-5">Ngày bắt đầu</label>
                             <input
                                 type="date"
                                 id="startDate"
                                 name="startDate"
-                                className="form-control"
+                                className="form-control form-control-lg"
                                 value={formData.startDate}
                                 onChange={handleChange}
                                 required
                             />
                         </div>
                     </div>
-                    <div className="row">
-                        <div className="col-md-12 text-center">
-                            <button type="submit" className="btn btn-success">Thêm Mới</button>
-                            <button type="button" className="btn btn-secondary ms-3"
-                                    onClick={() => navigate(`/service/detail/${serviceId}`)}>
+                    <div className="d-flex justify-content-center gap-3 mt-4 mb-5">
+                            <button
+                                type="button"
+                                className="btn btn-outline-secondary btn-lg d-flex align-items-center"
+                                onClick={() => navigate(`/service/detail/${serviceId}`)}
+                            >
+                                <i className="bi bi-arrow-left-circle me-2"></i>
                                 Quay lại
                             </button>
-                        </div>
+                        <button
+                            type="submit"
+                            className="btn btn-outline-success btn-lg">
+                            Thêm Mới
+                            <i className="bi bi-plus-circle"></i>
+                        </button>
                     </div>
                 </form>
-                <div className="mt-5"></div>
             </div>
             <Footer/>
         </>
