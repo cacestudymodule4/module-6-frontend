@@ -179,7 +179,6 @@ const ServiceList = () => {
                     <Button variant="danger" onClick={confirmDeleteService}>Xóa</Button>
                 </Modal.Footer>
             </Modal>
-
             <Footer/>
         </>
     );

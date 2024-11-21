@@ -10,6 +10,7 @@ import * as Yup from 'yup';
 import {TbReload} from "react-icons/tb";
 import {toast} from "react-toastify";
 import moment from "moment/moment";
+import Pagination from "react-bootstrap/Pagination";
 
 const customerSchema = Yup.object().shape({
     name: Yup.string().required("Tên khách hàng là bắt buộc"),
@@ -240,14 +241,30 @@ function CustomerList() {
                         </tbody>
                     </table>
                 </div>
-                <div className="d-flex justify-content-between" style={{marginBottom: "20px"}}>
-                    <button className="btn btn-outline-success" onClick={() => handlePageChange(page - 1)}
-                            disabled={page === 1}>Trang trước
-                    </button>
-                    <span>Trang {page} / {totalPages}</span>
-                    <button className="btn btn-outline-success" onClick={() => handlePageChange(page + 1)}
-                            disabled={page === totalPages}>Trang sau
-                    </button>
+                <div className="d-flex justify-content-center">
+                    <Pagination>
+                        <Pagination.Prev
+                            onClick={() => handlePageChange(page - 1)}
+                            disabled={page === 1}
+                        >
+                            Trang trước
+                        </Pagination.Prev>
+                        {[...Array(totalPages).keys()].map((pageNumber) => (
+                            <Pagination.Item
+                                key={pageNumber + 1}
+                                active={pageNumber + 1 === page}
+                                onClick={() => handlePageChange(pageNumber + 1)}
+                            >
+                                {pageNumber + 1}
+                            </Pagination.Item>
+                        ))}
+                        <Pagination.Next
+                            onClick={() => handlePageChange(page + 1)}
+                            disabled={page === totalPages}
+                        >
+                            Trang sau
+                        </Pagination.Next>
+                    </Pagination>
                 </div>
             </div>
             <Modal show={isModalOpen} onHide={closeModal}>

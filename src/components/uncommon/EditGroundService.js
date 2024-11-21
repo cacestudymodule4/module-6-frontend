@@ -2,6 +2,8 @@ import React, {useState, useEffect} from "react";
 import {useParams, useNavigate} from "react-router-dom";
 import axios from "axios";
 import {toast} from "react-toastify";
+import {NavbarApp} from "../common/Navbar";
+import Footer from "../common/Footer";
 
 const EditGround = () => {
     const {serviceId, groundId} = useParams();
@@ -21,7 +23,10 @@ const EditGround = () => {
                 headers: {Authorization: `Bearer ${localStorage.getItem("jwtToken")}`},
             });
             setService(serviceResponse.data);
-
+            const groundResponse = await axios.get(`http://localhost:8080/api/ground/find-gr/${groundId}`, {
+                headers: {Authorization: `Bearer ${localStorage.getItem("jwtToken")}`},
+            });
+            setGround(groundResponse.data);
             const groundServiceResponse = await axios.get(`http://localhost:8080/api/services/edit/${serviceId}/grounds/${groundId}`, {
                 headers: {Authorization: `Bearer ${localStorage.getItem("jwtToken")}`},
             });
@@ -36,7 +41,7 @@ const EditGround = () => {
     const handleUpdate = async () => {
         try {
             await axios.put(
-                `http://localhost:8080/api/services/${serviceId}/grounds/${groundId}`,
+                `http://localhost:8080/api/services/update/${serviceId}/grounds/${groundId}`,
                 null,
                 {
                     params: {consumption, startDate},
@@ -44,7 +49,7 @@ const EditGround = () => {
                 }
             );
             toast.success("Cập nhật mặt bằng thành công!");
-            navigate(`/service/${serviceId}`);
+            navigate(`/service/detail/${serviceId}`);
         } catch (error) {
             console.error("Lỗi khi cập nhật mặt bằng:", error);
             toast.error("Không thể cập nhật mặt bằng.");
@@ -52,54 +57,91 @@ const EditGround = () => {
     };
 
     return (
-        <div className="container mt-5">
-            <h2 className="text-center">Chỉnh sửa mặt bằng</h2>
+        <>
+            <NavbarApp />
+            <div className="container mt-5">
+                <h2 className="text-center bg-success text-white py-3 rounded">Chỉnh sửa mặt bằng</h2>
 
-            {/* Hiển thị thông tin dịch vụ */}
-            {service && (
-                <div className="mb-4">
-                    <h4>Thông tin Dịch vụ</h4>
-                    <p><strong>Tên dịch vụ:</strong> {service.name}</p>
-                    <p><strong>Giá:</strong> {service.price}</p>
-                    <p><strong>Đơn vị:</strong> {service.unit}</p>
-                </div>
-            )}
+                {/* Hiển thị thông tin dịch vụ */}
+                {service && (
+                    <div className="card my-4">
+                        <div className="card-header bg-primary text-white">
+                            <h4 className="mb-0">Thông tin Dịch vụ</h4>
+                        </div>
+                        <div className="card-body">
+                            <p><strong>Tên dịch vụ:</strong> {service.name}</p>
+                            <p><strong>Giá:</strong> {service.price}</p>
+                            <p><strong>Đơn vị:</strong> {service.unit}</p>
+                        </div>
+                    </div>
+                )}
 
-            {/* Hiển thị thông tin mặt bằng */}
-            {ground && (
-                <div className="mb-4">
-                    <h4>Thông tin Mặt bằng</h4>
-                    <p><strong>Tên mặt bằng:</strong> {ground.groundName}</p>
-                </div>
-            )}
+                {/* Hiển thị thông tin mặt bằng */}
+                {ground && (
+                    <div className="card my-4">
+                        <div className="card-header bg-secondary text-white">
+                            <h4 className="mb-0">Thông tin Mặt bằng</h4>
+                        </div>
+                        <div className="card-body">
+                            <p><strong>Mã mặt bằng:</strong> {ground.groundCode}</p>
+                        </div>
+                    </div>
+                )}
 
-            {/* Form chỉnh sửa */}
-            <div className="form-group">
-                <label>Tiêu thụ:</label>
-                <input
-                    type="number"
-                    className="form-control"
-                    value={consumption}
-                    onChange={(e) => setConsumption(e.target.value)}
-                />
+                {/* Form chỉnh sửa */}
+                <form className="bg-light p-4 rounded shadow-sm">
+                    <div className="row mb-3 align-items-center">
+                        <label htmlFor="consumption" className="col-sm-3 col-form-label text-end">
+                            Tiêu thụ:
+                        </label>
+                        <div className="col-sm-9">
+                            <input
+                                type="number"
+                                id="consumption"
+                                className="form-control"
+                                value={consumption}
+                                onChange={(e) => setConsumption(e.target.value)}
+                                required
+                            />
+                        </div>
+                    </div>
+
+                    <div className="row mb-3 align-items-center">
+                        <label htmlFor="startDate" className="col-sm-3 col-form-label text-end">
+                            Ngày bắt đầu:
+                        </label>
+                        <div className="col-sm-9">
+                            <input
+                                type="date"
+                                id="startDate"
+                                className="form-control"
+                                value={startDate}
+                                onChange={(e) => setStartDate(e.target.value)}
+                                required
+                            />
+                        </div>
+                    </div>
+
+                    <div className="d-flex justify-content-center">
+                        <button
+                            type="button"
+                            className="btn btn-primary me-2"
+                            onClick={handleUpdate}
+                        >
+                            Lưu
+                        </button>
+                        <button
+                            type="button"
+                            className="btn btn-secondary"
+                            onClick={() => navigate(-1)}
+                        >
+                            Quay lại
+                        </button>
+                    </div>
+                </form>
             </div>
-            <div className="form-group">
-                <label>Ngày bắt đầu:</label>
-                <input
-                    type="date"
-                    className="form-control"
-                    value={startDate}
-                    onChange={(e) => setStartDate(e.target.value)}
-                />
-            </div>
-
-            <button className="btn btn-primary mt-3" onClick={handleUpdate}>
-                Lưu
-            </button>
-            <button className="btn btn-secondary mt-3 ml-2" onClick={() => navigate(-1)}>
-                Quay lại
-            </button>
-        </div>
+            <Footer />
+        </>
     );
 };
 

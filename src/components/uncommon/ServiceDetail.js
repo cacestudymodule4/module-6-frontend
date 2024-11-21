@@ -27,12 +27,11 @@ const ServiceDetail = () => {
             setGrounds(response.data.grounds);
         } catch (error) {
             console.error("Lỗi khi tải chi tiết dịch vụ:", error);
-            toast.error("Không thể tải thông tin dịch vụ.");
         }
     };
 
-    const openDeleteModal = (groundId) => {
-        setGroundToDelete(groundId);
+    const openDeleteModal = (ground) => {
+        setGroundToDelete(ground);
         setShowDeleteModal(true);
     };
 
@@ -43,7 +42,7 @@ const ServiceDetail = () => {
 
     const handleDeleteGround = async () => {
         try {
-            await axios.delete(`http://localhost:8080/api/services/delete/${serviceId}/grounds/${groundToDelete}`, {
+            await axios.delete(`http://localhost:8080/api/services/delete/${serviceId}/grounds/${groundToDelete.groundId}`, {
                 headers: {Authorization: `Bearer ${localStorage.getItem('jwtToken')}`},
             });
             toast.success("Xóa mặt bằng thành công!");
@@ -114,7 +113,7 @@ const ServiceDetail = () => {
                             <thead className="table-success">
                             <tr className="text-center">
                                 <th>STT</th>
-                                <th>Tên mặt bằng</th>
+                                <th>Mã mặt bằng</th>
                                 <th>Tiêu thụ</th>
                                 <th>Ngày bắt đầu</th>
                                 <th colSpan={2}>Hành Động</th>
@@ -134,7 +133,7 @@ const ServiceDetail = () => {
                                     </td>
                                     <td style={{width: '50px'}}>
                                         <button className="btn btn-danger"
-                                                onClick={() => openDeleteModal(ground.groundId)}>
+                                                onClick={() => openDeleteModal(ground)}>
                                             Xóa
                                         </button>
                                     </td>
@@ -163,9 +162,8 @@ const ServiceDetail = () => {
                 <Modal.Header closeButton>
                     <Modal.Title>Xác nhận xóa</Modal.Title>
                 </Modal.Header>
-                <Modal.Body>Bạn có chắc chắn muốn xóa mặt bằng <span
-                    className="text-danger"> {groundToDelete?.groundName}</span>
-                    này không?</Modal.Body>
+                <Modal.Body>Bạn có chắc chắn muốn xóa mặt bằng
+                    <span className="text-danger"> {groundToDelete?.groundName}</span> này không?</Modal.Body>
                 <Modal.Footer>
                     <Button variant="secondary" onClick={closeDeleteModal}>
                         Hủy
