@@ -4,7 +4,6 @@ import "bootstrap/dist/css/bootstrap.min.css";
 
 export const NavbarApp = () => {
     const userRole = localStorage.getItem("userRole");
-
     return (
         <>
             {['lg'].map((expand) => (

@@ -45,7 +45,8 @@ const ServiceList = () => {
 
     const handleReload = () => {
         setSearchName('');
-        fetchServices(0);
+        setCurrentPage(0);
+        fetchServices();
     };
 
     const handlePageChange = (newPage) => {
