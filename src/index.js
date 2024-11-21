@@ -29,6 +29,10 @@ import './assets/css/styles.css';
 import StaffRegister from "./components/uncommon/StaffRegister";
 import AddService from "./components/uncommon/AddService";
 import ServiceDetail from "./components/uncommon/ServiceDetail";
+import EditCustomer from "./components/uncommon/EditCustomer";
+import AddGroundToService from "./components/uncommon/AddGroundToService";
+import EditService from "./components/uncommon/EditService";
+import EditGroundService from "./components/uncommon/EditGroundService";
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
@@ -50,6 +54,7 @@ root.render(
                 <Route path="/user/detail" element={<UserInfo/>}/>
                 <Route path="/customer/list" element={<CustomerList/>}/>
                 <Route path="/customer/add" element={<AddCustomer/>}/>
+                <Route path="/customer/edit/:id" element={<EditCustomer/>}/>
                 <Route path="/home" element={<Home/>}/>
                 <Route path="/contract/add" element={<AddContract/>}/>
                 <Route path="/contract/list" element={<Contract/>}/>
@@ -61,8 +66,10 @@ root.render(
                 <Route path="/*" element={<Login/>}/>
                 <Route path="/service/list" element={<ServiceList/>}/>
                 <Route path="/service/add" element={<AddService/>}/>
-                <Route path="/service/detail/:serviceId" element={<ServiceDetail />} />
-
+                <Route path="/service/detail/:serviceId" element={<ServiceDetail/>}/>
+                <Route path="/service/:serviceId/add-ground" element={<AddGroundToService/>}/>
+                <Route path="/service/edit/:serviceId" element={<EditService/>}/>
+                <Route path="/service/:serviceId/grounds/:groundId/edit" element={<EditGroundService/>}/>
             </Routes>
         </BrowserRouter>
     </Provider>

@@ -14,8 +14,6 @@ const ServiceList = () => {
     const [pageSize] = useState(5);
     const [totalPages, setTotalPages] = useState(0);
     const [searchName, setSearchName] = useState('');
-    const [editIndex, setEditIndex] = useState(null);
-    const [editFormData, setEditFormData] = useState({name: '', price: '', unit: ''});
     const [serviceToDelete, setServiceToDelete] = useState(null);
     const [showDeleteModal, setShowDeleteModal] = useState(false);
     const navigate = useNavigate();
@@ -52,31 +50,6 @@ const ServiceList = () => {
 
     const handlePageChange = (newPage) => {
         setCurrentPage(newPage);
-    };
-
-    const startEditing = (index, service) => {
-        setEditIndex(index);
-        setEditFormData({name: service.name, price: service.price, unit: service.unit});
-    };
-
-    const cancelEditing = () => {
-        setEditIndex(null);
-        setEditFormData({name: '', price: '', unit: ''});
-    };
-
-    const saveEdit = async (serviceId) => {
-        try {
-            await axios.put(`http://localhost:8080/api/services/update/${serviceId}`, editFormData, {
-                headers: {Authorization: `Bearer ${localStorage.getItem('jwtToken')}`},
-            });
-            toast.success("Cập nhật thành công");
-            fetchServices(currentPage);
-            cancelEditing();
-        } catch (error) {
-            console.error("Lỗi khi cập nhật dịch vụ:", error);
-            const errorMessage = error.response?.data || "Cập nhật thất bại";
-            toast.error(errorMessage);
-        }
     };
 
     const openDeleteModal = (serviceId) => {
@@ -139,10 +112,10 @@ const ServiceList = () => {
                     <Table striped bordered hover>
                         <thead className="table-success">
                         <tr className="text-center">
-                            <th style={{width: '50px'}}>STT</th>
-                            <th style={{width: '200px'}}>Tên Dịch Vụ</th>
-                            <th style={{width: '150px'}}>Giá</th>
-                            <th style={{width: '150px'}}>Đơn vị</th>
+                            <th>STT</th>
+                            <th>Tên Dịch Vụ</th>
+                            <th>Giá</th>
+                            <th>Đơn vị</th>
                             <th colSpan={3}>Hành Động</th>
                         </tr>
                         </thead>
@@ -151,72 +124,21 @@ const ServiceList = () => {
                             services.map((service, index) => (
                                 <tr key={service.id} className="text-center">
                                     <td>{(currentPage * pageSize) + index + 1}</td>
-                                    <td style={{minWidth: '50px'}}>
-                                        {editIndex === index ? (
-                                            <input
-                                                type="text"
-                                                value={editFormData.name}
-                                                onChange={(e) => setEditFormData({
-                                                    ...editFormData,
-                                                    name: e.target.value
-                                                })}
-                                                className="form-control"
-                                            />
-                                        ) : (
-                                            service.name
-                                        )}
-                                    </td>
-                                    <td>
-                                        {editIndex === index ? (
-                                            <input
-                                                type="number"
-                                                value={editFormData.price}
-                                                onChange={(e) => setEditFormData({
-                                                    ...editFormData,
-                                                    price: e.target.value
-                                                })}
-                                                className="form-control"
-                                            />
-                                        ) : (
-                                            service.price
-                                        )}
-                                    </td>
-                                    <td>
-                                        {editIndex === index ? (
-                                            <input
-                                                type="text"
-                                                value={editFormData.unit}
-                                                onChange={(e) => setEditFormData({
-                                                    ...editFormData,
-                                                    unit: e.target.value
-                                                })}
-                                                className="form-control"
-                                            />
-                                        ) : (
-                                            service.unit
-                                        )}
-                                    </td>
-                                    <td style={{width: '80px'}}>
+                                    <td style={{minWidth: '50px'}}>{service.name}</td>
+                                    <td>{service.price}</td>
+                                    <td>{service.unit}</td>
+                                    <td style={{width: '50px'}}>
                                         <button className="btn btn-info"
                                                 onClick={() => handleViewService(service.id)}>Xem
                                         </button>
                                     </td>
                                     <td style={{width: '80px'}}>
-                                        {editIndex === index ? (
-                                            <button className="btn btn-primary"
-                                                    onClick={() => saveEdit(service.id)}>Lưu</button>
-                                        ) : (
-                                            <button className="btn btn-warning"
-                                                    onClick={() => startEditing(index, service)}>Sửa</button>
-                                        )}
+                                        {<button className="btn btn-warning"
+                                                 onClick={() => navigate(`/service/edit/${service.id}`)}>Sửa</button>}
                                     </td>
                                     <td style={{width: '80px'}}>
-                                        {editIndex === index ? (
-                                            <button className="btn btn-secondary" onClick={cancelEditing}>Hủy</button>
-                                        ) : (
-                                            <button className="btn btn-danger"
-                                                    onClick={() => openDeleteModal(service.id)}>Xóa</button>
-                                        )}
+                                        {<button className="btn btn-danger"
+                                                 onClick={() => openDeleteModal(service.id)}>Xóa</button>}
                                     </td>
                                 </tr>
                             ))

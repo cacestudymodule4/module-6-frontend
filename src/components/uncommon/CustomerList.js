@@ -43,9 +43,6 @@ function CustomerList() {
     const [filteredCustomers, setFilteredCustomers] = useState([]);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [customerToDelete, setCustomerToDelete] = useState(null);
-    const [editingCustomer, setEditingCustomer] = useState(null);
-    const [editedCustomer, setEditedCustomer] = useState({});
-    const [errors, setErrors] = useState({});
     const [searchName, setSearchName] = useState('');
     const [searchIdentification, setSearchIdentification] = useState('');
     const [pageSize] = useState(5);
@@ -61,6 +58,9 @@ function CustomerList() {
         const match = cleaned.match(/^(\d{3})(\d{3})(\d{3,4})$/);
         return match ? `${match[1]}.${match[2]}.${match[3]}` : identification;
     };
+    const displayGender = (gender) => {
+        return gender ? "Nam" : "Nữ";
+    };
 
     const fetchCustomers = async () => {
         try {
@@ -72,11 +72,8 @@ function CustomerList() {
                 headers: {Authorization: `Bearer ${localStorage.getItem('jwtToken')}`}
             });
             console.log("Dữ liệu khách hàng:", response.data);
-            const sortedCustomers = response.data.content.sort((a, b) =>
-                a.name.trim().localeCompare(b.name.trim(), 'vi', { sensitivity: 'base' })
-            );
-            setCustomers(sortedCustomers);
-            setFilteredCustomers(sortedCustomers);
+            setCustomers(response.data.content);
+            setFilteredCustomers(response.data.content);
             setTotalPages(response.data.totalPages);
         } catch (error) {
             console.error('Có lỗi khi lấy danh sách khách hàng:', error);
@@ -123,62 +120,6 @@ function CustomerList() {
         setCustomerToDelete(null);
     };
 
-    const handleEditClick = (customer) => {
-        setEditingCustomer(customer.id);
-        setEditedCustomer(customer);
-    };
-
-    const handleEditChange = (e) => {
-        const {name, value} = e.target;
-        setEditedCustomer({
-            ...editedCustomer,
-            [name]: value
-        });
-    };
-
-    const handleSaveEdit = async () => {
-        try {
-            await customerSchema.validate(editedCustomer, {abortEarly: false});
-
-            const response = await axios.put(
-                `http://localhost:8080/api/customers/update/${editedCustomer.id}`,
-                editedCustomer,
-                {
-                    headers: {Authorization: `Bearer ${localStorage.getItem('jwtToken')}`}
-                }
-            );
-
-            if (response.status === 200) {
-                setCustomers(customers.map(customer => customer.id === editedCustomer.id ? response.data : customer));
-                setFilteredCustomers(filteredCustomers.map(customer => customer.id === editedCustomer.id ? response.data : customer));
-                setEditingCustomer(null);
-                setErrors({});
-                toast.success("Cập nhật thành công");
-            }
-        } catch (error) {
-            if (error.inner) {
-                const newErrors = {};
-                error.inner.forEach((err) => {
-                    newErrors[err.path] = err.message;
-                });
-                setErrors(newErrors);
-                toast.error("Chỉnh sửa thất bại. Vui lòng kiểm tra lại thông tin.");
-            } else if (error.response && error.response.data) {
-                toast.error(`${error.response.data.message || error.response.data}`);
-                setErrors({api: error.response.data});
-            } else {
-                console.error('Có lỗi khi cập nhật khách hàng:', error);
-                toast.error("Đã xảy ra lỗi không xác định khi chỉnh sửa.");
-            }
-        }
-    };
-
-
-    const handleCancelEdit = () => {
-        setEditingCustomer(null);
-        setEditedCustomer({});
-        setErrors({});
-    };
 
     const handleCombinedSearch = async (newPage = 0) => {
         try {
@@ -248,6 +189,7 @@ function CustomerList() {
                             <th>STT</th>
                             <th>Tên Khách Hàng</th>
                             <th>Ngày sinh</th>
+                            <th>Giới tính</th>
                             <th>Số chứng minh thư</th>
                             <th>Địa chỉ</th>
                             <th>Số điện thoại</th>
@@ -258,118 +200,41 @@ function CustomerList() {
                         </thead>
                         <tbody>
                         {filteredCustomers.length > 0 ? (
-                            filteredCustomers.map((customer, index) => (
-                                <tr key={customer.id}>
-                                    <td>{(page - 1) * pageSize + index + 1}</td>
-                                    {editingCustomer === customer.id ? (
-                                        <>
-                                            <td>
-                                                <input
-                                                    type="text"
-                                                    name="name"
-                                                    value={editedCustomer.name}
-                                                    onChange={handleEditChange}
-                                                    className="form-control"
-                                                />
-                                                {errors.name && <div className="text-danger">{errors.name}</div>}
-                                            </td>
-                                            <td>
-                                                <input
-                                                    type="date"
-                                                    name="birthday"
-                                                    value={moment(editedCustomer.birthday).format("YYYY-MM-DD")}
-                                                    onChange={handleEditChange}
-                                                    className="form-control"
-                                                />
-                                                {errors.birthday &&
-                                                    <div className="text-danger">{errors.birthday}</div>}
-                                            </td>
-                                            <td>
-                                                <input
-                                                    type="text"
-                                                    name="identification"
-                                                    value={editedCustomer.identification}
-                                                    onChange={handleEditChange}
-                                                    className="form-control"
-                                                />
-                                                {errors.identification &&
-                                                    <div className="text-danger">{errors.identification}</div>}
-                                            </td>
-                                            <td>
-                                                <input
-                                                    type="text"
-                                                    name="address"
-                                                    value={editedCustomer.address}
-                                                    onChange={handleEditChange}
-                                                    className="form-control"
-                                                />
-                                                {errors.address && <div className="text-danger">{errors.address}</div>}
-                                            </td>
-                                            <td>
-                                                <input
-                                                    type="text"
-                                                    name="phone"
-                                                    value={editedCustomer.phone}
-                                                    onChange={handleEditChange}
-                                                    className="form-control"
-                                                />
-                                                {errors.phone && <div className="text-danger">{errors.phone}</div>}
-                                            </td>
-                                            <td>
-                                                <input
-                                                    type="text"
-                                                    name="email"
-                                                    value={editedCustomer.email}
-                                                    onChange={handleEditChange}
-                                                    className="form-control"
-                                                />
-                                                {errors.email && <div className="text-danger">{errors.email}</div>}
-                                            </td>
-                                            <td>
-                                                <input
-                                                    type="text"
-                                                    name="company"
-                                                    value={editedCustomer.company}
-                                                    onChange={handleEditChange}
-                                                    className="form-control"
-                                                />
-                                                {errors.company && <div className="text-danger">{errors.company}</div>}
-                                            </td>
-                                            <td>
-                                                <button className="btn btn-primary" onClick={handleSaveEdit}>Lưu
-                                                </button>
-                                            </td>
-                                            <td>
-                                                <button className="btn btn-secondary" onClick={handleCancelEdit}>Hủy
-                                                </button>
-                                            </td>
-                                        </>
-                                    ) : (
-                                        <>
-                                            <td>{customer.name}</td>
-                                            <td>{moment(customer.birthday).format('DD-MM-YYYY')}</td>
-                                            <td>{formatIdentification(customer.identification)}</td>
-                                            <td>{customer.address}</td>
-                                            <td>{formatPhoneNumber(customer.phone)}</td>
-                                            <td>{customer.email}</td>
-                                            <td>{customer.company}</td>
-                                            <td>
-                                                <button className="btn btn-warning"
-                                                        onClick={() => handleEditClick(customer)}>Sửa
-                                                </button>
-                                            </td>
-                                            <td>
-                                                <button className="btn btn-danger"
-                                                        onClick={() => handleOpenModal(customer)}>Xóa
-                                                </button>
-                                            </td>
-                                        </>
-                                    )}
-                                </tr>
-                            ))
+                            filteredCustomers
+                                .map((customer, index) => (
+                                    <tr key={customer.id}>
+                                        <td>{(page - 1) * pageSize + index + 1}</td>
+                                        <td>{customer.name}</td>
+                                        <td>{moment(customer.birthday).format("DD-MM-YYYY")}</td>
+                                        <td>{displayGender(customer.gender)}</td>
+                                        <td>{formatIdentification(customer.identification)}</td>
+                                        <td>{customer.address}</td>
+                                        <td>{formatPhoneNumber(customer.phone)}</td>
+                                        <td>{customer.email}</td>
+                                        <td>{customer.company}</td>
+                                        <td>
+                                            <button
+                                                className="btn btn-warning"
+                                                onClick={() => navigate(`/customer/edit/${customer.id}`)}
+                                            >
+                                                Sửa
+                                            </button>
+                                        </td>
+                                        <td>
+                                            <button
+                                                className="btn btn-danger"
+                                                onClick={() => handleOpenModal(customer)}
+                                            >
+                                                Xóa
+                                            </button>
+                                        </td>
+                                    </tr>
+                                ))
                         ) : (
                             <tr>
-                                <td colSpan="9" className="text-center">Không có khách hàng nào</td>
+                                <td colSpan="9" className="text-center">
+                                    Không có khách hàng nào
+                                </td>
                             </tr>
                         )}
                         </tbody>
