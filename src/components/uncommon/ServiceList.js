@@ -7,6 +7,7 @@ import {TbReload} from 'react-icons/tb';
 import axios from 'axios';
 import {toast} from "react-toastify";
 import {useNavigate} from "react-router-dom";
+import Pagination from "react-bootstrap/Pagination";
 
 const ServiceList = () => {
     const [services, setServices] = useState([]);
@@ -18,19 +19,15 @@ const ServiceList = () => {
     const [showDeleteModal, setShowDeleteModal] = useState(false);
     const navigate = useNavigate();
 
-    useEffect(() => {
-        fetchServices(currentPage); // When page changes, fetch services for that page
-    }, [currentPage]);
-
-    const fetchServices = async (page) => {
+    const fetchServices = async (page= 0, name ='') => {
         try {
             const response = await axios.get(`http://localhost:8080/api/services/list`, {
-                params: {page, size: pageSize, name: searchName},
+                params: {page: page, size: pageSize, name: name},
                 headers: {Authorization: `Bearer ${localStorage.getItem('jwtToken')}`}
             });
             setServices(response.data.content);
             setTotalPages(response.data.totalPages);
-            if (response.data.content.length === 0 && searchName) {
+            if (response.data.content.length === 0 && name) {
                 toast.info("Không tìm thấy dịch vụ phù hợp.");
             }
         } catch (error) {
@@ -38,15 +35,19 @@ const ServiceList = () => {
             toast.error("Không thể tải dữ liệu dịch vụ.");
         }
     };
+    useEffect(() => {
+        fetchServices(currentPage);
+    }, [currentPage]);
 
     const handleSearch = () => {
-        fetchServices(0); // Reset to page 0 when searching
+        setCurrentPage(0);
+        fetchServices(0,searchName);
     };
 
     const handleReload = () => {
         setSearchName('');
         setCurrentPage(0);
-        fetchServices();
+        fetchServices(0);
     };
 
     const handlePageChange = (newPage) => {
@@ -114,7 +115,7 @@ const ServiceList = () => {
                         <thead className="table-success">
                         <tr className="text-center">
                             <th>STT</th>
-                            <th>Tên Dịch Vụ</th>
+                            <th style={{width: "400px"}}>Tên Dịch Vụ</th>
                             <th>Giá</th>
                             <th>Đơn vị</th>
                             <th colSpan={3}>Hành Động</th>
@@ -151,23 +152,28 @@ const ServiceList = () => {
                         </tbody>
                     </Table>
                 </div>
-
-                <div className="d-flex justify-content-center mb-4">
-                    <button
-                        className="btn btn-outline-success"
-                        onClick={() => handlePageChange(currentPage - 1)}
-                        disabled={currentPage === 0 || totalPages === 0}
-                    >
-                        Trang trước
-                    </button>
-                    <span className="mx-3">Trang {currentPage + 1} / {totalPages}</span>
-                    <button
-                        className="btn btn-outline-success"
-                        onClick={() => handlePageChange(currentPage + 1)}
-                        disabled={currentPage === totalPages - 1 || totalPages === 0}
-                    >
-                        Trang sau
-                    </button>
+                <div className="d-flex justify-content-center">
+                    <Pagination>
+                        <Pagination.Prev
+                            onClick={() => handlePageChange(currentPage - 1)}
+                            disabled={currentPage === 0}
+                        >
+                        </Pagination.Prev>
+                        {[...Array(totalPages).keys()].map((pageNumber) => (
+                            <Pagination.Item
+                                key={pageNumber}
+                                active={pageNumber === currentPage}
+                                onClick={() => handlePageChange(pageNumber)}
+                            >
+                                {pageNumber + 1}
+                            </Pagination.Item>
+                        ))}
+                        <Pagination.Next
+                            onClick={() => handlePageChange(currentPage + 1)}
+                            disabled={currentPage === totalPages - 1 || totalPages === 0}
+                        >
+                        </Pagination.Next>
+                    </Pagination>
                 </div>
             </div>
             <Modal show={showDeleteModal} onHide={closeDeleteModal}>
