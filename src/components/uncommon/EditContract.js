@@ -80,9 +80,7 @@ function AddContract() {
                 endDate: value.endDay,
                 description: value.content,
             }
-            console.log(value.startDay);
-            console.log(value.endDay)
-            console.log(customerSelected)
+            console.log(contractEdit.ground.status)
             const res = await axios.put(`http://localhost:8080/api/contract/save`, data, {
                     headers: {Authorization: `Bearer ${localStorage.getItem('jwtToken')}`},
                 },
@@ -114,7 +112,7 @@ function AddContract() {
     };
     const checkGround = async () => {
         try {
-            const res = await axios.get(`http://localhost:8080/api/contract/checkDay?day=${contractEdit.ground.name}`,
+            const res = await axios.get(`http://localhost:8080/api/contract/checkDay?status=${contractEdit.ground.status}`,
                 {headers: {Authorization: `Bearer ${localStorage.getItem('jwtToken')}`},})
             const checkDay = res.data;
             setCheckDay(checkDay)
@@ -128,6 +126,7 @@ function AddContract() {
     const handleStartDayChange = (event) => {
         const startDate = event.target.value;
         setStartDay(startDate);
+
         if (term) {
             const calculatedEndDate = calculateEndDate(startDate, term);  // Tính toán endDate
             setEndDay(calculatedEndDate);  // Cập nhật endDay
@@ -197,7 +196,10 @@ function AddContract() {
             console.log(err);
         }
     }
+
+
     const handleSearchStaff = async (value) => {
+
         try {
             const res = await axios.get(`http://localhost:8080/api/staff/findStaff?searchStaff=${value.searchStaff}`, {
                     headers: {Authorization: `Bearer ${localStorage.getItem('jwtToken')}`},
@@ -209,7 +211,6 @@ function AddContract() {
             console.log(err);
         }
     }
-
     return (
         <>
             <NavbarApp/>

@@ -26,6 +26,7 @@ function Contract() {
     const token = localStorage.getItem('jwtToken');
     useEffect(() => {
         if (!token) navigate("/login")
+
         async function getContract() {
             try {
                 const response = await axios.get("http://localhost:8080/api/contract/list-page", {
@@ -45,12 +46,11 @@ function Contract() {
         }
 
         getContract();
-    }, [shouldRefresh, pageSize,currentPage]);
+    }, [shouldRefresh, pageSize, currentPage, token, navigate]);
 
     const handleReload = () => {
         setShouldRefresh(prev => !prev)
         setCurrentPage(1);
-        console.log(searchParams);
         if (formikRef.current) {
             formikRef.current.resetForm();
         }
@@ -123,13 +123,14 @@ function Contract() {
         setShowDeleteModal(true);
     };
     const handleConfirmDelete = async () => {
-        setShowDeleteModal(false)
+        setShowDeleteModal(false);
         try {
             await axios.delete(`http://localhost:8080/api/contract/delete/${contractToDelete.id}`, {
                 headers: {Authorization: `Bearer ${localStorage.getItem('jwtToken')}`}
             });
             toast.success('xoá thành công.');
-            setShouldRefresh(prev => !prev)
+            // setShouldRefresh(prev => !prev)
+            handleReload()
         } catch (error) {
             console.log(error);
         }
@@ -259,7 +260,7 @@ function Contract() {
                             <tr>
                                 <th>Mã hợp đồng</th>
                                 <th>Tên khách hàng</th>
-                                <th>Tên mặt bằng</th>
+                                <th>Mã mặt bằng</th>
                                 <th>Trạng thái hợp đồng</th>
                                 <th>Ngày bắt đầu</th>
                                 <th>Ngày kết thúc</th>
@@ -271,7 +272,7 @@ function Contract() {
                                 <tr key={contract.id}>
                                     <td className="text-center">{contract.code}</td>
                                     <td className="text-center">{contract.customer.name}</td>
-                                    <td className="text-center">{contract.ground.name}</td>
+                                    <td className="text-center">{contract.ground.groundCode}</td>
                                     <td className="text-center">
                                         {isContractActive(contract.endDate, contract.startDate)}
                                     </td>
