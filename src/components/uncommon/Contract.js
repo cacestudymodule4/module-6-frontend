@@ -26,7 +26,6 @@ function Contract() {
     const token = localStorage.getItem('jwtToken');
     useEffect(() => {
         if (!token) navigate("/login")
-
         async function getContract() {
             try {
                 const response = await axios.get("http://localhost:8080/api/contract/list-page", {
@@ -46,11 +45,12 @@ function Contract() {
         }
 
         getContract();
-    }, [shouldRefresh, pageSize]);
+    }, [shouldRefresh, pageSize,currentPage]);
 
     const handleReload = () => {
         setShouldRefresh(prev => !prev)
         setCurrentPage(1);
+        console.log(searchParams);
         if (formikRef.current) {
             formikRef.current.resetForm();
         }
@@ -136,7 +136,6 @@ function Contract() {
     }
     const handleFilter = async (value) => {
         setCurrentPage(1);
-
         try {
             const data = {
                 selectedFilter: value.selectedFilter,
@@ -262,7 +261,7 @@ function Contract() {
                                 <th>Tên khách hàng</th>
                                 <th>Tên mặt bằng</th>
                                 <th>Trạng thái hợp đồng</th>
-                                <th>Ngày băt đầu</th>
+                                <th>Ngày bắt đầu</th>
                                 <th>Ngày kết thúc</th>
                                 <th colSpan="3" className="text-center">Hành động</th>
                             </tr>

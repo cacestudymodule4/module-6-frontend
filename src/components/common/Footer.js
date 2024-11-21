@@ -64,11 +64,6 @@ const Footer = () => {
                         </div>
                     </Col>
                 </Row>
-                <Row className="mt-4">
-                    <Col className="text-center">
-                        <p>&copy; 2024 Your Company. All Rights Reserved.</p>
-                    </Col>
-                </Row>
             </Container>
         </footer>
     );

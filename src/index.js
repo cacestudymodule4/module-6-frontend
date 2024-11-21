@@ -25,6 +25,8 @@ import EditStaff from "./components/uncommon/EditStaff";
 import {EditBuilding} from './components/uncommon/EditBuilding';
 import {Floor} from './components/uncommon/Floor/Floor';
 import {AddEditFloor} from './components/uncommon/Floor/AddEditFloor';
+import {Ground} from './components/uncommon/Ground/Ground';
+import {AddEditGround} from './components/uncommon/Ground/AddEditGround';
 import './assets/css/styles.css';
 import StaffRegister from "./components/uncommon/StaffRegister";
 import AddService from "./components/uncommon/AddService";
@@ -33,6 +35,10 @@ import EditCustomer from "./components/uncommon/EditCustomer";
 import AddGroundToService from "./components/uncommon/AddGroundToService";
 import EditService from "./components/uncommon/EditService";
 import EditGroundService from "./components/uncommon/EditGroundService";
+import RoomFacilities from "./components/uncommon/RoomFacilities";
+import AddFacilities from "./components/uncommon/AddFacilities";
+import EditRoomFacilities from "./components/uncommon/EditRoomFacilities";
+
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
@@ -45,6 +51,9 @@ root.render(
                 <Route path="/floor/list" element={<Floor/>}/>
                 <Route path="/floor/add" element={<AddEditFloor/>}/>
                 <Route path="/floor/edit/:id" element={<AddEditFloor/>}/>
+                <Route path="/ground/add" element={<AddEditGround/>}/>
+                <Route path="/ground/edit/:id" element={<AddEditGround/>}/>
+                <Route path="/ground/list" element={<Ground/>}/>
                 <Route path="/staff/list" element={<Staff/>}/>
                 <Route path="/staff/add" element={<AddStaff/>}/>
                 <Route path="/staff/edit/:id" element={<EditStaff/>}/>
@@ -70,6 +79,9 @@ root.render(
                 <Route path="/service/:serviceId/add-ground" element={<AddGroundToService/>}/>
                 <Route path="/service/edit/:serviceId" element={<EditService/>}/>
                 <Route path="/service/:serviceId/grounds/:groundId/edit" element={<EditGroundService/>}/>
+                <Route path="/facilities/list" element={<RoomFacilities/>}/>
+                <Route path="/facilities/add" element={<AddFacilities/>}/>
+                <Route path="/facilities/edit/:id" element={<EditRoomFacilities/>}/>
             </Routes>
         </BrowserRouter>
     </Provider>
