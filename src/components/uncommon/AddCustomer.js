@@ -26,7 +26,7 @@ const AddCustomer = () => {
             phone: '',
             email: '',
             company: '',
-            gender: '', // Changed website to gender
+            gender: '',
             birthday: getDefaultBirthday()
         },
         validationSchema: Yup.object({

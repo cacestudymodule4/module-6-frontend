@@ -247,7 +247,6 @@ function CustomerList() {
                             onClick={() => handlePageChange(page - 1)}
                             disabled={page === 1}
                         >
-                            Trang trước
                         </Pagination.Prev>
                         {[...Array(totalPages).keys()].map((pageNumber) => (
                             <Pagination.Item
@@ -262,7 +261,6 @@ function CustomerList() {
                             onClick={() => handlePageChange(page + 1)}
                             disabled={page === totalPages}
                         >
-                            Trang sau
                         </Pagination.Next>
                     </Pagination>
                 </div>
