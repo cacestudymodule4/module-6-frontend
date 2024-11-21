@@ -90,7 +90,7 @@ function AddContract() {
             )
             if (res.status === 200) {
                 toast.success("Thêm mới thành công");
-                navigate('/facilities/list')
+                 navigate('/contract/list')
             }
         } catch (error) {
             toast.error("Thêm thất bại");
@@ -124,7 +124,7 @@ function AddContract() {
         term: term,
         customer: customerSelected ? customerSelected.name : "",
         staff: staffSelected ? staffSelected.name : "",
-        ground: groundSelected ? groundSelected.name : "",
+        ground: groundSelected ? groundSelected.groundCode : "",
         startDay: startDay,
         endDay: '',
         deposit: '',
@@ -219,8 +219,9 @@ function AddContract() {
         setGroundSelected(ground);
         setTotalPrice(term * ground.price);
         setShowGroundModal(false);
+        console.log(ground.status);
         try {
-            const res = await axios.get(`http://localhost:8080/api/contract/checkDay?day=${ground.name}`,
+            const res = await axios.get(`http://localhost:8080/api/contract/checkDay?status=${ground.status}`,
                 {headers: {Authorization: `Bearer ${localStorage.getItem('jwtToken')}`},})
             const checkDay = res.data;
             setCheckDay(checkDay)
@@ -260,7 +261,7 @@ function AddContract() {
                                             as={Form.Control}
                                             type="text"
                                             name={"customer"}
-                                            className="form-control custom-date-input readonly-input "
+                                            className="form-control custom-date-input readonly-input input-info "
                                             value={customerSelected ? customerSelected.name : ""}
                                             readOnly
                                         />
@@ -331,7 +332,7 @@ function AddContract() {
                                         <Field
                                             type="text"
                                             name={"staff"}
-                                            className="form-control custom-date-input readonly-input "
+                                            className="form-control custom-date-input readonly-input input-info "
                                             value={staffSelected ? staffSelected.name : ""}
                                             readOnly
                                         />
@@ -400,8 +401,8 @@ function AddContract() {
                                         <Field
                                             type="text"
                                             name={"ground"}
-                                            className="form-control custom-date-input readonly-input "
-                                            value={groundSelected ? groundSelected.name : ""}
+                                            className="form-control custom-date-input readonly-input input-info "
+                                            value={groundSelected ? groundSelected.groundCode : ""}
                                             readOnly
                                         />
                                         <ErrorMessage
@@ -573,7 +574,7 @@ function AddContract() {
                                 Thêm hợp đồng
                             </Button>
                             <Button className={"ms-3"} variant="secondary" type="button"
-                                    onClick={() => navigate('/facilities/list')}>
+                                    onClick={() => navigate('/contract/list')}>
                                 Quay lại
                             </Button>
                         </FormikForm>
@@ -676,7 +677,7 @@ function AddContract() {
                                     </Button>
                                     <Button variant="success"
                                             style={{marginRight:"56%",marginTop:"10px",fontSize:"small"}}
-                                            onClick={ navigate('/customer/add')}>
+                                            onClick={() => navigate('/customer/add')}>
                                         Đăng ký</Button>
                                 </FormikForm>
                             )}
@@ -757,7 +758,7 @@ function AddContract() {
                             <Table striped bordered hover>
                                 <thead className={"custom-table text-white text-center"}>
                                 <tr>
-                                    <th>Tên mặt bằng</th>
+                                    <th>Mã mặt bằng</th>
                                     <th>Diện tích</th>
                                     <th>Vị trí</th>
                                     <th>Giá thuê (tháng)</th>
@@ -767,7 +768,7 @@ function AddContract() {
                                 <tbody>
                                 {ground.map((ground, index) => (
                                     <tr key={ground.id}>
-                                        <td className="text-center">{ground.name}</td>
+                                        <td className="text-center">{ground.groundCode}</td>
                                         <td className="text-center">{ground.area} m²</td>
                                         <td className="text-center">{ground.floor.name}</td>
                                         <td className="text-center">{ground.price} VNĐ</td>
