@@ -136,7 +136,7 @@ function EditRoomFacilities() {
                         name: facilitiesEdit?.name || "",
                         quantity: facilitiesEdit?.quantity || "",
                         description: facilitiesEdit?.description || "",
-                        ground: facilitiesEdit?.ground?.name || "",
+                        ground: facilitiesEdit?.ground?.groundCode || "",
                         damaged: facilitiesEdit?.damaged || "",
                         location: facilitiesEdit?.ground?.area || "",
                     }}
@@ -229,7 +229,7 @@ function EditRoomFacilities() {
                                 <Col md={4}>
                                     <Form.Group className="mb-3">
                                         <Form.Label className={"add-label"}>
-                                            Tên mặt bằng <span className="text-danger">*</span>
+                                            Mã mặt bằng <span className="text-danger">*</span>
                                         </Form.Label>
                                         <Field
                                             type="text"
@@ -327,7 +327,7 @@ function EditRoomFacilities() {
                             <Table striped bordered hover>
                                 <thead className={"custom-table text-white text-center"}>
                                 <tr>
-                                    <th>Tên mặt bằng</th>
+                                    <th>Mã mặt bằng</th>
                                     <th>Diện tích</th>
                                     <th>Vị trí</th>
                                     <th>Giá thuê (tháng)</th>
