@@ -61,7 +61,6 @@ function AddFacilities() {
     }
     const handleFindType = (e, setFieldValue) => {
         const selectedType = type.find(t => t.name === e.target.value);
-        console.log(selectedType);
         if (selectedType) setFieldValue('facilitiesType', selectedType.name);
         setTypeSelected(selectedType);
     };
@@ -167,7 +166,7 @@ function AddFacilities() {
                                     </Form.Group>
                                 </Col>
                                 <Col md={4}>
-                                    <Form.Group className="mb-3" >
+                                    <Form.Group className="mb-3">
                                         <Form.Label className={"add-label"}>
                                             Nhập số lượng <span className="text-danger">*</span>
                                         </Form.Label>
@@ -211,8 +210,8 @@ function AddFacilities() {
                                             as={Form.Control}
                                             type="text"
                                             name={"nameGround"}
-                                            placeholder="Tên mặt bằng"
-                                            value={groundSelected ? groundSelected?.name : ""}
+                                            placeholder="Mã mặt bằng"
+                                            value={groundSelected ? groundSelected?.groundCode : ""}
                                             className="form-control custom-date-input readonly-input input-info "
                                             readOnly
                                         />
