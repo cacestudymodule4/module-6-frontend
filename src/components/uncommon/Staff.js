@@ -19,6 +19,7 @@ function Staff() {
     const [currentPage, setCurrentPage] = useState(0);
     const [totalPages, setTotalPages] = useState(1);
     const pageSize = 4;
+    const userRole = localStorage.getItem("userRole");
 
     const fetchStaffList = () => {
         axios.get(`http://localhost:8080/api/staff/list?page=${currentPage}&size=${pageSize}`, {
@@ -78,8 +79,7 @@ function Staff() {
         };
         try {
             const response = await axios.get('http://localhost:8080/api/staff/search', {
-                headers: {Authorization: `Bearer ${localStorage.getItem('jwtToken')}`},
-                params: data
+                headers: {Authorization: `Bearer ${localStorage.getItem('jwtToken')}`}, params: data
             });
             if (response.status === 200) {
                 setFilteredStaffList(response.data.content);
@@ -102,9 +102,7 @@ function Staff() {
         if (newPage >= 0 && newPage < totalPages) {
             setCurrentPage(newPage);
             handleSearch({
-                codeStaff: "",
-                name: "",
-                position: "",
+                codeStaff: "", name: "", position: "",
             });
         }
     };
@@ -113,206 +111,157 @@ function Staff() {
         return value ? new Intl.NumberFormat('vi-VN').format(value) : '0';
     }
 
-    const handleRegisterAccount = async (staff) => {
-        const data = {
-            ...staff,
-            gender: !!staff.gender,
-            salary: Number(staff.salary),
-            birthday: new Date(staff.birthday).toISOString().split('T')[0],
-            startDate: new Date(staff.startDate).toISOString().split('T')[0],
-            username: staff.email,
-            password: ""
-        };
+    return (<>
+        <NavbarApp/>
+        <div className="container-fluid my-5 rounded mx-auto p-4" style={{minHeight: '45vh'}}>
+            <h3 className="text-center text-white py-3 bg-success rounded mb-5" style={{fontSize: '2.25rem'}}>
+                Danh sách nhân viên văn phòng
+            </h3>
 
-        console.log(data)
-        try {
-            const response = await axios.post(`http://localhost:8080/api/register`, data, {
-                headers: {Authorization: `Bearer ${token}`},
-            });
-            const staffData = response.data;
-            navigate('/register', {state: {staff: staffData}});
-            // toast.success("Tài khoản đã được đăng ký thành công!");
-        } catch (error) {
-            console.error(error);
-            toast.error("Không thể đăng ký tài khoản!");
-        }
-    };
+            <Formik
+                initialValues={{
+                    codeStaff: "", name: "", position: "",
+                }}
+                onSubmit={(values) => handleSearch(values)}>
+                {() => (<FormikForm className="mb-3 custom-search">
+                    {/*{userRole === "ADMIN" ? }*/}
+                    <Form.Group className="mb-3" controlId="formSearch">
+                        <Form.Label className="small-label">Tìm kiếm theo mã nhân viên</Form.Label>
+                        <Field
+                            as={Form.Control}
+                            type="text"
+                            placeholder="Nhập mã nhân viên"
+                            name="codeStaff"
+                            style={{marginBottom: '0.5rem'}}
+                        />
+                    </Form.Group>
 
-    return (
-        <>
-            <NavbarApp/>
-            <div className="container-fluid my-5 rounded mx-auto p-4" style={{minHeight: '45vh'}}>
-                <h3 className="text-center text-white py-3 bg-success rounded mb-5" style={{fontSize: '2.25rem'}}>
-                    Danh sách nhân viên văn phòng
-                </h3>
+                    <Form.Group className="mb-3" controlId="formSearch">
+                        <Form.Label className="small-label">Tìm kiếm theo tên nhân viên</Form.Label>
+                        <Field
+                            as={Form.Control}
+                            type="text"
+                            placeholder="Nhập tên nhân viên"
+                            name="name"
+                            style={{marginBottom: '0.5rem'}}
+                        />
+                    </Form.Group>
 
-                <Formik
-                    initialValues={{
-                        codeStaff: "",
-                        name: "",
-                        position: "",
-                    }}
-                    onSubmit={(values) => handleSearch(values)}>
-                    {() => (
-                        <FormikForm className="mb-3 custom-search">
-                            <Form.Group className="mb-3" controlId="formSearch">
-                                <Form.Label className="small-label">Tìm kiếm theo mã nhân viên</Form.Label>
-                                <Field
-                                    as={Form.Control}
-                                    type="text"
-                                    placeholder="Nhập mã nhân viên"
-                                    name="codeStaff"
-                                    style={{marginBottom: '0.5rem'}}
-                                />
-                            </Form.Group>
+                    <Form.Group className="mb-3" controlId="formSearch">
+                        <Form.Label className="small-label">Tìm kiếm theo bộ phận</Form.Label>
+                        <Field
+                            as={Form.Control}
+                            type="text"
+                            placeholder="Nhập bộ phận"
+                            name="position"
+                            style={{marginBottom: '0.5rem'}}
+                        />
+                    </Form.Group>
 
-                            <Form.Group className="mb-3" controlId="formSearch">
-                                <Form.Label className="small-label">Tìm kiếm theo tên nhân viên</Form.Label>
-                                <Field
-                                    as={Form.Control}
-                                    type="text"
-                                    placeholder="Nhập tên nhân viên"
-                                    name="name"
-                                    style={{marginBottom: '0.5rem'}}
-                                />
-                            </Form.Group>
+                    <Button variant="secondary" type="submit" className="search" style={{borderRadius: '50%'}}>
+                        <FaSearch/>
+                    </Button>
+                </FormikForm>)}
+            </Formik>
 
-                            <Form.Group className="mb-3" controlId="formSearch">
-                                <Form.Label className="small-label">Tìm kiếm theo bộ phận</Form.Label>
-                                <Field
-                                    as={Form.Control}
-                                    type="text"
-                                    placeholder="Nhập bộ phận"
-                                    name="position"
-                                    style={{marginBottom: '0.5rem'}}
-                                />
-                            </Form.Group>
-
-                            <Button variant="secondary" type="submit" className="search" style={{borderRadius: '50%'}}>
-                                <FaSearch/>
-                            </Button>
-                        </FormikForm>
-                    )}
-                </Formik>
-
-                <Button
+            {userRole !== "ADMIN" ?
+                "" : <Button
                     variant="success"
                     onClick={handleAddStaff}
                     style={{
-                        fontSize: '1.1rem',
-                        padding: '0.75rem 2rem',
-                        marginTop: '1rem',
+                        fontSize: '1.1rem', padding: '0.75rem 2rem', marginTop: '1rem',
                     }}
                     className='mb-4'>
                     Thêm mới nhân viên
                 </Button>
+            }
 
-                <div className="table-responsive">
-                    <table className="table table-hover table-bordered border-success" style={{fontSize: '1.05rem'}}>
-                        <thead className="table-success">
-                        <tr>
-                            <th className="text-center">STT</th>
-                            <th className="text-center">Mã nhân viên</th>
-                            <th className="text-center">Họ tên</th>
-                            <th className="text-center">Ngày sinh</th>
-                            <th className="text-center">Giới tính</th>
-                            <th className="text-center">Địa chỉ</th>
-                            <th className="text-center">Điện thoại</th>
-                            <th className="text-center">Email</th>
-                            <th className="text-center">Lương</th>
-                            <th className="text-center">Ngày làm việc</th>
-                            <th className="text-center">Bộ phận</th>
-                            <th className="text-center">Hành động</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        {filteredStaffList.map((staff, index) => (
-                            <tr key={staff.id}>
-                                <td className="text-center">{index + 1}</td>
-                                <td className="text-center">{staff.codeStaff}</td>
-                                <td className="text-center">{staff.name}</td>
-                                <td className="text-center">{moment(staff.birthday, 'YYYY-MM-DD').format('DD-MM-YYYY')}</td>
-                                <td className="text-center">{staff.gender ? 'Nam' : 'Nữ'}</td>
-                                <td className="text-center">{staff.address}</td>
-                                <td className="text-center">{staff.phone}</td>
-                                <td className="text-center">{staff.email}</td>
-                                <td className="text-center">{formatCurrency(staff.salary)} VNĐ</td>
-                                <td className="text-center">{moment(staff.startDate, 'YYYY-MM-DD').format('DD-MM-YYYY')}</td>
-                                <td className="text-center">{staff.position}</td>
-                                <td className="text-center">
-
-                                    <div className="mb-2">
-                                        {staff.hasAccount ? (
-                                            <span className="badge bg-success">Đã có tài khoản</span>
-                                        ) : (
-                                            <>
-                                                <span className="badge bg-danger">Chưa có tài khoản</span>
-                                                <br/>
-                                                <button
-                                                    className="btn btn-sm btn-primary mt-2"
-                                                    onClick={() => handleRegisterAccount(staff)}>
-                                                    Đăng ký tài khoản
-                                                </button>
-                                            </>
-                                        )}
-                                    </div>
-
-                                    <button
-                                        className="btn btn-warning btn-sm me-2"
-                                        style={{fontSize: '0.9rem'}}
-                                        onClick={() => handleEditStaff(staff.id)}>
-                                        Cập nhật
-                                    </button>
-                                    <button
-                                        className="btn btn-danger btn-sm me-2"
-                                        onClick={() => handleOpenModal(staff)}
-                                        style={{fontSize: '0.9rem'}}>
-                                        Xóa
-                                    </button>
-                                </td>
-                            </tr>
-                        ))}
-                        </tbody>
-                    </table>
-                </div>
-
-                <div className="d-flex justify-content-center align-items-center">
-                    <button
-                        className="btn btn-secondary"
-                        onClick={() => handlePageChange(currentPage - 1)}
-                        disabled={currentPage === 0}>
-                        Trước
-                    </button>
-                    <span className="mx-3">Trang {currentPage + 1} / {totalPages}</span>
-                    <button
-                        className="btn btn-secondary"
-                        onClick={() => handlePageChange(currentPage + 1)}
-                        disabled={currentPage === totalPages - 1}>
-                        Sau
-                    </button>
-                </div>
-
-                <Modal show={isModalOpen} onHide={handleCloseModal} centered>
-                    <Modal.Header closeButton>
-                        <Modal.Title>Xác nhận xóa</Modal.Title>
-                    </Modal.Header>
-                    <Modal.Body>
-                        <p style={{fontSize: '1.1rem'}}>
-                            Bạn có chắc chắn muốn xóa nhân viên
-                            <span style={{color: 'red'}}>"{staffDelete?.name}?"</span>
-                        </p>
-                    </Modal.Body>
-                    <Modal.Footer>
-                        <Button variant="danger" onClick={handleDeleteStaff} style={{fontSize: '1rem'}}>Xóa</Button>
-                        <Button variant="secondary" onClick={handleCloseModal} style={{fontSize: '1rem'}}>Hủy</Button>
-                    </Modal.Footer>
-                </Modal>
-
+            <div className="table-responsive">
+                <table className="table table-hover table-bordered border-success" style={{fontSize: '1.05rem'}}>
+                    <thead className="table-success">
+                    <tr>
+                        <th className="text-center">STT</th>
+                        <th className="text-center">Mã nhân viên</th>
+                        <th className="text-center">Họ tên</th>
+                        <th className="text-center">Ngày sinh</th>
+                        <th className="text-center">Giới tính</th>
+                        <th className="text-center">Địa chỉ</th>
+                        <th className="text-center">Điện thoại</th>
+                        <th className="text-center">CCCD/CMDN</th>
+                        <th className="text-center">Email</th>
+                        <th className="text-center">Lương</th>
+                        <th className="text-center">Ngày làm việc</th>
+                        <th className="text-center">Bộ phận</th>
+                        {userRole !== "ADMIN" ? "" : <th className="text-center">Hành động</th>}
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {filteredStaffList.map((staff, index) => (<tr key={staff.id}>
+                        <td className="text-center">{index + 1}</td>
+                        <td className="text-center">{staff.codeStaff}</td>
+                        <td className="text-center">{staff.name}</td>
+                        <td className="text-center">{moment(staff.birthday, 'YYYY-MM-DD').format('DD-MM-YYYY')}</td>
+                        <td className="text-center">{staff.gender ? 'Nam' : 'Nữ'}</td>
+                        <td className="text-center">{staff.address}</td>
+                        <td className="text-center">{staff.phone}</td>
+                        <td className="text-center">{staff.identification}</td>
+                        <td className="text-center">{staff.email}</td>
+                        <td className="text-center">{formatCurrency(staff.salary)} VNĐ</td>
+                        <td className="text-center">{moment(staff.startDate, 'YYYY-MM-DD').format('DD-MM-YYYY')}</td>
+                        <td className="text-center">{staff.position}</td>
+                        {userRole !== "ADMIN" ? "" : <td className="text-center">
+                            <button
+                                className="btn btn-warning btn-sm me-2"
+                                style={{fontSize: '0.9rem'}}
+                                onClick={() => handleEditStaff(staff.id)}>
+                                Cập nhật
+                            </button>
+                            <button
+                                className="btn btn-danger btn-sm me-2"
+                                onClick={() => handleOpenModal(staff)}
+                                style={{fontSize: '0.9rem'}}>
+                                Xóa
+                            </button>
+                        </td>}
+                    </tr>))}
+                    </tbody>
+                </table>
             </div>
-            <ToastContainer/>
-            <Footer/>
-        </>
-    );
+
+            <div className="d-flex justify-content-center align-items-center">
+                <button
+                    className="btn btn-secondary"
+                    onClick={() => handlePageChange(currentPage - 1)}
+                    disabled={currentPage === 0}>
+                    Trước
+                </button>
+                <span className="mx-3">Trang {currentPage + 1} / {totalPages}</span>
+                <button
+                    className="btn btn-secondary"
+                    onClick={() => handlePageChange(currentPage + 1)}
+                    disabled={currentPage === totalPages - 1}>
+                    Sau
+                </button>
+            </div>
+
+            <Modal show={isModalOpen} onHide={handleCloseModal} centered>
+                <Modal.Header closeButton>
+                    <Modal.Title>Xác nhận xóa</Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                    <p style={{fontSize: '1.1rem'}}>
+                        Bạn có chắc chắn muốn xóa nhân viên
+                        <span style={{color: 'red'}}>"{staffDelete?.name}?"</span>
+                    </p>
+                </Modal.Body>
+                <Modal.Footer>
+                    <Button variant="danger" onClick={handleDeleteStaff} style={{fontSize: '1rem'}}>Xóa</Button>
+                    <Button variant="secondary" onClick={handleCloseModal} style={{fontSize: '1rem'}}>Hủy</Button>
+                </Modal.Footer>
+            </Modal>
+        </div>
+        <Footer/>
+    </>);
 }
 
 export default Staff;

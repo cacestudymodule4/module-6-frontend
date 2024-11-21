@@ -28,6 +28,7 @@ import {AddEditFloor} from './components/uncommon/Floor/AddEditFloor';
 import './assets/css/styles.css';
 import AddService from "./components/uncommon/AddService";
 import ServiceDetail from "./components/uncommon/ServiceDetail";
+import ChangePassword from "./components/uncommon/ChangePassword";
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
@@ -43,6 +44,7 @@ root.render(
                 <Route path="/staff/list" element={<Staff/>}/>
                 <Route path="/staff/add" element={<AddStaff/>}/>
                 <Route path="/staff/edit/:id" element={<EditStaff/>}/>
+                <Route path="/staff/password" element={<ChangePassword/>}/>
                 <Route path="/login" element={<Login/>}/>
                 <Route path="/logout" element={<Logout/>}/>
                 <Route path="/user/detail" element={<UserInfo/>}/>
@@ -59,7 +61,7 @@ root.render(
                 <Route path="/*" element={<Login/>}/>
                 <Route path="/service/list" element={<ServiceList/>}/>
                 <Route path="/service/add" element={<AddService/>}/>
-                <Route path="/service/detail/:serviceId" element={<ServiceDetail />} />
+                <Route path="/service/detail/:serviceId" element={<ServiceDetail/>}/>
 
             </Routes>
         </BrowserRouter>

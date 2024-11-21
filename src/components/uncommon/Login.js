@@ -46,6 +46,7 @@ const Login = () => {
             toast.error(error, {position: "top-right", autoClose: 3000});
         }
     }, [isAuthenticated, error, navigate]);
+
     return (
         <>
             <section className="bg-light p-3 p-md-4 p-xl-5">
