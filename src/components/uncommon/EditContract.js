@@ -13,7 +13,6 @@ import {FaSearch} from "react-icons/fa";
 function AddContract() {
     const navigate = useNavigate();
     const {id} = useParams();
-    const [ground, setGround] = useState(null);
     const [contractEdit, setContractEdit] = useState({});
     const [staff, setStaff] = useState([]);
     const [customer, setCustomer] = useState([]);
@@ -25,7 +24,10 @@ function AddContract() {
     const [showCusModal, setShowCusModal] = useState(false);
     const [showStaffModal, setShowStaffModal] = useState(false);
     const [checkDay, setCheckDay] = useState('1000-01-01');
+    const token = localStorage.getItem("jwtToken");
+
     useEffect(() => {
+        if (!token) navigate("/login")
         async function getStaff() {
             try {
                 const response = await axios.get("http://localhost:8080/api/staff/list-add", {
@@ -62,23 +64,12 @@ function AddContract() {
             }
         }
 
-        async function getGround() {
-            try {
-                const response = await axios.get("http://localhost:8080/api/contract/list-rent", {
-                    headers: {Authorization: `Bearer ${localStorage.getItem('jwtToken')}`}
-                })
-                setGround(response.data);
-            } catch (error) {
-                console.log(error);
-            }
-        }
 
         getContract();
         getCustomer();
-        getGround();
         getStaff();
     }, []);
-    const handleAddContract = async (value) => {
+    const handleSaveContract = async (value) => {
         try {
             const data = {
                 id: contractEdit.id,
@@ -97,11 +88,11 @@ function AddContract() {
                 },
             )
             if (res.status === 200) {
-                toast.success("Thêm mới thành công");
+                toast.success("Chỉnh sửa thành công");
                 navigate('/contract/list')
             }
         } catch (error) {
-            toast.error("Thêm thất bại");
+            toast.error("Chỉnh sửa thất bại");
             console.log(error);
         }
     }
@@ -230,7 +221,7 @@ function AddContract() {
                 <Formik
                     initialValues={initialValues}
                     onSubmit={(values) => {
-                        handleAddContract(values)
+                        handleSaveContract(values)
                     }}
                     enableReinitialize
                     validationSchema={validationSchema}
@@ -512,7 +503,7 @@ function AddContract() {
                     )}
                 </Formik>
             </div>
-            ===========modal nhân viên====================
+            {/*===========modal nhân viên====================*/}
             <Modal show={showStaffModal} className={"modal-contract-custom"}>
                 <Modal.Header closeButton onClick={() => setShowStaffModal(false)}>
                     <Modal.Title>Xác Nhận</Modal.Title>
