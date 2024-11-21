@@ -13,15 +13,20 @@ const EditStaff = () => {
     const {id} = useParams();
     const navigate = useNavigate();
     const [staffData, setStaffData] = useState(null);
+    const userRole = localStorage.getItem("userRole");
 
     useEffect(() => {
         if (!token) navigate("/login");
+        if (userRole !== "ADMIN") {
+            navigate("/home")
+        }
         axios
             .get(`http://localhost:8080/api/staff/${id}`, {
                 headers: {Authorization: `Bearer ${localStorage.getItem('jwtToken')}`}
             })
             .then((response) => {
                 setStaffData(response.data);
+                console.log(response)
             })
             .catch((error) => toast.error("Lỗi khi tải thông tin nhân viên"));
     }, [id]);
@@ -37,11 +42,12 @@ const EditStaff = () => {
         address: Yup.string().required("Địa chỉ không được để trống"),
         position: Yup.string().required("Vị trí không được để trống"),
         salary: Yup.number().required("Lương không được để trống"),
-        birthDate: Yup.date().required("Ngày sinh không được để trống"),
+        birthday: Yup.date().required("Ngày sinh không được để trống"),
         startDate: Yup.date().required("Ngày làm việc không được để trống"),
     });
 
     const handleSubmit = async (values) => {
+        console.log(values)
         try {
             const response = await axios.put(`http://localhost:8080/api/staff/edit/${id}`, values, {
                 headers: {Authorization: `Bearer ${localStorage.getItem('jwtToken')}`}
@@ -65,10 +71,11 @@ const EditStaff = () => {
                 <Formik
                     initialValues={{
                         name: staffData?.name || '',
-                        birthDate: staffData?.birthDate || '',
+                        birthday: staffData?.birthday || '',
                         address: staffData?.address || '',
                         phone: staffData?.phone || '',
                         email: staffData?.email || '',
+                        identification: staffData?.identification || '',
                         position: staffData?.position || '',
                         salary: staffData?.salary || '',
                         startDate: staffData?.startDate || '',
@@ -102,13 +109,19 @@ const EditStaff = () => {
                                     <Field type="text" name="phone" className="form-control form-control-lg"/>
                                     <ErrorMessage name="phone" component="div" className="text-danger small"/>
                                 </div>
+
+                                <div className="mb-3">
+                                    <label className="form-label" style={{fontSize: '1.1rem'}}>CCCD/CMDN</label>
+                                    <Field type="text" name="identification" className="form-control form-control-lg"/>
+                                    <ErrorMessage name="identification" component="div" className="text-danger small"/>
+                                </div>
                             </div>
 
                             <div className="col-md-6">
                                 <div className="mb-3">
                                     <label className="form-label" style={{fontSize: '1.1rem'}}>Ngày sinh</label>
-                                    <Field type="date" name="birthDate" className="form-control form-control-lg"/>
-                                    <ErrorMessage name="birthDate" component="div" className="text-danger small"/>
+                                    <Field type="date" name="birthday" className="form-control form-control-lg"/>
+                                    <ErrorMessage name="birthday" component="div" className="text-danger small"/>
                                 </div>
 
                                 <div className="mb-3">
@@ -139,7 +152,6 @@ const EditStaff = () => {
                             </div>
                         </div>
 
-
                         <div className="d-flex justify-content-end mt-3">
                             <button
                                 type="button"
@@ -156,7 +168,6 @@ const EditStaff = () => {
 
                     </FormikForm>
                 </Formik>
-                <ToastContainer position="top-right" autoClose={5000}/>
             </div>
             <Footer/>
         </>

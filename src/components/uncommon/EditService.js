@@ -1,12 +1,32 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import {NavbarApp} from "../common/Navbar";
 import Footer from "../common/Footer";
-import axios from 'axios';
+import {useNavigate, useParams} from "react-router-dom";
+import axios from "axios";
 import {toast} from "react-toastify";
-import {useNavigate} from "react-router-dom";
 
-const AddService = () => {
+const EditService = () => {
+    const {serviceId} = useParams();
+    const navigate = useNavigate();
     const [serviceData, setServiceData] = useState({name: '', price: '', unit: ''});
+
+    useEffect(() => {
+        const fetchServiceData = async () => {
+            try {
+                const response = await axios.get(`http://localhost:8080/api/services/edit/${serviceId}`, {
+                    headers: {Authorization: `Bearer ${localStorage.getItem('jwtToken')}`},
+                });
+                setServiceData(response.data);
+            } catch (error) {
+                console.error("Lỗi khi lấy dữ liệu dịch vụ:", error);
+                toast.error("Không thể tải dữ liệu dịch vụ.");
+                navigate('/service/list');
+            }
+        };
+
+        fetchServiceData();
+    }, [serviceId, navigate]);
+
     const handleChange = (e) => {
         const {name, value} = e.target;
         setServiceData((prevData) => ({
@@ -14,27 +34,28 @@ const AddService = () => {
             [name]: value,
         }));
     };
+
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            await axios.post('http://localhost:8080/api/services/add', serviceData, {
+            await axios.put(`http://localhost:8080/api/services/update/${serviceId}`, serviceData, {
                 headers: {Authorization: `Bearer ${localStorage.getItem('jwtToken')}`},
             });
-            toast.success("Thêm mới dịch vụ thành công");
-            setServiceData({name: '', price: '', unit: ''});
+            toast.success("Cập nhật thành công");
+            navigate('/service/list');
         } catch (error) {
-            console.error("Lỗi khi thêm dịch vụ:", error);
+            console.error("Lỗi khi cập nhật dịch vụ:", error);
             if (error.response) {
                 toast.error(error.response.data);
             }
         }
     };
-    const navigate = useNavigate();
+
     return (
         <>
             <NavbarApp/>
             <div className="container mt-5">
-                <h2 className="text-center mb-5 bg-success text-white py-4">Thêm mới dịch vụ</h2>
+                <h2 className="text-center mb-5 bg-success text-white py-4">Chỉnh sửa dịch vụ</h2>
                 <form className="form-group" onSubmit={handleSubmit}>
                     <div className="row mb-3">
                         {/* Tên Dịch Vụ */}
@@ -80,12 +101,15 @@ const AddService = () => {
                         </div>
                     </div>
 
-                    {/* Nút Thêm Mới */}
+                    {/* Nút Lưu */}
                     <div className="row">
                         <div className="col-md-12 text-center">
-                            <button type="submit" className="btn btn-success">Thêm Mới</button>
-                            <button type="button" className="btn btn-secondary ms-3"
-                                    onClick={() => navigate('/service/list')}>
+                            <button type="submit" className="btn btn-success">Cập nhật</button>
+                            <button
+                                type="button"
+                                className="btn btn-secondary ms-3"
+                                onClick={() => navigate('/service/list')}
+                            >
                                 Quay lại
                             </button>
                         </div>
@@ -98,4 +122,4 @@ const AddService = () => {
     );
 };
 
-export default AddService;
+export default EditService;
