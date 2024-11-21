@@ -28,17 +28,16 @@ import {AddEditFloor} from './components/uncommon/Floor/AddEditFloor';
 import {Ground} from './components/uncommon/Ground/Ground';
 import {AddEditGround} from './components/uncommon/Ground/AddEditGround';
 import './assets/css/styles.css';
-import StaffRegister from "./components/uncommon/StaffRegister";
 import AddService from "./components/uncommon/AddService";
 import ServiceDetail from "./components/uncommon/ServiceDetail";
 import EditCustomer from "./components/uncommon/EditCustomer";
 import AddGroundToService from "./components/uncommon/AddGroundToService";
 import EditService from "./components/uncommon/EditService";
 import EditGroundService from "./components/uncommon/EditGroundService";
+import ChangePassword from "./components/uncommon/ChangePassword";
 import RoomFacilities from "./components/uncommon/RoomFacilities";
 import AddFacilities from "./components/uncommon/AddFacilities";
 import EditRoomFacilities from "./components/uncommon/EditRoomFacilities";
-import ChangePassword from "./components/uncommon/ChangePassword";
 
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
@@ -52,9 +51,9 @@ root.render(
                 <Route path="/floor/list" element={<Floor/>}/>
                 <Route path="/floor/add" element={<AddEditFloor/>}/>
                 <Route path="/floor/edit/:id" element={<AddEditFloor/>}/>
-                <Route path="/ground/add" element={<AddEditGround/>}/>
-                <Route path="/ground/edit/:id" element={<AddEditGround/>}/>
-                <Route path="/ground/list" element={<Ground/>}/>
+                <Route path="/ground/add" element={<AddEditGround />} />
+                <Route path="/ground/edit/:id" element={<AddEditGround />} />
+                <Route path="/ground/list" element={<Ground />} />
                 <Route path="/staff/list" element={<Staff/>}/>
                 <Route path="/staff/add" element={<AddStaff/>}/>
                 <Route path="/staff/edit/:id" element={<EditStaff/>}/>
