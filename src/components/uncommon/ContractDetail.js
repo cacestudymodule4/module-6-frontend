@@ -9,6 +9,7 @@ import axios from "axios";
 import ContractPdfButton from "./ContractPdfButton";
 
 function ContractDetail() {
+    const token = localStorage.getItem('jwtToken');
     const navigate = useNavigate();
     const {id} = useParams();
     const [contract, setContract] = useState({});
@@ -19,6 +20,7 @@ function ContractDetail() {
         navigate('/contract/list');
     };
     useEffect(() => {
+        if (!token) navigate("/login")
         async function getContract() {
             try {
                 const response = await axios.get(`http://localhost:8080/api/contract/findContract/${id}`

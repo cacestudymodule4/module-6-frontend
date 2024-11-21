@@ -46,6 +46,9 @@ export const NavbarApp = () => {
                                     <NavDropdown.Item href="/report">
                                         Doanh thu
                                     </NavDropdown.Item>
+                                    <NavDropdown.Item href="/facilities/list">
+                                        Trang thiết bị
+                                    </NavDropdown.Item>
                                     <NavDropdown.Divider/>
                                     <NavDropdown.Item href="/user/detail">
                                         Thông tin người dùng
