@@ -29,7 +29,7 @@ const Login = () => {
                     const isUsername = new RegExp("^[a-zA-Z0-9_]+$").test(value);
                     const isPhoneNumber = new RegExp("^[0-9]{10}$").test(value);
                     const isEmail = new RegExp("^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,4}$").test(value);
-                    return isUsername || isPhoneNumber || isEmail;
+                    return isUsername || isEmail;
                 }
             ),
         password: Yup.string().required('Vui lòng nhập mật khẩu'),
