@@ -26,7 +26,6 @@ function Contract() {
     const token = localStorage.getItem('jwtToken');
     useEffect(() => {
         if (!token) navigate("/login")
-
         async function getContract() {
             try {
                 const response = await axios.get("http://localhost:8080/api/contract/list-page", {
@@ -46,11 +45,12 @@ function Contract() {
         }
 
         getContract();
-    }, [shouldRefresh, pageSize]);
+    }, [shouldRefresh, pageSize,currentPage]);
 
     const handleReload = () => {
         setShouldRefresh(prev => !prev)
         setCurrentPage(1);
+        console.log(searchParams);
         if (formikRef.current) {
             formikRef.current.resetForm();
         }

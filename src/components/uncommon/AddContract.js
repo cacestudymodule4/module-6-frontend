@@ -42,17 +42,6 @@ function AddContract() {
             }
         }
 
-        async function getContract() {
-            try {
-                const response = await axios.get("http://localhost:8080/api/contract/list"
-                    , {
-                        headers: {Authorization: `Bearer ${localStorage.getItem('jwtToken')}`}
-                    });
-
-            } catch (err) {
-                console.log(err);
-            }
-        }
 
         async function getCustomer() {
             try {
@@ -76,8 +65,6 @@ function AddContract() {
                 console.log(error);
             }
         }
-
-        getContract();
         getCustomer();
         getGround();
         getStaff();
@@ -103,7 +90,7 @@ function AddContract() {
             )
             if (res.status === 200) {
                 toast.success("Thêm mới thành công");
-                navigate('/contract/list')
+                navigate('/facilities/list')
             }
         } catch (error) {
             toast.error("Thêm thất bại");
@@ -586,7 +573,7 @@ function AddContract() {
                                 Thêm hợp đồng
                             </Button>
                             <Button className={"ms-3"} variant="secondary" type="button"
-                                    onClick={() => navigate('/contract/list')}>
+                                    onClick={() => navigate('/facilities/list')}>
                                 Quay lại
                             </Button>
                         </FormikForm>

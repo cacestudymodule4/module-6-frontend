@@ -102,3 +102,10 @@ select option.small-text {
     background-color: #f0f0f0 !important; /* Màu nền nhẹ để chỉ rõ ô này chỉ để đọc */
     cursor: not-allowed !important; /* Đổi con trỏ chuột thành kiểu "không cho phép" */
 }
+.custom-select {
+    width: 100%;
+    border-radius: 8px; /* Bo góc cho dropdown */
+    padding: 5px;
+    border: 1px solid #ccc;
+}
+
