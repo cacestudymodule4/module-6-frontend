@@ -1,9 +1,10 @@
 import React from 'react';
 import {Navbar, Nav, NavDropdown, Container, Offcanvas} from 'react-bootstrap';
 import "bootstrap/dist/css/bootstrap.min.css";
-
+import {useNavigate} from "react-router-dom";
 export const NavbarApp = () => {
     const userRole = localStorage.getItem("userRole");
+    const navigate = useNavigate();
     return (<>
         {['lg'].map((expand) => (
             <Navbar key={expand} expand={expand} className="bg-body-tertiary" bg="success" data-bs-theme="success"

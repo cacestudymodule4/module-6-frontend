@@ -202,11 +202,11 @@ function RoomFacilities() {
                             <thead className={"custom-table text-white text-center"}>
                             <tr>
                                 <th>STT</th>
-                                <th style={{width: "10%"}}>Loại thiết bị</th>
+                                <th style={{width: "15%"}}>Loại thiết bị</th>
                                 <th style={{width: "15%"}}>Tên thiết bị</th>
                                 <th style={{width: "10%"}}>Số lượng</th>
                                 <th style={{width: "12%"}}>Số lượng hỏng</th>
-                                <th style={{width: "15%"}}>Ghi chú</th>
+                                <th style={{width: "16%"}}>Ghi chú</th>
                                 <th style={{width: "12%"}}>Mã mặt bằng</th>
                                 <th colSpan="3" className="text-center">Hành động</th>
                             </tr>
@@ -220,7 +220,7 @@ function RoomFacilities() {
                                     <td className="text-center">{facilities.quantity}</td>
                                     <td className="text-center">{facilities.damaged}</td>
                                     <td className="text-center">{facilities.description}</td>
-                                    <td className="text-center">{facilities.ground.id}</td>
+                                    <td className="text-center">{facilities.ground.groundCode}</td>
                                     <td className="text-center">
                                         <Button variant="warning" type="submit"
                                                 onClick={() => navigate(`/facilities/edit/${facilities.id}`)}

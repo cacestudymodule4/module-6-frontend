@@ -8,13 +8,14 @@ import {useNavigate} from "react-router-dom";
 import Footer from "../common/Footer";
 import {NavbarApp} from "../common/Navbar";
 import '../../assets/css/Contract.css';
-import {FaSearch} from "react-icons/fa";
+import {FaRedo, FaSearch} from "react-icons/fa";
 
 function AddContract() {
     const navigate = useNavigate();
     const [ground, setGround] = useState([]);
     const [staff, setStaff] = useState([]);
     const [customer, setCustomer] = useState([]);
+    const [groundSearch, setGroundSearch] = useState(null);
     const [customerSelected, setCustomerSelected] = useState(null);
     const [staffSelected, setStaffSelected] = useState(null);
     const [groundSelected, setGroundSelected] = useState(null);
@@ -25,6 +26,7 @@ function AddContract() {
     const [showCusModal, setShowCusModal] = useState(false);
     const [showStaffModal, setShowStaffModal] = useState(false);
     const [showGroundModal, setShowGroundModal] = useState(false);
+    const[floor, setFloor] = useState('');
     const [totalPrice, setTotalPrice] = useState(0);
     const [checkDay, setCheckDay] = useState('1000-01-01');
     const token = localStorage.getItem("jwtToken");
@@ -43,6 +45,16 @@ function AddContract() {
             }
         }
 
+        async function getFloor(){
+            try {
+                const response = await axios.get("http://localhost:8080/api/floor/get-list", {
+                    headers: {Authorization: `Bearer ${localStorage.getItem('jwtToken')}`}
+                })
+                setFloor(response.data);
+            } catch (error) {
+                console.log(error);
+            }
+        }
 
         async function getCustomer() {
             try {
@@ -61,12 +73,11 @@ function AddContract() {
                     headers: {Authorization: `Bearer ${localStorage.getItem('jwtToken')}`}
                 })
                 setGround(response.data);
-                console.log("okk")
             } catch (error) {
                 console.log(error);
             }
         }
-
+        getFloor();
         getCustomer();
         getGround();
         getStaff();
@@ -169,7 +180,7 @@ function AddContract() {
                         }
                     } else if (checkDay > today) {
                         if (startDate < checkDay) {
-                            return this.createError({message: `Mặt bằng này đang được thuê,ngày bắt đầu phải sau ngày ${checkDayDate.toLocaleDateString()}`});
+                            return this.createError({message: `Mặt bằng đang được thuê,ngày bắt đầu phải sau ngày ${checkDayDate.toLocaleDateString()}`});
                         }
                     }
 
@@ -203,18 +214,13 @@ function AddContract() {
             console.log(err);
         }
     }
-    const handleSearchGround = async (value) => {
-        try {
-            const res = await axios.get(`http://localhost:8080/api/ground/findGround?searchGround=${value.searchGround}`, {
-                    headers: {Authorization: `Bearer ${localStorage.getItem('jwtToken')}`},
-                },
-            )
-
-            setGround(res.data);
-        } catch
-            (err) {
-            console.log(err);
-        }
+    const handleSearchModal = (value) => {
+        const listSearch = ground.filter((item) =>
+            item.groundCode.toLowerCase().includes(value.searchGround.toLowerCase()) &&
+            item.area.toString().includes(value.searchAcreage.toString()) &&
+            item.floor.name.includes(value.positionFloor)
+        );
+        setGroundSearch(listSearch);
     }
     const checkGround = async (ground) => {
         setPriceGround(ground.price);
@@ -397,7 +403,10 @@ function AddContract() {
                                     <Form.Group className="mb-3">
                                         <Form.Label>
                                             <Button variant={"success"} style={{marginRight: "30px"}}
-                                                    onClick={() => setShowGroundModal(true)}>
+                                                    onClick={() => {
+                                                        setShowGroundModal(true);
+                                                        setGroundSearch(ground);
+                                                    }}>
                                                 Chọn mặt bằng <span className="text-danger">*</span>
                                             </Button> </Form.Label>
                                         <Field
@@ -666,7 +675,10 @@ function AddContract() {
                 </Modal.Header>
                 <Modal.Body>
                     <div className={"search-fixed"}>
-                        <Formik initialValues={{searchCus: ''}}
+                        <Formik initialValues={{
+                            searchCus: '',
+                            searchAcreage: ''
+                        }}
                                 onSubmit={(value) => handleSearchCus(value)}>
                             {() => (
                                 <FormikForm className="mb-3 custom-search ">
@@ -741,29 +753,65 @@ function AddContract() {
                 </Modal.Header>
                 <Modal.Body>
                     <div className={"search-fixed"}>
-                        <Formik initialValues={{searchGround: ''}}
-                                onSubmit={handleSearchGround}>
-                            {() => (
-                                <FormikForm className="mb-3 custom-search ">
+                        <Formik initialValues={{
+                            searchGround: '',
+                            searchAcreage: '',
+                            positionFloor:''
+                        }}
+                                onSubmit={handleSearchModal}>
+                            {({resetForm}) => (
+                                <FormikForm className="mb-3 custom-search mr-5" >
                                     <Form.Group className="mb-3" controlId="formSearch">
-                                        <Form.Label className="small-label">Tìm theo tên mặt bằng</Form.Label>
+                                        <Form.Label className="small-label">Tìm theo tên</Form.Label>
                                         <Field
                                             as={Form.Control}
                                             type="text"
                                             placeholder="Nhập tên mặt bằng"
                                             name="searchGround"
                                         />
+
                                     </Form.Group>
-                                    <Button style={{marginRight: "68%"}} variant="secondary" type="submit"
+                                    <Form.Group className="mb-3" controlId="formSearch">
+                                        <Form.Label className="small-label">Tìm theo diện tích</Form.Label>
+                                        <Field
+                                            as={Form.Control}
+                                            type="number"
+                                            placeholder="Nhập diện tích"
+                                            name="searchAcreage"
+                                        />
+
+                                    </Form.Group>
+                                    <Field as="select" name="positionFloor"
+                                           className="custom-date-input custom-select "
+                                           style={{width:'20%',marginTop:"10px"}}
+                                    >
+                                        <Form.Label className="small-label">Tìm theo diện tích</Form.Label>
+                                        <option value=""
+                                                className={"text-center"}
+                                        > Chọn vị trí
+                                        </option>
+                                        {floor?.map((floor) => (
+                                            <option key={floor.id} value={floor.name} className={"text-center"}>
+                                                {floor.name}
+                                            </option>
+                                        ))}
+                                    </Field>
+                                    <Button style={{marginRight: "5%"}} variant="secondary" type="submit"
                                             className={"search-contract-btn "}>
                                         <FaSearch></FaSearch>
                                     </Button>
+                                    <Button variant="secondary" style={{borderRadius: "50%",marginTop:"7px"}} type={"button"}
+                                            onClick={() => {
+                                                setGroundSearch(ground);
+                                                resetForm()
+                                            }
+                                            }> <FaRedo/></Button>
                                 </FormikForm>
                             )}
                         </Formik>
                     </div>
                     <div className="modal-content-scroll">
-                        {ground.length === 0 ? (<h1 className={"text-center mt-5"}>Danh sách trống </h1>) :
+                        {groundSearch?.length === 0 ? (<h1 className={"text-center mt-5"}>Danh sách trống </h1>) :
                             <Table striped bordered hover>
                                 <thead className={"custom-table text-white text-center"}>
                                 <tr>
@@ -775,7 +823,7 @@ function AddContract() {
                                 </tr>
                                 </thead>
                                 <tbody>
-                                {ground.map((ground, index) => (
+                                {groundSearch?.map((ground, index) => (
                                     <tr key={ground.id}>
                                         <td className="text-center">{ground.groundCode}</td>
                                         <td className="text-center">{ground.area} m²</td>
