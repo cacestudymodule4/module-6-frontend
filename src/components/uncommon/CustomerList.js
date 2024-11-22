@@ -3,7 +3,7 @@ import axios from 'axios';
 import {Modal, Button} from 'react-bootstrap';
 import {useNavigate} from "react-router-dom";
 import '../../assets/css/CustomerList.css';
-import {FaSearch} from "react-icons/fa";
+import {FaRedo, FaSearch} from "react-icons/fa";
 import {NavbarApp} from "../common/Navbar";
 import Footer from "../common/Footer";
 import * as Yup from 'yup';
@@ -11,6 +11,7 @@ import {TbReload} from "react-icons/tb";
 import {toast} from "react-toastify";
 import moment from "moment/moment";
 import Pagination from "react-bootstrap/Pagination";
+import {BiPlusCircle} from "react-icons/bi";
 
 const customerSchema = Yup.object().shape({
     name: Yup.string().required("Tên khách hàng là bắt buộc"),
@@ -156,8 +157,11 @@ function CustomerList() {
     return (
         <>
             <NavbarApp/>
-            <div className="customer-list container mt-5">
-                <h2 className="text-center mb-5 bg-success text-white py-4">Danh sách khách hàng</h2>
+            <div className="customer-list container-fluid my-5 p-4 rounded">
+                <h2 className="text-center mb-5 bg-success text-white py-3 rounded"
+                    style={{fontSize: '2.15rem'}}>
+                    Danh sách khách hàng
+                </h2>
                 <div className="d-flex justify-content-center align-items-center mb-3">
                     <input
                         type="text"
@@ -179,58 +183,71 @@ function CustomerList() {
                         <FaSearch/>
                     </button>
                 </div>
-                <div className="d-flex mb-3">
-                    <button className="btn btn-success" onClick={handleNavigateToAddCustomer}>Thêm mới</button>
-                    <button className="btn btn-success ms-2" onClick={handleReload}><TbReload/></button>
+                <div className="d-flex mb-4">
+                    <button
+                        className="btn btn-success me-2"
+                        style={{fontSize: '1.1rem', padding: '0.75rem 2rem', marginTop: '1rem'}}
+                        onClick={handleNavigateToAddCustomer}
+                    >
+                        <i className="bi bi-plus-circle" style={{marginRight: '8px'}}></i>
+                        Thêm mới
+                    </button>
+
+                    <button
+                        className="btn btn-secondary me-2"
+                        style={{fontSize: '1.1rem', padding: '0.75rem 2rem', marginTop: '1rem'}}
+                        onClick={handleReload}
+                    >
+                        <FaRedo/>
+                    </button>
                 </div>
                 <div className="table-responsive">
                     <table className="table table-hover table-bordered border-success">
-                        <thead className="table-success">
+                        <thead className="table-success text-center text-white custom-table">
                         <tr>
-                            <th>STT</th>
-                            <th>Tên Khách Hàng</th>
-                            <th>Ngày sinh</th>
-                            <th>Giới tính</th>
-                            <th>Số chứng minh thư</th>
-                            <th>Địa chỉ</th>
-                            <th>Số điện thoại</th>
-                            <th>Email</th>
-                            <th>Công ty</th>
-                            <th colSpan={2}>Hành Động</th>
+                            <th className="text-center">STT</th>
+                            <th className="text-center">Tên Khách Hàng</th>
+                            <th className="text-center">Ngày sinh</th>
+                            <th className="text-center">Giới tính</th>
+                            <th className="text-center">Số chứng minh thư</th>
+                            <th className="text-center">Địa chỉ</th>
+                            <th className="text-center">Số điện thoại</th>
+                            <th className="text-center">Email</th>
+                            <th className="text-center">Công ty</th>
+                            <th colSpan={2} className="text-center">Hành Động</th>
                         </tr>
                         </thead>
                         <tbody>
                         {filteredCustomers.length > 0 ? (
-                            filteredCustomers
-                                .map((customer, index) => (
-                                    <tr key={customer.id}>
-                                        <td>{(page - 1) * pageSize + index + 1}</td>
-                                        <td>{customer.name}</td>
-                                        <td>{moment(customer.birthday).format("DD-MM-YYYY")}</td>
-                                        <td>{displayGender(customer.gender)}</td>
-                                        <td>{formatIdentification(customer.identification)}</td>
-                                        <td>{customer.address}</td>
-                                        <td>{formatPhoneNumber(customer.phone)}</td>
-                                        <td>{customer.email}</td>
-                                        <td>{customer.company}</td>
-                                        <td>
-                                            <button
-                                                className="btn btn-warning"
-                                                onClick={() => navigate(`/customer/edit/${customer.id}`)}
-                                            >
-                                                Sửa
-                                            </button>
-                                        </td>
-                                        <td>
-                                            <button
-                                                className="btn btn-danger"
-                                                onClick={() => handleOpenModal(customer)}
-                                            >
-                                                Xóa
-                                            </button>
-                                        </td>
-                                    </tr>
-                                ))
+                            filteredCustomers.map((customer, index) => (
+                                <tr key={customer.id}>
+                                    <td className="text-center">{(page - 1) * pageSize + index + 1}</td>
+                                    <td className="text-center">{customer.name}</td>
+                                    <td className="text-center">{moment(customer.birthday).format("DD-MM-YYYY")}</td>
+                                    <td className="text-center">{displayGender(customer.gender)}</td>
+                                    <td className="text-center">{formatIdentification(customer.identification)}</td>
+                                    <td className="text-center">{customer.address}</td>
+                                    <td className="text-center">{formatPhoneNumber(customer.phone)}</td>
+                                    <td className="text-center">{customer.email}</td>
+                                    <td className="text-center">{customer.company}</td>
+                                    <td className="text-center">
+                                        <button
+                                            className="btn btn-warning"
+                                            onClick={() => navigate(`/customer/edit/${customer.id}`)}
+                                        >
+                                            <i className="bi bi-pencil me-2"></i> Sửa
+                                        </button>
+                                    </td>
+                                    <td className="text-center">
+                                        <button
+                                            className="btn btn-danger"
+                                            onClick={() => handleOpenModal(customer)}
+                                        >
+                                            <i className="bi bi-trash me-2"></i> Xóa
+                                        </button>
+                                    </td>
+                                </tr>
+                            ))
                         ) : (
                             <tr>
                                 <td colSpan="9" className="text-center">
@@ -241,6 +258,7 @@ function CustomerList() {
                         </tbody>
                     </table>
                 </div>
+
                 <div className="d-flex justify-content-center">
                     <Pagination>
                         <Pagination.Prev

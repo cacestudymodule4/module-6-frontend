@@ -57,13 +57,13 @@ const ServiceDetail = () => {
 
     return (
         <>
-            <NavbarApp />
+            <NavbarApp/>
             <div className="service-detail container mt-5">
                 <h2 className="text-center mb-5 bg-success text-white py-4 rounded shadow">
                     Chi tiết Dịch vụ
                 </h2>
 
-                <div className="mb-5 px-4 rounded shadow-sm" style={{ background: "#f8f9fa" }}>
+                <div className="mb-5 px-4 rounded shadow-sm" style={{background: "#f8f9fa"}}>
                     <h3 className="text-success mb-4">Thông tin dịch vụ</h3>
                     {service ? (
                         <div className="row">
@@ -73,7 +73,12 @@ const ServiceDetail = () => {
                             </div>
                             <div className="col-md-4">
                                 <p className="fw-bold">Giá :</p>
-                                <p>{service.price}</p>
+                                <p>
+                                    {new Intl.NumberFormat('vi-VN', {
+                                        style: 'currency',
+                                        currency: 'VND'
+                                    }).format(service.price)}
+                                </p>
                             </div>
                             <div className="col-md-4">
                                 <p className="fw-bold">Đơn vị :</p>
@@ -117,7 +122,8 @@ const ServiceDetail = () => {
                                         </button>
                                     </td>
                                     <td>
-                                        <button className="btn btn-danger btn-sm" onClick={() => openDeleteModal(ground)}>
+                                        <button className="btn btn-danger btn-sm"
+                                                onClick={() => openDeleteModal(ground)}>
                                             Xóa
                                         </button>
                                     </td>
@@ -143,7 +149,7 @@ const ServiceDetail = () => {
                         onClick={() => navigate(`/service/${serviceId}/add-ground`)}
                     >
                         Thêm mới
-                        <i className="bi bi-plus-circle me-2"></i>
+                        <i className="bi bi-plus-circle"></i>
                     </button>
                 </div>
             </div>
@@ -166,7 +172,7 @@ const ServiceDetail = () => {
                 </Modal.Footer>
             </Modal>
 
-            <Footer />
+            <Footer/>
         </>
     );
 

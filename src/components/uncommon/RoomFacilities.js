@@ -131,10 +131,11 @@ function RoomFacilities() {
     return (
         <>
             <NavbarApp/>
-            <div className="container mt-5 mb-5">
-                <h2 className="text-center mb-5 bg-success align-content-center"
-                    style={{color: "white", height: "70px"}}>
-                    Danh sách trang thiết bị</h2>
+            <div className="container-fluid my-5 p-4" style={{minHeight: '45vh'}}>
+                <h3 className="text-center text-white mb-5 bg-success py-3 rounded"
+                    style={{fontSize: '2.25rem'}}>
+                    Danh sách trang thiết bị
+                </h3>
                 <Formik
                     innerRef={formikRef}
                     initialValues={{
@@ -186,9 +187,12 @@ function RoomFacilities() {
                         </FormikForm>
                     )}
                 </Formik>
-                <Button variant={"success"} className={"mb-2"}
-                        onClick={() => navigate('/facilities/add')}>Thêm mới</Button>
-                <Button variant="secondary" style={{borderRadius: "50%"}} className={"mb-2 ms-2 "}
+                <Button variant={"success"} className={"mb-4"}
+                        style={{fontSize: '1.1rem', padding: '0.75rem 2rem', marginTop: '1rem', marginRight: '10px'}}
+                        onClick={() => navigate('/facilities/add')}>
+                    <i className="bi bi-plus-circle" style={{marginRight: '8px'}}></i>Thêm mới</Button>
+                <Button variant="secondary" style={{borderRadius: "50%"}} className={"mb-4"}
+                        style={{fontSize: '1.1rem', padding: '0.75rem 2rem', marginTop: '1rem'}}
                         onClick={handleReload}>
                     <FaRedo/>
                 </Button>
@@ -221,13 +225,13 @@ function RoomFacilities() {
                                         <Button variant="warning" type="submit"
                                                 onClick={() => navigate(`/facilities/edit/${facilities.id}`)}
                                         >
-                                            Sửa
+                                            <i className="bi bi-pencil me-2"></i> Sửa
                                         </Button>
                                     </td>
                                     <td className="text-center">
                                         <Button variant="danger" type="submit"
                                                 onClick={() => handleDeleteClick(facilities)}>
-                                            Xoá
+                                            <i className="bi bi-trash me-2"></i> Xoá
                                         </Button>
                                     </td>
                                 </tr>

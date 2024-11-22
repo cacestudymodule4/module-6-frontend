@@ -1,11 +1,11 @@
-import React, { useEffect, useState } from "react";
-import { Button } from 'react-bootstrap';
-import { Formik, Field, Form, ErrorMessage } from "formik";
+import React, {useEffect, useState} from "react";
+import {Button} from 'react-bootstrap';
+import {Formik, Field, Form, ErrorMessage} from "formik";
 import axios from "axios";
-import { toast } from "react-toastify";
+import {toast} from "react-toastify";
 import * as Yup from "yup";
-import { useLocation, useNavigate } from 'react-router-dom';
-import { NavbarApp } from "../../common/Navbar";
+import {useLocation, useNavigate} from 'react-router-dom';
+import {NavbarApp} from "../../common/Navbar";
 import Footer from "../../common/Footer";
 
 export const AddEditGround = () => {
@@ -19,7 +19,7 @@ export const AddEditGround = () => {
             try {
                 const response = await axios.get("http://localhost:8080/api/floor/get-all"
                     , {
-                        headers: { Authorization: `Bearer ${localStorage.getItem('jwtToken')}` }
+                        headers: {Authorization: `Bearer ${localStorage.getItem('jwtToken')}`}
                     });
                 setFloors(response.data);
             } catch (err) {
@@ -52,7 +52,7 @@ export const AddEditGround = () => {
             }
 
             const res = await axios.post(`http://localhost:8080/api/ground/save`, data, {
-                headers: { Authorization: `Bearer ${localStorage.getItem('jwtToken')}` }
+                headers: {Authorization: `Bearer ${localStorage.getItem('jwtToken')}`}
             });
 
             if (res.status === 200) {
@@ -67,10 +67,10 @@ export const AddEditGround = () => {
 
     return (
         <>
-            <NavbarApp />
-            <div className="container mt-5 mb-5">
-                <h2 className="text-center mb-5 bg-success align-content-center"
-                    style={{ color: "white", height: "70px" }}>
+            <NavbarApp/>
+            <div className="container my-5 p-4">
+                <h2 className="text-center text-white mb-5 bg-success p-3 rounded"
+                    style={{fontSize: '2.15rem'}}>
                     {ground ? "Chỉnh sửa mặt bằng" : "Thêm mới mặt bằng"}
                 </h2>
                 <Formik
@@ -88,13 +88,14 @@ export const AddEditGround = () => {
                     validationSchema={validationSchema}
                 >
                     <Form>
-                        <div className="mb-3">
-                            <label htmlFor="floorId" className="form-label">Chọn tầng:</label>
+                        <div className="mb-2">
+                            <label htmlFor="floorId" className="form-label" style={{fontSize: '1.2rem'}}>Chọn
+                                tầng:</label>
                             <Field
                                 as="select"
                                 id="floorId"
                                 name="floorId"
-                                className="form-select">
+                                className="form-select form-select-lg">
                                 {floors.map(floor => (
                                     <option key={floor.id} value={floor.id}>
                                         {floor.name}
@@ -103,13 +104,14 @@ export const AddEditGround = () => {
                             </Field>
                         </div>
 
-                        <div className="form-group mb-3">
-                            <label className="form-label">Mã mặt bằng<span className="text-danger">*</span>:</label>
+                        <div className="mb-2">
+                            <label className="form-label" style={{fontSize: '1.2rem'}}>Mã mặt bằng<span
+                                className="text-danger">*</span>:</label>
                             <Field
                                 as={Form.Control}
                                 type="text"
                                 name="groundCode"
-                                className="form-control" />
+                                className="form-control form-control-lg"/>
                             <ErrorMessage
                                 name="groundCode"
                                 component="div"
@@ -118,13 +120,14 @@ export const AddEditGround = () => {
                         </div>
 
 
-                        <div className="form-group mb-3">
-                            <label className="form-label">Loại mặt bằng<span className="text-danger">*</span>:</label>
+                        <div className="mb-2">
+                            <label className="form-label" style={{fontSize: '1.2rem'}}>Loại mặt bằng<span
+                                className="text-danger">*</span>:</label>
                             <Field
                                 as={Form.Control}
                                 type="text"
                                 name="groundCategory"
-                                className="form-control" />
+                                className="form-control form-control-lg"/>
                             <ErrorMessage
                                 name="groundCategory"
                                 component="div"
@@ -132,13 +135,14 @@ export const AddEditGround = () => {
                             />
                         </div>
 
-                        <div className="form-group mb-3">
-                            <label className="form-label">Diện tích(m<sup>2</sup>)<span className="text-danger">*</span>:</label>
+                        <div className="mb-2">
+                            <label className="form-label" style={{fontSize: '1.2rem'}}>Diện tích(m<sup>2</sup>)<span
+                                className="text-danger">*</span>:</label>
                             <Field
                                 as={Form.Control}
                                 type="number"
                                 name="area"
-                                className="form-control" />
+                                className="form-control form-control-lg"/>
                             <ErrorMessage
                                 name="area"
                                 component="div"
@@ -146,13 +150,14 @@ export const AddEditGround = () => {
                             />
                         </div>
 
-                        <div className="form-group mb-3">
-                            <label className="form-label">Giá tiền<span className="text-danger">*</span>:</label>
+                        <div className="mb-2">
+                            <label className="form-label" style={{fontSize: '1.2rem'}}>Giá tiền<span
+                                className="text-danger">*</span>:</label>
                             <Field
                                 as={Form.Control}
                                 type="number"
                                 name="price"
-                                className="form-control" />
+                                className="form-control form-control-lg"/>
                             <ErrorMessage
                                 name="price"
                                 component="div"
@@ -160,17 +165,31 @@ export const AddEditGround = () => {
                             />
                         </div>
 
-                        <Button variant="success" type="submit">
-                            {ground ? "Chỉnh sửa" : "Thêm mới"}
-                        </Button>
-                        <Button className={"ms-3"} variant="secondary" type="button"
-                            onClick={() => navigate('/ground/list')}>
-                            Quay lại
-                        </Button>
+                        <div className="d-flex justify-content-center mt-3">
+                            <Button className="btn-lg me-2" variant="secondary" type="button"
+                                    onClick={() => navigate('/ground/list')}>
+                                <i className="bi bi-arrow-left-circle me-2"></i>
+                                Quay lại
+                            </Button>
+                            <Button variant="success" type="submit" className="btn-lg">
+                                {ground ? (
+                                    <>
+                                        Chỉnh sửa
+                                        <i className="bi bi-pencil" style={{ marginLeft: '8px' }}></i>
+                                    </>
+                                ) : (
+                                    <>
+                                        Thêm mới
+                                        <i className="bi bi-plus-circle" style={{ marginLeft: '8px' }}></i>
+                                    </>
+                                )}
+                            </Button>
+                        </div>
+
                     </Form>
                 </Formik>
             </div>
-            <Footer />
+            <Footer/>
         </>
 
     );

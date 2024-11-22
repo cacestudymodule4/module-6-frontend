@@ -31,6 +31,7 @@ function AddContract() {
 
     useEffect(() => {
         if (!token) navigate("/login")
+
         async function getStaff() {
             try {
                 const response = await axios.get("http://localhost:8080/api/staff/list-add", {
@@ -65,6 +66,7 @@ function AddContract() {
                 console.log(error);
             }
         }
+
         getCustomer();
         getGround();
         getStaff();
@@ -90,7 +92,7 @@ function AddContract() {
             )
             if (res.status === 200) {
                 toast.success("Thêm mới thành công");
-                 navigate('/contract/list')
+                navigate('/contract/list')
             }
         } catch (error) {
             toast.error("Thêm thất bại");
@@ -235,10 +237,11 @@ function AddContract() {
     return (
         <>
             <NavbarApp/>
-            <div className="container mt-5 mb-5">
-                <h2 className="text-center mb-5 bg-success align-content-center"
-                    style={{color: "white", height: "70px"}}>
-                    Thêm mới hợp đồng</h2>
+            <div className="container my-5 p-4">
+                <h3 className="text-center text-white mb-5 py-3 bg-success rounded"
+                    style={{fontSize: '2.15rem'}}>
+                    Thêm mới hợp đồng
+                </h3>
 
                 <Formik
                     initialValues={initialValues}
@@ -284,7 +287,6 @@ function AddContract() {
                                             value={customerSelected ? customerSelected.phone : ""}
                                             readOnly
                                         />
-
                                     </Form.Group>
                                 </Col>
                                 <Col md={3}>
@@ -300,7 +302,6 @@ function AddContract() {
                                             value={customerSelected ? customerSelected.email : ""}
                                             readOnly
                                         />
-
                                     </Form.Group>
                                 </Col>
                                 <Col md={3}>
@@ -316,10 +317,10 @@ function AddContract() {
                                             value={customerSelected ? customerSelected.address : ""}
                                             readOnly
                                         />
-
                                     </Form.Group>
                                 </Col>
                             </Row>
+
                             {/*  --------------chọn nhân viên----------------------*/}
                             <Row>
                                 <Col md={3}>
@@ -389,6 +390,7 @@ function AddContract() {
                                     </Form.Group>
                                 </Col>
                             </Row>
+
                             {/*========================== chọn mat bằng ============================*/}
                             <Row>
                                 <Col md={3}>
@@ -554,29 +556,35 @@ function AddContract() {
                             <Row>
                                 <Col md={12}>
                                     <Form.Group className="mb-3">
-                                        <Form.Label>Nội dung <span className="text-danger">*</span></Form.Label>
+                                        <Form.Label className="fw-bold">
+                                            Nội dung <span className="text-danger">*</span>
+                                        </Form.Label>
                                         <Field
                                             as="textarea"
                                             rows={4}
-                                            placeholder="Nhập nội dung hợp đồng"
+                                            placeholder="Nhập nội dung hợp đồng (ví dụ: điều khoản, nghĩa vụ...)"
                                             name="content"
-                                            style={{width: '100%'}}
+                                            className="form-control"
                                         />
                                         <ErrorMessage
                                             name="content"
                                             component="div"
-                                            className="error-message text-danger message-error"
+                                            className="error-message text-danger mt-2"
                                         />
                                     </Form.Group>
                                 </Col>
                             </Row>
-                            <Button variant="success" type="submit">
-                                Thêm hợp đồng
-                            </Button>
-                            <Button className={"ms-3"} variant="secondary" type="button"
-                                    onClick={() => navigate('/contract/list')}>
-                                Quay lại
-                            </Button>
+                            <div className="d-flex justify-content-center mt-3">
+                                <Button className="btn-lg me-2" variant="secondary" type="button"
+                                        onClick={() => navigate('/contract/list')}>
+                                    <i className="bi bi-arrow-left-circle me-2"></i>
+                                    Quay lại
+                                </Button>
+                                <Button variant="success" type="submit" className="btn-lg">
+                                    Thêm hợp đồng
+                                    <i className="bi bi-plus-circle" style={{marginLeft: '8px'}}></i>
+                                </Button>
+                            </div>
                         </FormikForm>
                     )}
                 </Formik>
@@ -671,12 +679,13 @@ function AddContract() {
                                             name="searchCus"
                                         />
                                     </Form.Group>
-                                    <Button style={{position:"absolute",right:"68%"}} variant="secondary" type="submit"
+                                    <Button style={{position: "absolute", right: "68%"}} variant="secondary"
+                                            type="submit"
                                             className={"search-contract-btn "}>
                                         <FaSearch></FaSearch>
                                     </Button>
                                     <Button variant="success"
-                                            style={{marginRight:"56%",marginTop:"10px",fontSize:"small"}}
+                                            style={{marginRight: "56%", marginTop: "10px", fontSize: "small"}}
                                             onClick={() => navigate('/customer/add')}>
                                         Đăng ký</Button>
                                 </FormikForm>

@@ -31,11 +31,9 @@ function Contract() {
             try {
                 const response = await axios.get("http://localhost:8080/api/contract/list-page", {
                     params: {
-                        page: currentPage - 1,
-                        size: pageSize,
-                    },
-                    headers: {
-                        Authorization: `Bearer ${localStorage.getItem('jwtToken')}` // Thêm Authorization nếu cần
+                        page: currentPage - 1, size: pageSize,
+                    }, headers: {
+                        Authorization: `Bearer ${localStorage.getItem('jwtToken')}`
                     }
                 });
                 setFilteredContract(response.data.content);
@@ -66,8 +64,7 @@ function Contract() {
             };
 
             const response = await axios.get("http://localhost:8080/api/contract/search", {
-                headers: {Authorization: `Bearer ${localStorage.getItem('jwtToken')}`},
-                params: data,
+                headers: {Authorization: `Bearer ${localStorage.getItem('jwtToken')}`}, params: data,
             });
             setFilteredContract(response.data.content);
             setTotalPages(response.data.totalPages);
@@ -81,19 +78,13 @@ function Contract() {
         if (page >= 1 && page <= totalPages) {
             setCurrentPage(page);
             try {
-                const params = Object.keys(searchParams).length > 0
-                    ? {...searchParams, page: page - 1}
-                    : {page: page - 1, size: pageSize};
+                const params = Object.keys(searchParams).length > 0 ? {
+                    ...searchParams, page: page - 1
+                } : {page: page - 1, size: pageSize};
 
-                const res = await axios.get(
-                    Object.keys(searchParams).length > 0
-                        ? `http://localhost:8080/api/contract/search`
-                        : `http://localhost:8080/api/contract/list-page`,
-                    {
-                        headers: {Authorization: `Bearer ${localStorage.getItem('jwtToken')}`},
-                        params,
-                    }
-                );
+                const res = await axios.get(Object.keys(searchParams).length > 0 ? `http://localhost:8080/api/contract/search` : `http://localhost:8080/api/contract/list-page`, {
+                    headers: {Authorization: `Bearer ${localStorage.getItem('jwtToken')}`}, params,
+                });
                 setFilteredContract(res.data.content);
             } catch (error) {
                 toast.error("Có gì đó sai sai!");
@@ -142,10 +133,8 @@ function Contract() {
                 selectedFilter: value.selectedFilter,
             }
             const resp = await axios.get(`http://localhost:8080/api/contract/filter`, {
-                    headers: {Authorization: `Bearer ${localStorage.getItem('jwtToken')}`},
-                    params: data
-                },
-            )
+                headers: {Authorization: `Bearer ${localStorage.getItem('jwtToken')}`}, params: data
+            },)
             if (resp.status === 200) {
                 setFilteredContract(resp.data.content);
                 setTotalPages(resp.data.totalPages);
@@ -155,197 +144,188 @@ function Contract() {
         }
     }
 
-    return (
-        <>
-            <NavbarApp/>
-            <div className="container mt-5 mb-5">
-                <h2 className="text-center mb-5 bg-success align-content-center"
-                    style={{color: "white", height: "70px"}}>
-                    Danh sách hợp đồng</h2>
-                <Formik
-                    innerRef={formikRef}
-                    initialValues={{
-                        taxCode: "",
-                        nameCustomer: "",
-                        startDate: "",
-                        endDate: "",
-                    }}
-                    onSubmit={(value) => handleSearch(value)}
-                >
-                    {() => (
-                        <FormikForm className="mb-3 custom-search ">
-                            <Form.Group className="mb-3" controlId="formSearch">
-                                <Form.Label className="small-label">Tìm theo tên khách hàng</Form.Label>
-                                <Field
-                                    as={Form.Control}
-                                    type="text"
-                                    placeholder="Nhập tên khách hàng"
-                                    name="nameCustomer"
-                                />
-                            </Form.Group>
-                            <Form.Group className="mb-3" controlId="formSearch">
-                                <Form.Label className="small-label">Tìm kiếm theo mã hợp đồng</Form.Label>
-                                <Field
-                                    as={Form.Control}
-                                    type="text"
-                                    placeholder="Nhập mã hợp đồng"
-                                    name="taxCode"
-                                />
-                            </Form.Group>
-                            <Form.Group className="mb-3" controlId="formSearch">
-                                <Form.Label className="small-label">Tìm kiếm theo ngày bắt đầu</Form.Label>
-                                <Field
-                                    as={Form.Control}
-                                    type="date"
-                                    className="custom-date-input"
-                                    name="startDate"
-                                />
-                            </Form.Group>
-                            <Form.Group className="mb-3" controlId="formSearch">
-                                <Form.Label className="small-label">Tìm kiếm theo ngày kết thúc</Form.Label>
-                                <Field
-                                    as={Form.Control}
-                                    type="date"
-                                    className="custom-date-input"
-                                    placeholder="Tìm kiếm theo ngày kết thúc"
-                                    name="endDate"
-                                />
-                            </Form.Group>
-                            <Button variant="secondary" type="submit" className={"search-contract-btn"}>
-                                <FaSearch></FaSearch>
+    return (<>
+        <NavbarApp/>
+        <div className="container-fluid my-5 mx-auto p-4 rounded" style={{minHeight: '45vh'}}>
+            <h3 className="text-center text-white py-3 mb-5 bg-success rounded"
+                style={{fontSize: '2.25rem'}}>
+                Danh sách hợp đồng
+            </h3>
+
+            <Formik
+                innerRef={formikRef}
+                initialValues={{
+                    taxCode: "", nameCustomer: "", startDate: "", endDate: "",
+                }}
+                onSubmit={(value) => handleSearch(value)}
+            >
+                {() => (<FormikForm className="mb-3 custom-search ">
+                    <Form.Group className="mb-3" controlId="formSearch">
+                        <Form.Label className="small-label">Tìm theo tên khách hàng</Form.Label>
+                        <Field
+                            as={Form.Control}
+                            type="text"
+                            placeholder="Nhập tên khách hàng"
+                            name="nameCustomer"
+                        />
+                    </Form.Group>
+                    <Form.Group className="mb-3" controlId="formSearch">
+                        <Form.Label className="small-label">Tìm kiếm theo mã hợp đồng</Form.Label>
+                        <Field
+                            as={Form.Control}
+                            type="text"
+                            placeholder="Nhập mã hợp đồng"
+                            name="taxCode"
+                        />
+                    </Form.Group>
+                    <Form.Group className="mb-3" controlId="formSearch">
+                        <Form.Label className="small-label">Tìm kiếm theo ngày bắt đầu</Form.Label>
+                        <Field
+                            as={Form.Control}
+                            type="date"
+                            className="custom-date-input"
+                            name="startDate"
+                        />
+                    </Form.Group>
+                    <Form.Group className="mb-3" controlId="formSearch">
+                        <Form.Label className="small-label">Tìm kiếm theo ngày kết thúc</Form.Label>
+                        <Field
+                            as={Form.Control}
+                            type="date"
+                            className="custom-date-input"
+                            placeholder="Tìm kiếm theo ngày kết thúc"
+                            name="endDate"
+                        />
+                    </Form.Group>
+                    <Button variant="secondary" type="submit" className={"search-contract-btn"}>
+                        <FaSearch></FaSearch>
+                    </Button>
+                </FormikForm>)}
+            </Formik>
+            <Formik
+                initialValues={{
+                    selectedFilter: "",
+                }}
+                innerRef={formikRef}
+                onSubmit={handleFilter}>
+                {() => (<FormikForm className="mb-3">
+                    <Form.Group className="mb-3">
+                        <Field as="select" name="selectedFilter" style={{borderRadius: "5px"}}
+                               className="custom-date-input "
+
+                        >
+                            <option value=""
+                                    selected={true}> Chọn tình trạng hợp đồng
+                            </option>
+                            <option value="Có hiệu lực">Có hiệu lực
+                            </option>
+                            <option value="Hết hiệu lực">Hết hiệu lực
+                            </option>
+                            <option value="Chưa có hiệu lực">Chưa có hiệu lực
+                            </option>
+
+                        </Field>
+                        <Button variant="secondary" style={{height: "42px", borderRadius: "50%"}}
+                                className={"ms-2"} type="submit">
+                            <FaFilter/> </Button>
+                    </Form.Group>
+                </FormikForm>)}
+            </Formik>
+            <Button variant="success" className="mb-4"
+                    style={{fontSize: '1.1rem', padding: '0.75rem 2rem', marginTop: '1rem', marginRight: '10px'}}
+                    onClick={handleAddContract}>
+                <i className="bi bi-plus-circle" style={{marginRight: '8px'}}></i>
+                Thêm mới</Button>
+            <Button variant="secondary" className="mb-4"
+                    style={{fontSize: '1.1rem', padding: '0.75rem 2rem', marginTop: '1rem'}} onClick={handleReload}>
+                <FaRedo/>
+            </Button>
+            {filteredContract.length === 0 ? (<h1 className={"text-center mt-5"}>Danh sách trống </h1>) : <>
+                <Table striped bordered hover>
+                    <thead className={"custom-table text-white text-center table-success"}>
+                    <tr>
+                        <th>Mã hợp đồng</th>
+                        <th>Tên khách hàng</th>
+                        <th>Mã mặt bằng</th>
+                        <th>Trạng thái hợp đồng</th>
+                        <th>Ngày bắt đầu</th>
+                        <th>Ngày kết thúc</th>
+                        <th colSpan="3" className="text-center">Hành động</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {filteredContract.map((contract, index) => (<tr key={contract.id}>
+                        <td className="text-center">{contract.code}</td>
+                        <td className="text-center">{contract.customer.name}</td>
+                        <td className="text-center">{contract.ground.groundCode}</td>
+                        <td className="text-center">
+                            {isContractActive(contract.endDate, contract.startDate)}
+                        </td>
+                        <td className="text-center">{moment(contract.startDate, 'YYYY-MM-DD').format('DD-MM-YYYY')}</td>
+                        <td className="text-center">{moment(contract.endDate, 'YYYY-MM-DD').format('DD-MM-YYYY')}</td>
+                        <td className="text-center">
+                            <Button variant="info" type="button"
+                                    onClick={() => navigate(`/contract/detail/${contract.id}`)}
+                            >
+                                <i className="bi bi-info-circle me-2"></i> Chi tiết
                             </Button>
-                        </FormikForm>
-                    )}
-                </Formik>
-                <Formik
-                    initialValues={{
-                        selectedFilter: "",
-                    }}
-                    innerRef={formikRef}
-                    onSubmit={handleFilter}>
-                    {() => (
-                        <FormikForm className="mb-3">
-                            <Form.Group className="mb-3">
-                                <Field as="select" name="selectedFilter" style={{borderRadius: "5px"}}
-                                       className="custom-date-input "
+                        </td>
+                        <td className="text-center">
+                            <Button variant="warning" type="submit"
+                                    onClick={() => navigate(`/contract/edit/${contract.id}`)}
+                            >
+                                <i className="bi bi-pencil me-2"></i> Sửa
+                            </Button>
+                        </td>
+                        <td className="text-center">
+                            <Button variant="danger" type="submit"
+                                    onClick={() => handleDeleteClick(contract)}>
+                                <i className="bi bi-trash me-2"></i> Xoá
+                            </Button>
+                        </td>
+                    </tr>))}
+                    </tbody>
+                </Table>
+                <div className="d-flex justify-content-center">
+                    <Pagination>
+                        <Pagination.Prev
+                            onClick={() => handlePageChange(currentPage - 1)}
+                            disabled={currentPage === 1}
+                        />
+                        {[...Array(totalPages).keys()].map((pageNumber) => (<Pagination.Item
+                            key={pageNumber + 1}
+                            active={pageNumber + 1 === currentPage}
+                            onClick={() => handlePageChange(pageNumber + 1)}
+                        >
+                            {pageNumber + 1}
+                        </Pagination.Item>))}
+                        <Pagination.Next
+                            onClick={() => handlePageChange(currentPage + 1)}
+                            disabled={currentPage === totalPages}
+                        />
+                    </Pagination>
+                </div>
 
-                                >
-                                    <option value=""
-                                            selected={true}> Chọn tình trạng hợp đồng
-                                    </option>
-                                    <option value="Có hiệu lực">Có hiệu lực
-                                    </option>
-                                    <option value="Hết hiệu lực">Hết hiệu lực
-                                    </option>
-                                    <option value="Chưa có hiệu lực">Chưa có hiệu lực
-                                    </option>
-
-                                </Field>
-                                <Button variant="secondary" style={{height: "42px", borderRadius: "50%"}}
-                                        className={"ms-2"} type="submit">
-                                    <FaFilter/> </Button>
-                            </Form.Group>
-                        </FormikForm>
-                    )}
-                </Formik>
-                <Button variant={"success"} className={"mb-2"} onClick={handleAddContract}>Thêm mới</Button>
-                <Button variant="secondary" style={{borderRadius: "50%"}} className={"mb-2 ms-2 "}
-                        onClick={handleReload}>
-                    <FaRedo/>
-                </Button>
-                {filteredContract.length === 0 ? (<h1 className={"text-center mt-5"}>Danh sách trống </h1>) :
-                    <>
-                        <Table striped bordered hover>
-                            <thead className={"custom-table text-white text-center"}>
-                            <tr>
-                                <th>Mã hợp đồng</th>
-                                <th>Tên khách hàng</th>
-                                <th>Mã mặt bằng</th>
-                                <th>Trạng thái hợp đồng</th>
-                                <th>Ngày bắt đầu</th>
-                                <th>Ngày kết thúc</th>
-                                <th colSpan="3" className="text-center">Hành động</th>
-                            </tr>
-                            </thead>
-                            <tbody>
-                            {filteredContract.map((contract, index) => (
-                                <tr key={contract.id}>
-                                    <td className="text-center">{contract.code}</td>
-                                    <td className="text-center">{contract.customer.name}</td>
-                                    <td className="text-center">{contract.ground.groundCode}</td>
-                                    <td className="text-center">
-                                        {isContractActive(contract.endDate, contract.startDate)}
-                                    </td>
-                                    <td className="text-center">{moment(contract.startDate, 'YYYY-MM-DD').format('DD-MM-YYYY')}</td>
-                                    <td className="text-center">{moment(contract.endDate, 'YYYY-MM-DD').format('DD-MM-YYYY')}</td>
-                                    <td className="text-center">
-                                        <Button variant="info" type="button"
-                                                onClick={() => navigate(`/contract/detail/${contract.id}`)}
-                                        >
-                                            Chi tiết
-                                        </Button>
-                                    </td>
-                                    <td className="text-center">
-                                        <Button variant="warning" type="submit"
-                                                onClick={() => navigate(`/contract/edit/${contract.id}`)}
-                                        >
-                                            Sửa
-                                        </Button>
-                                    </td>
-                                    <td className="text-center">
-                                        <Button variant="danger" type="submit"
-                                                onClick={() => handleDeleteClick(contract)}>
-                                            Xoá
-                                        </Button>
-                                    </td>
-                                </tr>
-                            ))}
-                            </tbody>
-                        </Table>
-                        <div className="d-flex justify-content-center">
-                            <Pagination>
-                                <Pagination.Prev
-                                    onClick={() => handlePageChange(currentPage - 1)}
-                                    disabled={currentPage === 1}
-                                />
-                                {[...Array(totalPages).keys()].map((pageNumber) => (
-                                    <Pagination.Item
-                                        key={pageNumber + 1}
-                                        active={pageNumber + 1 === currentPage}
-                                        onClick={() => handlePageChange(pageNumber + 1)}
-                                    >
-                                        {pageNumber + 1}
-                                    </Pagination.Item>
-                                ))}
-                                <Pagination.Next
-                                    onClick={() => handlePageChange(currentPage + 1)}
-                                    disabled={currentPage === totalPages}
-                                />
-                            </Pagination>
-                        </div>
-
-                    </>}
-                <Modal show={showDeleteModal}>
-                    <Modal.Header closeButton onClick={() => setShowDeleteModal(false)}>
-                        <Modal.Title>Xác Nhận</Modal.Title>
-                    </Modal.Header>
-                    <Modal.Body>Xác nhận xóa hợp đồng mã số: <span
-                        className={"text-danger"}>"{contractToDelete?.code}"</span>
-                    </Modal.Body>
-                    <Modal.Footer>
-                        <Button variant="danger" onClick={handleConfirmDelete}>
-                            Xóa
-                        </Button>
-                        <Button variant="secondary" onClick={() => setShowDeleteModal(false)}>
-                            Hủy
-                        </Button>
-                    </Modal.Footer>
-                </Modal>
-            </div>
-            <Footer/>
-        </>
-    )
-        ;
+            </>}
+            <Modal show={showDeleteModal}>
+                <Modal.Header closeButton onClick={() => setShowDeleteModal(false)}>
+                    <Modal.Title>Xác Nhận</Modal.Title>
+                </Modal.Header>
+                <Modal.Body>Xác nhận xóa hợp đồng mã số: <span
+                    className={"text-danger"}>"{contractToDelete?.code}"</span>
+                </Modal.Body>
+                <Modal.Footer>
+                    <Button variant="danger" onClick={handleConfirmDelete}>
+                        Xóa
+                    </Button>
+                    <Button variant="secondary" onClick={() => setShowDeleteModal(false)}>
+                        Hủy
+                    </Button>
+                </Modal.Footer>
+            </Modal>
+        </div>
+        <Footer/>
+    </>);
 }
 
 export default Contract;

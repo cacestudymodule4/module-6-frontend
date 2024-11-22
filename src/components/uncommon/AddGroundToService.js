@@ -85,7 +85,7 @@ const AddGroundToService = () => {
                                 <option value="" disabled>-- Chọn mặt bằng --</option>
                                 {grounds.map((ground) => (
                                     <option key={ground.id} value={ground.id}>
-                                        {ground.name} (Diện tích: {ground.area}, Giá: {ground.price})
+                                        {ground.groundCode} (Diện tích: {ground.area}, Giá: {ground.price})
                                     </option>
                                 ))}
                             </select>
