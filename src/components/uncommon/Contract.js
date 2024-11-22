@@ -129,7 +129,6 @@ function Contract() {
                 headers: {Authorization: `Bearer ${localStorage.getItem('jwtToken')}`}
             });
             toast.success('xoá thành công.');
-            // setShouldRefresh(prev => !prev)
             handleReload()
         } catch (error) {
             console.log(error);
