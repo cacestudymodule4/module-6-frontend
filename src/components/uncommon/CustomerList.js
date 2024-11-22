@@ -6,36 +6,11 @@ import '../../assets/css/CustomerList.css';
 import {FaSearch} from "react-icons/fa";
 import {NavbarApp} from "../common/Navbar";
 import Footer from "../common/Footer";
-import * as Yup from 'yup';
 import {TbReload} from "react-icons/tb";
 import {toast} from "react-toastify";
 import moment from "moment/moment";
 import Pagination from "react-bootstrap/Pagination";
 
-const customerSchema = Yup.object().shape({
-    name: Yup.string().required("Tên khách hàng là bắt buộc"),
-    birthday: Yup.date()
-        .required("Ngày sinh là bắt buộc")
-        .test(
-            "is-18-years-old",
-            "Khách hàng phải đủ 18 tuổi",
-            (value) => {
-                if (!value) return false; // Nếu không có giá trị
-                return moment().diff(moment(value), 'years') >= 18; // Kiểm tra tuổi
-            }
-        ),
-    identification: Yup.string()
-        .matches(/^[0-9]{9,12}$/, "CMND phải chứa 9-12 chữ số")
-        .required("CMND là bắt buộc"),
-    address: Yup.string().required("Địa chỉ là bắt buộc"),
-    phone: Yup.string()
-        .matches(/^[0-9]{10}$/, "Số điện thoại phải chứa 10 chữ số")
-        .required("Số điện thoại là bắt buộc"),
-    email: Yup.string()
-        .email("Email không hợp lệ")
-        .required("Email là bắt buộc"),
-    company: Yup.string().required("Công ty là bắt buộc"),
-});
 
 function CustomerList() {
     const token = localStorage.getItem('jwtToken');
@@ -64,6 +39,7 @@ function CustomerList() {
     };
 
     const fetchCustomers = async () => {
+        console.log("hello")
         try {
             const response = await axios.get('http://localhost:8080/api/customers/list', {
                 params: {
@@ -101,11 +77,15 @@ function CustomerList() {
                     Authorization: `Bearer ${localStorage.getItem('jwtToken')}`
                 }
             });
-            setCustomers(customers.filter(customer => customer.id !== customerToDelete.id));
-            setFilteredCustomers(filteredCustomers.filter(customer => customer.id !== customerToDelete.id));
-            closeModal();
-            toast.success("Xóa thành công")
-            fetchCustomers();
+            toast.success("Xóa thành công");
+            setCustomerToDelete(null);
+            setIsModalOpen(false);
+
+            if (filteredCustomers.length === 1 && page > 1) {
+                setPage(page - 1);
+            } else {
+                fetchCustomers(page - 1, { name: searchName, identification: searchIdentification });
+            }
         } catch (error) {
             console.error('Có lỗi khi xóa khách hàng:', error);
         }

@@ -23,7 +23,7 @@ const customerSchema = Yup.object().shape({
     address: Yup.string().required("Địa chỉ là bắt buộc"),
     phone: Yup.string()
         .matches(/^[0-9]{10}$/, "Số điện thoại phải chứa 10 chữ số")
-        .required("Số điện thoại là bắt buộ c"),
+        .required("Số điện thoại là bắt buộc"),
     email: Yup.string().email("Email không hợp lệ").required("Email là bắt buộc"),
     company: Yup.string().required("Công ty là bắt buộc"),
 });
