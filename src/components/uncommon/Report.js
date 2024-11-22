@@ -146,7 +146,8 @@ const Chart8Component = () => {
                         </div>
                     </div>
                     <div className={"d-flex justify-content-center mt-4"}>
-                        <Link className={"btn btn-secondary"} to="/home">Quay lại</Link>
+                        <Link className={"btn btn-secondary"} to="/home">
+                            <i className="bi bi-arrow-left-circle me-2"></i>Quay lại</Link>
                     </div>
                 </div>
             </section>

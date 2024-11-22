@@ -21,6 +21,7 @@ function ContractDetail() {
     };
     useEffect(() => {
         if (!token) navigate("/login")
+
         async function getContract() {
             try {
                 const response = await axios.get(`http://localhost:8080/api/contract/findContract/${id}`
@@ -288,10 +289,12 @@ function ContractDetail() {
                         </Row>
                         <Row className="mt-3">
                             <Col md={12} className="text-center">
-                                <Button className="me-3" variant="secondary" onClick={handleClick}>
-                                    Quay lại
+                                <Button className="me-2" variant="secondary" onClick={handleClick}>
+                                    <i className="bi bi-arrow-left-circle me-2"></i> Quay lại
                                 </Button>
-                                <ContractPdfButton contractId={contract.id}></ContractPdfButton>
+                                <ContractPdfButton contractId={contract.id}>
+                                    <i className="bi bi-file-earmark-pdf me-2"></i> Tải PDF
+                                </ContractPdfButton>
                             </Col>
                         </Row>
                     </Card.Body>

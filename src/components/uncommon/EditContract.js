@@ -28,6 +28,7 @@ function AddContract() {
 
     useEffect(() => {
         if (!token) navigate("/login")
+
         async function getStaff() {
             try {
                 const response = await axios.get("http://localhost:8080/api/staff/list-add", {
@@ -214,11 +215,11 @@ function AddContract() {
     return (
         <>
             <NavbarApp/>
-            <div className="container mt-5 mb-5">
-                <h2 className="text-center mb-5 bg-success align-content-center"
-                    style={{color: "white", height: "70px"}}>
-                    Chỉnh sửa hợp đồng</h2>
-
+            <div className="container my-5 rounded p-4">
+                <h2 className="text-center text-white mb-5 py-3 bg-success rounded"
+                    style={{fontSize: '2.15rem'}}>
+                    Chỉnh sửa hợp đồng
+                </h2>
                 <Formik
                     initialValues={initialValues}
                     onSubmit={(values) => {
@@ -277,7 +278,6 @@ function AddContract() {
                                             }
                                             readOnly
                                         />
-
                                     </Form.Group>
                                 </Col>
                                 <Col md={3}>
@@ -299,7 +299,6 @@ function AddContract() {
                                             }
                                             readOnly
                                         />
-
                                     </Form.Group>
                                 </Col>
                                 <Col md={3}>
@@ -321,7 +320,6 @@ function AddContract() {
                                             }
                                             readOnly
                                         />
-
                                     </Form.Group>
                                 </Col>
                             </Row>
@@ -372,7 +370,6 @@ function AddContract() {
                                             }
                                             readOnly
                                         />
-
                                     </Form.Group>
                                 </Col>
                                 <Col md={3}>
@@ -392,7 +389,6 @@ function AddContract() {
                                             }
                                             readOnly
                                         />
-
                                     </Form.Group>
                                 </Col>
                                 <Col md={3}>
@@ -413,7 +409,6 @@ function AddContract() {
                                             }
                                             readOnly
                                         />
-
                                     </Form.Group>
                                 </Col>
                             </Row>
@@ -452,7 +447,6 @@ function AddContract() {
                                             component="div"
                                             className="error-message text-danger message-error"
                                         />
-
                                     </Form.Group>
                                 </Col>
                                 <Col md={3}>
@@ -477,29 +471,35 @@ function AddContract() {
                             <Row>
                                 <Col md={12}>
                                     <Form.Group className="mb-3">
-                                        <Form.Label>Nội dung</Form.Label>
+                                        <Form.Label className="fw-bold">
+                                            Nội dung <span className="text-danger"></span>
+                                        </Form.Label>
                                         <Field
                                             as="textarea"
                                             rows={4}
                                             placeholder="Nhập nội dung hợp đồng"
                                             name="content"
-                                            style={{width: '100%'}}
+                                            className="form-control"
                                         />
                                         <ErrorMessage
                                             name="content"
                                             component="div"
-                                            className="error-message text-danger message-error"
+                                            className="error-message text-danger mt-2"
                                         />
                                     </Form.Group>
                                 </Col>
                             </Row>
-                            <Button variant="success" type="submit">
-                                Lưu
-                            </Button>
-                            <Button className={"ms-3"} variant="secondary" type="button"
-                                    onClick={() => navigate('/contract/list')}>
-                                Quay lại
-                            </Button>
+                            <div className="d-flex justify-content-center mt-3">
+                                <Button className="btn-lg me-2" variant="secondary" type="button"
+                                        onClick={() => navigate('/contract/list')}>
+                                    <i className="bi bi-arrow-left-circle me-2"></i>
+                                    Quay lại
+                                </Button>
+                                <Button variant="success" type="submit" className="btn-lg">
+                                    Lưu
+                                    <i className="bi bi-plus-circle" style={{marginLeft: '8px'}}></i>
+                                </Button>
+                            </div>
                         </FormikForm>
                     )}
                 </Formik>

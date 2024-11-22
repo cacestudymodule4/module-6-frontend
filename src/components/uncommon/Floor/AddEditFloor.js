@@ -1,11 +1,11 @@
-import React, { useState } from "react";
-import { Button } from 'react-bootstrap';
-import { Formik, Field, Form, ErrorMessage } from "formik";
+import React, {useState} from "react";
+import {Button} from 'react-bootstrap';
+import {Formik, Field, Form, ErrorMessage} from "formik";
 import axios from "axios";
-import { toast } from "react-toastify";
+import {toast} from "react-toastify";
 import * as Yup from "yup";
-import { useLocation, useNavigate } from 'react-router-dom';
-import { NavbarApp } from "../../common/Navbar";
+import {useLocation, useNavigate} from 'react-router-dom';
+import {NavbarApp} from "../../common/Navbar";
 import Footer from "../../common/Footer";
 
 export const AddEditFloor = () => {
@@ -31,7 +31,7 @@ export const AddEditFloor = () => {
     const handleSave = async (values) => {
         try {
             const res = await axios.post(`http://localhost:8080/api/floor/save`, values, {
-                headers: { Authorization: `Bearer ${localStorage.getItem('jwtToken')}` }
+                headers: {Authorization: `Bearer ${localStorage.getItem('jwtToken')}`}
             });
             if (res.status === 200) {
                 toast.success("Lưu thành công");
@@ -45,12 +45,12 @@ export const AddEditFloor = () => {
 
     return (
         <>
-            <NavbarApp />
-            <div className="container mt-5 mb-5">
-                <h2 className="text-center mb-5 bg-success align-content-center"
-                    style={{ color: "white", height: "70px" }}>
+            <NavbarApp/>
+            <div className="container my-5 rounded p-4" style={{maxWidth: '800px'}}>
+                <h3 className="text-center text-white mb-5 py-3 bg-success rounded"
+                    style={{fontSize: '2.15rem'}}>
                     {floor ? "Chỉnh sửa tầng" : "Thêm mới tầng"}
-                </h2>
+                </h3>
                 <Formik
                     initialValues={{
                         id: floor?.id || null,
@@ -65,13 +65,14 @@ export const AddEditFloor = () => {
                     validationSchema={validationSchema}
                 >
                     <Form>
-                        <div className="form-group mb-3">
-                            <label className="form-label">Mã tầng lầu<span className="text-danger">*</span>:</label>
+                        <div className="mb-2">
+                            <label className="form-label" style={{fontSize: '1.2rem'}}>Mã tầng lầu<span
+                                className="text-danger">*</span>:</label>
                             <Field
                                 as={Form.Control}
                                 type="text"
                                 name="floorCode"
-                                className="form-control" />
+                                className="form-control form-control-lg"/>
                             <ErrorMessage
                                 name="floorCode"
                                 component="div"
@@ -79,14 +80,14 @@ export const AddEditFloor = () => {
                             />
                         </div>
 
-
-                        <div className="form-group mb-3">
-                            <label className="form-label">Tên tầng<span className="text-danger">*</span>:</label>
+                        <div className="mb-2">
+                            <label className="form-label" style={{fontSize: '1.2rem'}}>Tên tầng<span
+                                className="text-danger">*</span>:</label>
                             <Field
                                 as={Form.Control}
                                 type="text"
                                 name="name"
-                                className="form-control" />
+                                className="form-control form-control-lg"/>
                             <ErrorMessage
                                 name="name"
                                 component="div"
@@ -94,13 +95,14 @@ export const AddEditFloor = () => {
                             />
                         </div>
 
-                        <div className="form-group mb-3">
-                            <label className="form-label">Diện tích(m<sup>2</sup>)<span className="text-danger">*</span>:</label>
+                        <div className="mb-2">
+                            <label className="form-label" style={{fontSize: '1.2rem'}}>Diện tích(m<sup>2</sup>)<span
+                                className="text-danger">*</span>:</label>
                             <Field
                                 as={Form.Control}
                                 type="number"
                                 name="area"
-                                className="form-control" />
+                                className="form-control form-control-lg"/>
                             <ErrorMessage
                                 name="area"
                                 component="div"
@@ -108,13 +110,14 @@ export const AddEditFloor = () => {
                             />
                         </div>
 
-                        <div className="form-group mb-3">
-                            <label className="form-label">Sức chứa<span className="text-danger">*</span>:</label>
+                        <div className="mb-2">
+                            <label className="form-label" style={{fontSize: '1.2rem'}}>Sức chứa<span
+                                className="text-danger">*</span>:</label>
                             <Field
                                 as={Form.Control}
                                 type="number"
                                 name="capacity"
-                                className="form-control" />
+                                className="form-control form-control-lg"/>
                             <ErrorMessage
                                 name="capacity"
                                 component="div"
@@ -122,13 +125,14 @@ export const AddEditFloor = () => {
                             />
                         </div>
 
-                        <div className="form-group mb-3">
-                            <label className="form-label">Loại tầng<span className="text-danger">*</span>:</label>
+                        <div className="mb-2">
+                            <label className="form-label" style={{fontSize: '1.2rem'}}>Loại tầng<span
+                                className="text-danger">*</span>:</label>
                             <Field
                                 as={Form.Control}
                                 type="text"
                                 name="typeOfFloor"
-                                className="form-control" />
+                                className="form-control form-control-lg"/>
                             <ErrorMessage
                                 name="typeOfFloor"
                                 component="div"
@@ -136,17 +140,30 @@ export const AddEditFloor = () => {
                             />
                         </div>
 
-                        <Button variant="success" type="submit">
-                            {floor ? "Chỉnh sửa" : "Thêm tầng"}
-                        </Button>
-                        <Button className={"ms-3"} variant="secondary" type="button"
-                            onClick={() => navigate('/floor/list')}>
-                            Quay lại
-                        </Button>
+                        <div className="d-flex justify-content-center mt-3">
+                            <Button className="btn-lg me-2" variant="secondary" type="button"
+                                    onClick={() => navigate('/floor/list')}>
+                                <i className="bi bi-arrow-left-circle me-2"></i>
+                                Quay lại
+                            </Button>
+                            <Button variant="success" type="submit" className="btn-lg">
+                                {floor ? (
+                                    <>
+                                        Chỉnh sửa
+                                        <i className="bi bi-pencil" style={{marginLeft: '8px'}}></i>
+                                    </>
+                                ) : (
+                                    <>
+                                        Thêm tầng
+                                        <i className="bi bi-plus-circle" style={{marginLeft: '8px'}}></i>
+                                    </>
+                                )}
+                            </Button>
+                        </div>
                     </Form>
                 </Formik>
             </div>
-            <Footer />
+            <Footer/>
         </>
 
     );
