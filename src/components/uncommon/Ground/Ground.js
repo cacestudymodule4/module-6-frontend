@@ -1,12 +1,12 @@
-import React, {useState, useEffect, useRef} from "react";
+import React, { useState, useEffect, useRef } from "react";
 import axios from "axios";
-import {useNavigate} from "react-router-dom";
-import {FaRedo, FaSearch} from 'react-icons/fa';  // Import icon từ react-icons
-import {Table, Modal, Button} from 'react-bootstrap';
+import { useNavigate } from "react-router-dom";
+import { FaRedo, FaSearch } from 'react-icons/fa';  // Import icon từ react-icons
+import { Table, Modal, Button } from 'react-bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import {toast} from "react-toastify";
-import {Formik, Field, Form} from "formik";
-import {NavbarApp} from "../../common/Navbar";
+import { toast } from "react-toastify";
+import { Formik, Field, Form } from "formik";
+import { NavbarApp } from "../../common/Navbar";
 import Footer from "../../common/Footer";
 import Pagination from 'react-bootstrap/Pagination';
 
@@ -24,8 +24,10 @@ export const Ground = () => {
 
     const initialValues = {
         groundCode: '',
-        area: '',
-        price: ''
+        areaFrom: '',
+        areaTo: '',
+        priceFrom: '',
+        priceTo: ''
     };
 
     useEffect(() => {
@@ -33,7 +35,7 @@ export const Ground = () => {
             try {
                 const response = await axios.get("http://localhost:8080/api/ground/get-all"
                     , {
-                        headers: {Authorization: `Bearer ${localStorage.getItem('jwtToken')}`}
+                        headers: { Authorization: `Bearer ${localStorage.getItem('jwtToken')}` }
                     });
                 setGrounds(response.data.content);
                 setTotalPages(response.data.totalPages);
@@ -59,8 +61,10 @@ export const Ground = () => {
         try {
             const data = {
                 groundCode: values?.groundCode,
-                area: values?.area,
-                price: values?.price
+                areaFrom: values?.areaFrom,
+                areaTo: values?.areaTo,
+                priceFrom: values?.priceFrom,
+                priceTo: values?.priceTo
             }
             const res = await axios.get(`http://localhost:8080/api/ground/search`, {
                 headers: {
@@ -85,7 +89,7 @@ export const Ground = () => {
         try {
             await axios.delete(`http://localhost:8080/api/ground/delete/${currentGround.id}`
                 , {
-                    headers: {Authorization: `Bearer ${localStorage.getItem('jwtToken')}`}
+                    headers: { Authorization: `Bearer ${localStorage.getItem('jwtToken')}` }
                 });
 
             toast.success("Xoá thành công");
@@ -96,13 +100,14 @@ export const Ground = () => {
         }
     }
 
+
     const handlePageChange = async (page) => {
         if (page >= 1 && page <= totalPages) {
             setCurrentPage(page);
             try {
                 let res;
                 if (Object.keys(searchParams).length > 0) {
-                    res = await axios.get(`http://localhost:8080/api/ground/get-all`, {
+                    res = await axios.get(`http://localhost:8080/api/ground/search`, {
                         headers: {
                             Authorization: `Bearer ${localStorage.getItem('jwtToken')}`
                         },
@@ -113,7 +118,7 @@ export const Ground = () => {
                     });
                 } else {
                     res = await axios.get(`http://localhost:8080/api/ground/get-all?page=${page - 1}`, {
-                        headers: {Authorization: `Bearer ${localStorage.getItem('jwtToken')}`}
+                        headers: { Authorization: `Bearer ${localStorage.getItem('jwtToken')}` }
                     });
                 }
                 setGrounds(res.data.content);
@@ -125,9 +130,9 @@ export const Ground = () => {
 
     return (
         <>
-            <NavbarApp/>
-            <div className="container my-5 p-4 rounded">
-                <h2 className="text-center text-white mb-5 py-3 bg-success rounded" style={{fontSize: '2.15rem'}}>
+            <NavbarApp />
+            <div className="my-5 p-4 rounded">
+                <h2 className="text-center text-white mb-5 py-3 bg-success rounded" style={{ fontSize: '2.15rem' }}>
                     Danh sách mặt bằng</h2>
                 <Formik
                     innerRef={formikRef}
@@ -146,24 +151,44 @@ export const Ground = () => {
                             />
                         </div>
                         <div className="mb-3">
-                            <label htmlFor="area" className="form-label">Tìm kiếm theo diện tích</label>
-                            <Field
-                                as={Form.Control}
-                                type="text"
-                                placeholder="Nhập diện tích"
-                                name="area"
-                                className="form-control"
-                            />
+                            <label htmlFor="area" className="form-label">Tìm kiếm theo diện tích trong khoảng</label>
+                            <div className="d-flex">
+                                <Field
+                                    as={Form.Control}
+                                    type="text"
+                                    placeholder="Từ"
+                                    name="areaFrom"
+                                    className="form-control"
+                                />
+                                <span className="mt-2 ms-3 me-3">-</span>
+                                <Field
+                                    as={Form.Control}
+                                    type="text"
+                                    placeholder="Đến"
+                                    name="areaTo"
+                                    className="form-control"
+                                />
+                            </div>
                         </div>
                         <div className="mb-3">
-                            <label htmlFor="typeOfFloor" className="form-label">Tìm kiếm theo giá tiền</label>
-                            <Field
-                                as={Form.Control}
-                                type="text"
-                                placeholder="Nhập giá tiền"
-                                name="price"
-                                className="form-control"
-                            />
+                            <label htmlFor="area" className="form-label">Tìm kiếm theo giá tiền trong khoảng</label>
+                            <div className="d-flex">
+                                <Field
+                                    as={Form.Control}
+                                    type="text"
+                                    placeholder="Từ"
+                                    name="priceFrom"
+                                    className="form-control"
+                                />
+                                <span className="mt-2 ms-3 me-3">-</span>
+                                <Field
+                                    as={Form.Control}
+                                    type="text"
+                                    placeholder="Đến"
+                                    name="priceTo"
+                                    className="form-control"
+                                />
+                            </div>
                         </div>
                         <Button variant="secondary" type="submit" className="mt-3">
                             <FaSearch></FaSearch>
@@ -171,13 +196,13 @@ export const Ground = () => {
                     </Form>
                 </Formik>
                 <Button variant="success" className="mb-4"
-                        style={{fontSize: '1.1rem', padding: '0.75rem 2rem', marginTop: '1rem', marginRight: '10px'}}
-                        onClick={() => navigate('/ground/add')}><i
-                    className="bi bi-plus-circle" style={{marginRight: '8px'}}></i>Thêm mới
+                    style={{ fontSize: '1.1rem', padding: '0.75rem 2rem', marginTop: '1rem', marginRight: '10px' }}
+                    onClick={() => navigate('/ground/add')}><i
+                        className="bi bi-plus-circle" style={{ marginRight: '8px' }}></i>Thêm mới
                 </Button>
                 <Button variant="secondary" className="mb-4"
-                        style={{fontSize: '1.1rem', padding: '0.75rem 2rem', marginTop: '1rem'}} onClick={handleReload}>
-                    <FaRedo/>
+                    style={{ fontSize: '1.1rem', padding: '0.75rem 2rem', marginTop: '1rem' }} onClick={handleReload}>
+                    <FaRedo />
                 </Button>
                 {grounds.length === 0
                     ? (<h1 className={"text-center mt-5"}>Danh sách trống </h1>)
@@ -185,38 +210,38 @@ export const Ground = () => {
                     <>
                         <Table striped bordered hover>
                             <thead className={"custom-table text-white text-center table-success"}>
-                            <tr>
-                                <th>Mã mặt bằng</th>
-                                <th>Loại mặt bằng</th>
-                                <th>Diện tích</th>
-                                <th>Trạng thái</th>
-                                <th>Giá tiền</th>
-                                <th colSpan="3" className="text-center">Hành động</th>
-                            </tr>
+                                <tr>
+                                    <th>Mã mặt bằng</th>
+                                    <th>Loại mặt bằng</th>
+                                    <th>Diện tích</th>
+                                    <th>Trạng thái</th>
+                                    <th>Giá tiền</th>
+                                    <th colSpan="3" className="text-center">Hành động</th>
+                                </tr>
                             </thead>
                             <tbody>
-                            {grounds.map((ground, index) => (
-                                <tr key={ground.id} className="text-center">
-                                    <td>{ground.groundCode}</td>
-                                    <td>{ground.groundCategory}</td>
-                                    <td>{ground.area}m<sup>2</sup></td>
-                                    <td>{ground.status ? "Đã thuê" : "Chưa thuê"}</td>
-                                    <td>{ground.price}</td>
-                                    <td className="text-center">
-                                        <Button variant="warning" type="submit"
-                                                onClick={() => navigate(`/ground/edit/${ground.id}`, {state: {ground}})}
-                                        >
-                                            <i className="bi bi-pencil me-2"></i> Sửa
-                                        </Button>
-                                    </td>
-                                    <td className="text-center">
-                                        <Button variant="danger" type="submit"
+                                {grounds.map((ground, index) => (
+                                    <tr key={ground.id} className="text-center">
+                                        <td>{ground.groundCode}</td>
+                                        <td>{ground.groundCategory.name}</td>
+                                        <td>{ground.area}m<sup>2</sup></td>
+                                        <td>{ground.status ? "Đã thuê" : "Chưa thuê"}</td>
+                                        <td>{ground.price}</td>
+                                        <td className="text-center">
+                                            <Button variant="warning" type="submit"
+                                                onClick={() => navigate(`/ground/edit/${ground.id}`, { state: { ground } })}
+                                            >
+                                                <i className="bi bi-pencil me-2"></i> Sửa
+                                            </Button>
+                                        </td>
+                                        <td className="text-center">
+                                            <Button variant="danger" type="submit"
                                                 onClick={() => handleShowModalDelete(ground)}>
-                                            <i className="bi bi-trash me-2"></i> Xoá
-                                        </Button>
-                                    </td>
-                                </tr>
-                            ))}
+                                                <i className="bi bi-trash me-2"></i> Xoá
+                                            </Button>
+                                        </td>
+                                    </tr>
+                                ))}
                             </tbody>
                         </Table>
                         <div className="d-flex justify-content-center">
@@ -261,8 +286,7 @@ export const Ground = () => {
                     </Modal.Footer>
                 </Modal>
             </div>
-
-            <Footer/>
+            <Footer />
         </>
     );
 }
