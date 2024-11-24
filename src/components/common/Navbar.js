@@ -1,10 +1,12 @@
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import {Navbar, Nav, NavDropdown, Container, Offcanvas} from 'react-bootstrap';
 import "bootstrap/dist/css/bootstrap.min.css";
 import {useNavigate} from "react-router-dom";
+
 export const NavbarApp = () => {
     const userRole = localStorage.getItem("userRole");
     const navigate = useNavigate();
+
     return (<>
         {['lg'].map((expand) => (
             <Navbar key={expand} expand={expand} className="bg-body-tertiary" bg="success" data-bs-theme="success"
@@ -59,8 +61,6 @@ export const NavbarApp = () => {
                                     {userRole === "ADMIN" ?
                                         <NavDropdown.Item href="/building/edit">Sửa toà nhà</NavDropdown.Item> : ""}
                                     <NavDropdown.Item href="/staff/list">Nhân viên</NavDropdown.Item>
-                                    {userRole === "ADMIN" ?
-                                        <NavDropdown.Item href="/staff/add">Thêm nhân viên</NavDropdown.Item> : ""}
                                     <NavDropdown.Divider/>
                                     <NavDropdown.Item href="/logout">
                                         Đăng xuất

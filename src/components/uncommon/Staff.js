@@ -23,10 +23,11 @@ function Staff() {
 
     const fetchStaffList = () => {
         axios.get(`http://localhost:8080/api/staff/list?page=${currentPage}&size=${pageSize}`, {
-            headers: {Authorization: `Bearer ${localStorage.getItem('jwtToken')}`}
+            headers: { Authorization: `Bearer ${localStorage.getItem('jwtToken')}` },
         })
             .then(response => {
-                setFilteredStaffList(response.data.content);
+                // Chỉ nhận nhân viên chưa bị vô hiệu hóa
+                setFilteredStaffList(response.data.content.filter(staff => !staff.isDeleted));
                 setTotalPages(response.data.totalPages);
             })
             .catch(error => toast.error("Lỗi khi tải danh sách nhân viên"));
@@ -49,19 +50,35 @@ function Staff() {
 
     const handleDeleteStaff = async () => {
         if (!staffDelete || !staffDelete.id) {
-            toast.error("Chọn nhân viên hợp lệ để xóa");
+            toast.error("Vui lòng chọn nhân viên hợp lệ để vô hiệu hóa.");
             return;
         }
 
         try {
-            await axios.delete(`http://localhost:8080/api/staff/delete/${staffDelete.id}`, {
-                headers: {Authorization: `Bearer ${localStorage.getItem('jwtToken')}`}
-            });
-            toast.success("Nhân viên đã được xóa thành công!");
-            handleCloseModal();
-            fetchStaffList();
+            const response = await axios.delete(
+                `http://localhost:8080/api/staff/delete/${staffDelete.id}`,
+                { headers: { Authorization: `Bearer ${localStorage.getItem("jwtToken")}` } }
+            );
+
+            if (response.status === 200) {
+                toast.success("Nhân viên đã được vô hiệu hóa thành công!");
+                handleCloseModal();
+                fetchStaffList();
+            }
         } catch (error) {
-            toast.error("Có lỗi xảy ra khi xóa nhân viên");
+            if (error.response) {
+                const { status, data } = error.response;
+
+                if (status === 404) {
+                    toast.error(data || "Không tìm thấy nhân viên.");
+                } else if (status === 400) {
+                    toast.error(data || "Không thể xóa nhân viên vì đang có hợp đồng hoạt động.");
+                } else {
+                    toast.error(data || "Đã xảy ra lỗi khi vô hiệu hóa nhân viên.");
+                }
+            } else {
+                toast.error("Không thể kết nối tới máy chủ. Vui lòng thử lại sau.");
+            }
         }
     };
 
@@ -111,156 +128,158 @@ function Staff() {
         return value ? new Intl.NumberFormat('vi-VN').format(value) : '0';
     }
 
-    return (<>
-        <NavbarApp/>
-        <div className="container-fluid my-5 rounded mx-auto p-4" style={{minHeight: '45vh'}}>
-            <h3 className="text-center text-white py-3 bg-success rounded mb-5" style={{fontSize: '2.25rem'}}>
-                Danh sách nhân viên văn phòng
-            </h3>
+    return (
+        <>
+            <NavbarApp/>
+            <div className="container-fluid my-5 rounded mx-auto p-4" style={{minHeight: '45vh'}}>
+                <h3 className="text-center text-white py-3 bg-success rounded mb-5" style={{fontSize: '2.25rem'}}>
+                    Danh sách nhân viên văn phòng
+                </h3>
 
-            <Formik
-                initialValues={{
-                    codeStaff: "", name: "", position: "",
-                }}
-                onSubmit={(values) => handleSearch(values)}>
-                {() => (<FormikForm className="mb-3 custom-search">
-                    <Form.Group className="mb-3" controlId="formSearch">
-                        <Form.Label className="small-label">Tìm kiếm theo mã nhân viên</Form.Label>
-                        <Field
-                            as={Form.Control}
-                            type="text"
-                            placeholder="Nhập mã nhân viên"
-                            name="codeStaff"
-                            style={{marginBottom: '0.5rem'}}
-                        />
-                    </Form.Group>
-
-                    <Form.Group className="mb-3" controlId="formSearch">
-                        <Form.Label className="small-label">Tìm kiếm theo tên nhân viên</Form.Label>
-                        <Field
-                            as={Form.Control}
-                            type="text"
-                            placeholder="Nhập tên nhân viên"
-                            name="name"
-                            style={{marginBottom: '0.5rem'}}
-                        />
-                    </Form.Group>
-
-                    <Form.Group className="mb-3" controlId="formSearch">
-                        <Form.Label className="small-label">Tìm kiếm theo bộ phận</Form.Label>
-                        <Field
-                            as={Form.Control}
-                            type="text"
-                            placeholder="Nhập bộ phận"
-                            name="position"
-                            style={{marginBottom: '0.5rem'}}
-                        />
-                    </Form.Group>
-
-                    <Button variant="secondary" type="submit" className="search" style={{borderRadius: '50%'}}>
-                        <FaSearch/>
-                    </Button>
-                </FormikForm>)}
-            </Formik>
-
-            {userRole !== "ADMIN" ?
-                "" : <Button
-                    variant="success"
-                    onClick={handleAddStaff}
-                    style={{
-                        fontSize: '1.1rem', padding: '0.75rem 2rem', marginTop: '1rem',
+                <Formik
+                    initialValues={{
+                        codeStaff: "", name: "", position: "",
                     }}
-                    className='mb-4'>
-                    Thêm mới nhân viên
-                </Button>
-            }
+                    onSubmit={(values) => handleSearch(values)}>
+                    {() => (<FormikForm className="mb-3 custom-search">
+                        <Form.Group className="mb-3" controlId="formSearch">
+                            <Form.Label className="small-label">Tìm kiếm theo mã nhân viên</Form.Label>
+                            <Field
+                                as={Form.Control}
+                                type="text"
+                                placeholder="Nhập mã nhân viên"
+                                name="codeStaff"
+                                style={{marginBottom: '0.5rem'}}
+                            />
+                        </Form.Group>
 
-            <div className="table-responsive">
-                <table className="table table-hover table-bordered border-success" style={{fontSize: '1.05rem'}}>
-                    <thead className="table-success">
-                    <tr>
-                        <th className="text-center">STT</th>
-                        <th className="text-center">Mã nhân viên</th>
-                        <th className="text-center">Họ tên</th>
-                        <th className="text-center">Ngày sinh</th>
-                        <th className="text-center">Giới tính</th>
-                        <th className="text-center">Địa chỉ</th>
-                        <th className="text-center">Điện thoại</th>
-                        <th className="text-center">CCCD/CMDN</th>
-                        <th className="text-center">Email</th>
-                        <th className="text-center">Lương</th>
-                        <th className="text-center">Ngày làm việc</th>
-                        <th className="text-center">Bộ phận</th>
-                        {userRole !== "ADMIN" ? "" : <th className="text-center">Hành động</th>}
-                    </tr>
-                    </thead>
-                    <tbody>
-                    {filteredStaffList.map((staff, index) => (<tr key={staff.id}>
-                        <td className="text-center">{index + 1}</td>
-                        <td className="text-center">{staff.codeStaff}</td>
-                        <td className="text-center">{staff.name}</td>
-                        <td className="text-center">{moment(staff.birthday, 'YYYY-MM-DD').format('DD-MM-YYYY')}</td>
-                        <td className="text-center">{staff.gender ? 'Nam' : 'Nữ'}</td>
-                        <td className="text-center">{staff.address}</td>
-                        <td className="text-center">{staff.phone}</td>
-                        <td className="text-center">{staff.identification}</td>
-                        <td className="text-center">{staff.email}</td>
-                        <td className="text-center">{formatCurrency(staff.salary)} VNĐ</td>
-                        <td className="text-center">{moment(staff.startDate, 'YYYY-MM-DD').format('DD-MM-YYYY')}</td>
-                        <td className="text-center">{staff.position}</td>
-                        {userRole !== "ADMIN" ? "" : <td className="text-center">
-                            <button
-                                className="btn btn-warning btn-sm me-2"
-                                style={{fontSize: '0.9rem'}}
-                                onClick={() => handleEditStaff(staff.id)}>
-                                Cập nhật
-                            </button>
-                            <button
-                                className="btn btn-danger btn-sm me-2"
-                                onClick={() => handleOpenModal(staff)}
-                                style={{fontSize: '0.9rem'}}>
-                                Xóa
-                            </button>
-                        </td>}
-                    </tr>))}
-                    </tbody>
-                </table>
+                        <Form.Group className="mb-3" controlId="formSearch">
+                            <Form.Label className="small-label">Tìm kiếm theo tên nhân viên</Form.Label>
+                            <Field
+                                as={Form.Control}
+                                type="text"
+                                placeholder="Nhập tên nhân viên"
+                                name="name"
+                                style={{marginBottom: '0.5rem'}}
+                            />
+                        </Form.Group>
+
+                        <Form.Group className="mb-3" controlId="formSearch">
+                            <Form.Label className="small-label">Tìm kiếm theo bộ phận</Form.Label>
+                            <Field
+                                as={Form.Control}
+                                type="text"
+                                placeholder="Nhập bộ phận"
+                                name="position"
+                                style={{marginBottom: '0.5rem'}}
+                            />
+                        </Form.Group>
+
+                        <Button variant="secondary" type="submit" className="search" style={{borderRadius: '50%'}}>
+                            <FaSearch/>
+                        </Button>
+                    </FormikForm>)}
+                </Formik>
+
+                {userRole !== "ADMIN" ?
+                    "" : <Button
+                        variant="success"
+                        onClick={handleAddStaff}
+                        style={{
+                            fontSize: '1.1rem', padding: '0.75rem 2rem', marginTop: '1rem',
+                        }}
+                        className='mb-4'>
+                        Thêm mới nhân viên
+                    </Button>
+                }
+
+                <div className="table-responsive">
+                    <table className="table table-hover table-bordered border-success" style={{fontSize: '1.05rem'}}>
+                        <thead className="table-success">
+                        <tr>
+                            <th className="text-center">STT</th>
+                            <th className="text-center">Mã nhân viên</th>
+                            <th className="text-center">Họ tên</th>
+                            <th className="text-center">Ngày sinh</th>
+                            <th className="text-center">Giới tính</th>
+                            <th className="text-center">Địa chỉ</th>
+                            <th className="text-center">Điện thoại</th>
+                            <th className="text-center">CCCD/CMDN</th>
+                            <th className="text-center">Email</th>
+                            <th className="text-center">Lương</th>
+                            <th className="text-center">Ngày làm việc</th>
+                            <th className="text-center">Bộ phận</th>
+                            {userRole !== "ADMIN" ? "" : <th className="text-center">Hành động</th>}
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {filteredStaffList.map((staff, index) => (<tr key={staff.id}>
+                            <td className="text-center">{index + 1}</td>
+                            <td className="text-center">{staff.codeStaff}</td>
+                            <td className="text-center">{staff.name}</td>
+                            <td className="text-center">{moment(staff.birthday, 'YYYY-MM-DD').format('DD-MM-YYYY')}</td>
+                            <td className="text-center">{staff.gender ? 'Nam' : 'Nữ'}</td>
+                            <td className="text-center">{staff.address}</td>
+                            <td className="text-center">{staff.phone}</td>
+                            <td className="text-center">{staff.identification}</td>
+                            <td className="text-center">{staff.email}</td>
+                            <td className="text-center">{formatCurrency(staff.salary)} VNĐ</td>
+                            <td className="text-center">{moment(staff.startDate, 'YYYY-MM-DD').format('DD-MM-YYYY')}</td>
+                            <td className="text-center">{staff.position}</td>
+                            {userRole !== "ADMIN" ? "" : <td className="text-center">
+                                <button
+                                    className="btn btn-warning btn-sm me-2"
+                                    style={{fontSize: '0.9rem'}}
+                                    onClick={() => handleEditStaff(staff.id)}>
+                                    Cập nhật
+                                </button>
+                                <button
+                                    className="btn btn-danger btn-sm me-2"
+                                    onClick={() => handleOpenModal(staff)}
+                                    style={{fontSize: '0.9rem'}}>
+                                    Xóa
+                                </button>
+                            </td>}
+                        </tr>))}
+                        </tbody>
+                    </table>
+                </div>
+
+                <div className="d-flex justify-content-center align-items-center">
+                    <button
+                        className="btn btn-secondary"
+                        onClick={() => handlePageChange(currentPage - 1)}
+                        disabled={currentPage === 0}>
+                        Trước
+                    </button>
+                    <span className="mx-3">Trang {currentPage + 1} / {totalPages}</span>
+                    <button
+                        className="btn btn-secondary"
+                        onClick={() => handlePageChange(currentPage + 1)}
+                        disabled={currentPage === totalPages - 1}>
+                        Sau
+                    </button>
+                </div>
+
+                <Modal show={isModalOpen} onHide={handleCloseModal} centered>
+                    <Modal.Header closeButton>
+                        <Modal.Title>Xác nhận xóa</Modal.Title>
+                    </Modal.Header>
+                    <Modal.Body>
+                        <p style={{fontSize: '1.1rem'}}>
+                            {staffDelete?.name
+                                ? `Bạn có chắc chắn muốn xóa nhân viên "${staffDelete.name}?"`
+                                : "Vui lòng chọn nhân viên để xóa."}
+                        </p>
+                    </Modal.Body>
+                    <Modal.Footer>
+                        <Button variant="danger" onClick={handleDeleteStaff} style={{fontSize: '1rem'}}>Xóa</Button>
+                        <Button variant="secondary" onClick={handleCloseModal} style={{fontSize: '1rem'}}>Hủy</Button>
+                    </Modal.Footer>
+                </Modal>
             </div>
-
-            <div className="d-flex justify-content-center align-items-center">
-                <button
-                    className="btn btn-secondary"
-                    onClick={() => handlePageChange(currentPage - 1)}
-                    disabled={currentPage === 0}>
-                    Trước
-                </button>
-                <span className="mx-3">Trang {currentPage + 1} / {totalPages}</span>
-                <button
-                    className="btn btn-secondary"
-                    onClick={() => handlePageChange(currentPage + 1)}
-                    disabled={currentPage === totalPages - 1}>
-                    Sau
-                </button>
-            </div>
-
-            <Modal show={isModalOpen} onHide={handleCloseModal} centered>
-                <Modal.Header closeButton>
-                    <Modal.Title>Xác nhận xóa</Modal.Title>
-                </Modal.Header>
-                <Modal.Body>
-                    <p style={{fontSize: '1.1rem'}}>
-                        Bạn có chắc chắn muốn xóa nhân viên
-                        <span style={{color: 'red'}}>"{staffDelete?.name}?"</span>
-                    </p>
-                </Modal.Body>
-                <Modal.Footer>
-                    <Button variant="danger" onClick={handleDeleteStaff} style={{fontSize: '1rem'}}>Xóa</Button>
-                    <Button variant="secondary" onClick={handleCloseModal} style={{fontSize: '1rem'}}>Hủy</Button>
-                </Modal.Footer>
-            </Modal>
-        </div>
-        <Footer/>
-    </>);
+            <Footer/>
+        </>);
 }
 
 export default Staff;
