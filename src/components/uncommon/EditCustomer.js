@@ -92,7 +92,7 @@ function EditCustomer() {
         <>
             <NavbarApp/>
             <div className="container mt-5" style={{marginBottom: "50px"}}>
-                <h2 className="text-center mb-5 bg-success text-white py-4">Chỉnh Sửa Khách Hàng</h2>
+                <h2 className="text-center mb-5 bg-success text-white py-4 rounded">Chỉnh Sửa Khách Hàng</h2>
                 <form>
                     <div className="row mb-3">
                         <div className="col-md-6">

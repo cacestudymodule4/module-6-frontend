@@ -124,10 +124,10 @@ function EditRoomFacilities() {
     return (
         <>
             <NavbarApp/>
-            <div className="container mt-5 " style={{marginBottom: "5%"}}>
-                <h2 className="text-center mb-5 bg-success align-content-center"
-                    style={{color: "white", height: "70px"}}>
-                    Chỉnh sửa trang thiết bị</h2>
+            <div className="container my-5 p-4 " style={{marginBottom: "5%"}}>
+                <h3 className="text-center text-white mb-5 bg-success py-3 rounded"
+                    style={{fontSize: '2.25rem'}}>
+                    Chỉnh sửa trang thiết bị</h3>
                 <Formik
                     enableReinitialize
                     initialValues={{

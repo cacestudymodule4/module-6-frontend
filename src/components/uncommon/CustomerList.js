@@ -3,10 +3,9 @@ import axios from 'axios';
 import {Modal, Button} from 'react-bootstrap';
 import {useNavigate} from "react-router-dom";
 import '../../assets/css/CustomerList.css';
-import {FaSearch} from "react-icons/fa";
+import {FaRedo, FaSearch} from "react-icons/fa";
 import {NavbarApp} from "../common/Navbar";
 import Footer from "../common/Footer";
-import {TbReload} from "react-icons/tb";
 import {toast} from "react-toastify";
 import moment from "moment/moment";
 import Pagination from "react-bootstrap/Pagination";
@@ -140,8 +139,11 @@ function CustomerList() {
     return (
         <>
             <NavbarApp/>
-            <div className="customer-list container mt-5">
-                <h2 className="text-center mb-5 bg-success text-white py-4">Danh sách khách hàng</h2>
+            <div className="customer-list container-fluid my-5 p-4 rounded">
+                <h2 className="text-center mb-5 bg-success text-white py-3 rounded"
+                    style={{fontSize: '2.15rem'}}>
+                    Danh sách khách hàng
+                </h2>
                 <div className="d-flex justify-content-center align-items-center mb-3">
                     <input
                         type="text"
@@ -163,13 +165,27 @@ function CustomerList() {
                         <FaSearch/>
                     </button>
                 </div>
-                <div className="d-flex mb-3">
-                    <button className="btn btn-success" onClick={handleNavigateToAddCustomer}>Thêm mới</button>
-                    <button className="btn btn-success ms-2" onClick={handleReload}><TbReload/></button>
+                <div className="d-flex mb-4">
+                    <button
+                        className="btn btn-success me-2"
+                        style={{fontSize: '1.1rem', padding: '0.75rem 2rem', marginTop: '1rem'}}
+                        onClick={handleNavigateToAddCustomer}
+                    >
+                        <i className="bi bi-plus-circle" style={{marginRight: '8px'}}></i>
+                        Thêm mới
+                    </button>
+
+                    <button
+                        className="btn btn-secondary me-2"
+                        style={{fontSize: '1.1rem', padding: '0.75rem 2rem', marginTop: '1rem'}}
+                        onClick={handleReload}
+                    >
+                        <FaRedo/>
+                    </button>
                 </div>
                 <div className="table-responsive">
                     <table className="table table-hover table-bordered border-success">
-                        <thead className="table-success">
+                        <thead className="table-success text-center text-white custom-table">
                         <tr>
                             <th>STT</th>
                             <th>Tên Khách Hàng</th>
@@ -233,6 +249,7 @@ function CustomerList() {
                         </tbody>
                     </table>
                 </div>
+
                 <div className="d-flex justify-content-center">
                     <Pagination>
                         <Pagination.Prev

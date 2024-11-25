@@ -124,7 +124,6 @@ function Staff() {
                 }}
                 onSubmit={(values) => handleSearch(values)}>
                 {() => (<FormikForm className="mb-3 custom-search">
-                    {/*{userRole === "ADMIN" ? }*/}
                     <Form.Group className="mb-3" controlId="formSearch">
                         <Form.Label className="small-label">Tìm kiếm theo mã nhân viên</Form.Label>
                         <Field

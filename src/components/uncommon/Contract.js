@@ -12,12 +12,14 @@ import Footer from "../common/Footer";
 import moment from "moment/moment";
 import Pagination from "react-bootstrap/Pagination";
 
+const userRole = localStorage.getItem("userRole");
+
 function Contract() {
     const navigate = useNavigate();
+    const [shouldRefresh, setShouldRefresh] = useState(false);
+    const [pageSize] = useState(2);
     const [showDeleteModal, setShowDeleteModal] = useState(false);
     const [contractToDelete, setContractToDelete] = useState(null);
-    const [shouldRefresh, setShouldRefresh] = useState(false);
-    const [pageSize] = useState(5);
     const [totalPages, setTotalPages] = useState(0);
     const [currentPage, setCurrentPage] = useState(1);
     const [filteredContract, setFilteredContract] = useState([]);
@@ -31,11 +33,9 @@ function Contract() {
             try {
                 const response = await axios.get("http://localhost:8080/api/contract/list-page", {
                     params: {
-                        page: currentPage - 1,
-                        size: pageSize,
-                    },
-                    headers: {
-                        Authorization: `Bearer ${localStorage.getItem('jwtToken')}` // Thêm Authorization nếu cần
+                        page: currentPage - 1, size: pageSize,
+                    }, headers: {
+                        Authorization: `Bearer ${localStorage.getItem('jwtToken')}`
                     }
                 });
                 setFilteredContract(response.data.content);
@@ -46,11 +46,11 @@ function Contract() {
         }
 
         getContract();
-    }, [shouldRefresh, pageSize, currentPage, token, navigate]);
+    }, [shouldRefresh, token, navigate]);
 
     const handleReload = () => {
+        setCurrentPage(1)
         setShouldRefresh(prev => !prev)
-        setCurrentPage(1);
         if (formikRef.current) {
             formikRef.current.resetForm();
         }
@@ -66,40 +66,42 @@ function Contract() {
             };
 
             const response = await axios.get("http://localhost:8080/api/contract/search", {
-                headers: {Authorization: `Bearer ${localStorage.getItem('jwtToken')}`},
-                params: data,
+                headers: {Authorization: `Bearer ${localStorage.getItem('jwtToken')}`}, params: data,
             });
             setFilteredContract(response.data.content);
             setTotalPages(response.data.totalPages);
             setSearchParams(data);
+            if (formikRef.current) {
+                formikRef.current.resetForm();
+            }
         } catch (err) {
             console.log(err);
         }
     };
 
     const handlePageChange = async (page) => {
+        console.log("123")
+        console.log(searchParams);
         if (page >= 1 && page <= totalPages) {
             setCurrentPage(page);
             try {
-                const params = Object.keys(searchParams).length > 0
-                    ? {...searchParams, page: page - 1}
-                    : {page: page - 1, size: pageSize};
+                const params = Object.keys(searchParams).length > 0 ? {
+                    ...searchParams, page: page - 1
+                } : {page: page - 1, size: pageSize};
 
-                const res = await axios.get(
-                    Object.keys(searchParams).length > 0
-                        ? `http://localhost:8080/api/contract/search`
-                        : `http://localhost:8080/api/contract/list-page`,
-                    {
-                        headers: {Authorization: `Bearer ${localStorage.getItem('jwtToken')}`},
-                        params,
-                    }
-                );
+                const res = await axios.get(Object.keys(searchParams).length > 0
+                    ? `http://localhost:8080/api/contract/search`
+                    : `http://localhost:8080/api/contract/list-page`, {
+                    headers: {Authorization: `Bearer ${localStorage.getItem('jwtToken')}`}, params,
+                });
+
                 setFilteredContract(res.data.content);
             } catch (error) {
                 toast.error("Có gì đó sai sai!");
             }
         }
     };
+
 
     const handleAddContract = () => {
         navigate('/contract/add')
@@ -118,6 +120,25 @@ function Contract() {
             return "Có hiệu lực"
         }
     };
+
+    const handleFilter = async (value) => {
+        setCurrentPage(1);
+        try {
+            const data = {
+                selectedFilter: value.selectedFilter,
+            }
+            const resp = await axios.get(`http://localhost:8080/api/contract/filter`, {
+                headers: {Authorization: `Bearer ${localStorage.getItem('jwtToken')}`}, params: data
+            },)
+            if (resp.status === 200) {
+                setFilteredContract(resp.data.content);
+                setTotalPages(resp.data.totalPages);
+            }
+        } catch (err) {
+            console.log(err)
+        }
+    }
+
     const handleDeleteClick = (contract) => {
         setContractToDelete(contract);
         setShowDeleteModal(true);
@@ -134,26 +155,6 @@ function Contract() {
             console.log(error);
         }
     }
-    const handleFilter = async (value) => {
-        setCurrentPage(1);
-        try {
-            const data = {
-                selectedFilter: value.selectedFilter,
-            }
-            const resp = await axios.get(`http://localhost:8080/api/contract/filter`, {
-                    headers: {Authorization: `Bearer ${localStorage.getItem('jwtToken')}`},
-                    params: data
-                },
-            )
-            if (resp.status === 200) {
-                setFilteredContract(resp.data.content);
-                setTotalPages(resp.data.totalPages);
-            }
-        } catch (err) {
-            console.log(err)
-        }
-    }
-
     return (
         <>
             <NavbarApp/>
@@ -218,7 +219,7 @@ function Contract() {
                 </Formik>
                 <Formik
                     initialValues={{
-                        selectedFilter: "",
+                        selectedFilter: " ",
                     }}
                     innerRef={formikRef}
                     onSubmit={handleFilter}>
@@ -227,10 +228,8 @@ function Contract() {
                             <Form.Group className="mb-3">
                                 <Field as="select" name="selectedFilter" style={{borderRadius: "5px"}}
                                        className="custom-date-input "
-
                                 >
-                                    <option value=""
-                                            selected={true}> Chọn tình trạng hợp đồng
+                                    <option value=" ">Chọn tình trạng
                                     </option>
                                     <option value="Có hiệu lực">Có hiệu lực
                                     </option>
@@ -247,7 +246,15 @@ function Contract() {
                         </FormikForm>
                     )}
                 </Formik>
-                <Button variant={"success"} className={"mb-2"} onClick={handleAddContract}>Thêm mới</Button>
+                {userRole !== "ADMIN" && (
+                    <Button
+                        variant="success"
+                        className="mb-2"
+                        onClick={handleAddContract}
+                    >
+                        Thêm mới
+                    </Button>
+                )}
                 <Button variant="secondary" style={{borderRadius: "50%"}} className={"mb-2 ms-2 "}
                         onClick={handleReload}>
                     <FaRedo/>
@@ -284,19 +291,12 @@ function Contract() {
                                             Chi tiết
                                         </Button>
                                     </td>
-                                    <td className="text-center">
-                                        <Button variant="warning" type="submit"
-                                                onClick={() => navigate(`/contract/edit/${contract.id}`)}
-                                        >
-                                            Sửa
-                                        </Button>
-                                    </td>
-                                    <td className="text-center">
+                                    {userRole === "ADMIN" && (<td className="text-center">
                                         <Button variant="danger" type="submit"
                                                 onClick={() => handleDeleteClick(contract)}>
-                                            Xoá
+                                            <i className="bi bi-trash me-2"></i> Xoá
                                         </Button>
-                                    </td>
+                                    </td>)}
                                 </tr>
                             ))}
                             </tbody>
@@ -343,6 +343,7 @@ function Contract() {
             </div>
             <Footer/>
         </>
+
     )
         ;
 }

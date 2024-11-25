@@ -48,7 +48,7 @@ const EditGround = () => {
                     headers: {Authorization: `Bearer ${localStorage.getItem("jwtToken")}`},
                 }
             );
-            toast.success("Cập nhật mặt bằng thành công!");
+            toast.success("Cập nhật dịch vụ thành công!");
             navigate(`/service/detail/${serviceId}`);
         } catch (error) {
             console.error("Lỗi khi cập nhật mặt bằng:", error);
@@ -58,14 +58,16 @@ const EditGround = () => {
 
     return (
         <>
-            <NavbarApp />
+            <NavbarApp/>
             <div className="container mt-5">
-                <h2 className="text-center bg-success text-white py-3 rounded">Chỉnh sửa mặt bằng</h2>
 
-                {/* Hiển thị thông tin dịch vụ */}
+                <h2 className="text-center bg-success text-white py-3 rounded shadow">
+                    Chỉnh sửa dịch vụ
+                </h2>
+
                 {service && (
-                    <div className="card my-4">
-                        <div className="card-header bg-primary text-white">
+                    <div className="card my-4 shadow">
+                        <div className="card-header bg-secondary text-white">
                             <h4 className="mb-0">Thông tin Dịch vụ</h4>
                         </div>
                         <div className="card-body">
@@ -76,9 +78,8 @@ const EditGround = () => {
                     </div>
                 )}
 
-                {/* Hiển thị thông tin mặt bằng */}
                 {ground && (
-                    <div className="card my-4">
+                    <div className="card my-4 shadow">
                         <div className="card-header bg-secondary text-white">
                             <h4 className="mb-0">Thông tin Mặt bằng</h4>
                         </div>
@@ -88,10 +89,9 @@ const EditGround = () => {
                     </div>
                 )}
 
-                {/* Form chỉnh sửa */}
                 <form className="bg-light p-4 rounded shadow-sm">
-                    <div className="row mb-3 align-items-center">
-                        <label htmlFor="consumption" className="col-sm-3 col-form-label text-end">
+                    <div className="row mb-4">
+                        <label htmlFor="consumption" className="col-sm-3 col-form-label">
                             Tiêu thụ:
                         </label>
                         <div className="col-sm-9">
@@ -106,8 +106,8 @@ const EditGround = () => {
                         </div>
                     </div>
 
-                    <div className="row mb-3 align-items-center">
-                        <label htmlFor="startDate" className="col-sm-3 col-form-label text-end">
+                    <div className="row mb-4">
+                        <label htmlFor="startDate" className="col-sm-3 col-form-label">
                             Ngày bắt đầu:
                         </label>
                         <div className="col-sm-9">
@@ -122,25 +122,25 @@ const EditGround = () => {
                         </div>
                     </div>
 
-                    <div className="d-flex justify-content-center">
+                    <div className="d-flex justify-content-center mt-4">
                         <button
                             type="button"
-                            className="btn btn-primary me-2"
-                            onClick={handleUpdate}
+                            className="btn btn-outline-success btn-lg me-2 px-5"
+                            onClick={() => navigate(-1)}
                         >
-                            Lưu
+                            <i className="bi bi-arrow-left-circle me-2"></i> Quay lại
                         </button>
                         <button
                             type="button"
-                            className="btn btn-secondary"
-                            onClick={() => navigate(-1)}
+                            className="btn btn-outline-success btn-lg px-5"
+                            onClick={handleUpdate}
                         >
-                            Quay lại
+                            Lưu <i className="bi bi-save"></i>
                         </button>
                     </div>
                 </form>
             </div>
-            <Footer />
+            <Footer/>
         </>
     );
 };

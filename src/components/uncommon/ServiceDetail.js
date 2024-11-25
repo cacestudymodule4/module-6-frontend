@@ -59,56 +59,41 @@ const ServiceDetail = () => {
         <>
             <NavbarApp/>
             <div className="service-detail container mt-5">
-                <h2 className="text-center mb-5 bg-success text-white py-4">Chi tiết Dịch vụ</h2>
-                <div
-                    style={{
-                        backgroundColor: '#f8f9fa',
-                        padding: '30px',
-                        marginBottom: '30px',
-                        borderRadius: '8px',
-                        boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)',
-                    }}
-                >
-                    <h4
-                        style={{
-                            fontSize: '2rem',
-                            fontWeight: 'bold',
-                            color: '#28a745',
-                            marginBottom: '20px',
-                        }}
-                    >
-                        Thông tin dịch vụ
-                    </h4>
+                <h2 className="text-center mb-5 bg-success text-white py-4 rounded shadow">
+                    Chi tiết Dịch vụ
+                </h2>
+
+                <div className="mb-5 px-4 rounded shadow-sm" style={{background: "#f8f9fa"}}>
+                    <h3 className="text-success mb-4">Thông tin dịch vụ</h3>
                     {service ? (
-                        <div style={{display: 'flex', justifyContent: 'space-between', gap: '20px'}}>
-                            <div style={{flex: 1}}>
-                                <p style={{margin: '5px 0', fontSize: '1.5rem', fontWeight: 'bold', color: 'black'}}>
-                                    Tên dịch vụ:
+                        <div className="row">
+                            <div className="col-md-4">
+                                <p className="fw-bold">Tên dịch vụ :</p>
+                                <p>{service.name}</p>
+                            </div>
+                            <div className="col-md-4">
+                                <p className="fw-bold">Giá :</p>
+                                <p>
+                                    {new Intl.NumberFormat('vi-VN', {
+                                        style: 'currency',
+                                        currency: 'VND'
+                                    }).format(service.price)}
                                 </p>
-                                <p style={{margin: '5px 0', fontSize: '1.5rem', color: '#333'}}>{service.name}</p>
                             </div>
-                            <div style={{flex: 1}}>
-                                <p style={{
-                                    margin: '5px 0',
-                                    fontSize: '1.5rem',
-                                    fontWeight: 'bold',
-                                    color: 'black'
-                                }}>Giá:</p>
-                                <p style={{margin: '5px 0', fontSize: '1.5rem', color: '#333'}}>{service.price}</p>
-                            </div>
-                            <div style={{flex: 1}}>
-                                <p style={{margin: '5px 0', fontSize: '1.5rem', fontWeight: 'bold', color: 'black'}}>Đơn
-                                    vị:</p>
-                                <p style={{margin: '5px 0', fontSize: '1.5rem', color: '#333'}}>{service.unit}</p>
+                            <div className="col-md-4">
+                                <p className="fw-bold">Đơn vị :</p>
+                                <p>{service.unit}</p>
                             </div>
                         </div>
                     ) : (
-                        <p style={{fontSize: '1.5rem', color: '#666'}}>Đang tải thông tin dịch vụ...</p>
+                        <p className="text-muted">Đang tải thông tin dịch vụ...</p>
                     )}
                 </div>
+
                 <h4 className="text-success mb-3">Danh sách mặt bằng sử dụng</h4>
+
                 {grounds && grounds.length > 0 ? (
-                    <div className="table-responsive">
+                    <div className="table-responsive mb-5">
                         <Table striped bordered hover>
                             <thead className="table-success">
                             <tr className="text-center">
@@ -126,13 +111,18 @@ const ServiceDetail = () => {
                                     <td>{ground.groundName}</td>
                                     <td>{ground.consumption}</td>
                                     <td>{new Date(ground.startDate).toLocaleDateString()}</td>
-                                    <td style={{width: '50px'}}>
-                                        <button className="btn btn-warning"
-                                                onClick={() => navigate(`/service/${serviceId}/grounds/${ground.groundId}/edit`)}>Sửa
+                                    <td>
+                                        <button
+                                            className="btn btn-warning btn-sm"
+                                            onClick={() =>
+                                                navigate(`/service/${serviceId}/grounds/${ground.groundId}/edit`)
+                                            }
+                                        >
+                                            Sửa
                                         </button>
                                     </td>
-                                    <td style={{width: '50px'}}>
-                                        <button className="btn btn-danger"
+                                    <td>
+                                        <button className="btn btn-danger btn-sm"
                                                 onClick={() => openDeleteModal(ground)}>
                                             Xóa
                                         </button>
@@ -143,27 +133,35 @@ const ServiceDetail = () => {
                         </Table>
                     </div>
                 ) : (
-                    <p>Không có mặt bằng nào liên kết với dịch vụ này.</p>
+                    <p className="text-muted">Không có mặt bằng nào liên kết với dịch vụ này.</p>
                 )}
-                <div className="d-flex justify-content-center mt-4" style={{marginBottom: "20px"}}>
+
+                <div className="d-flex justify-content-center gap-3 mt-4 mb-5">
                     <button
-                        className="btn btn-success"
+                        className="btn btn-outline-secondary btn-lg d-flex align-items-center"
+                        onClick={() => navigate(`/service/list`)}
+                    >
+                        <i className="bi bi-arrow-left-circle me-2"></i>
+                        Quay lại
+                    </button>
+                    <button
+                        className="btn btn-outline-success btn-lg d-flex align-items-center"
                         onClick={() => navigate(`/service/${serviceId}/add-ground`)}
                     >
                         Thêm mới
-                    </button>
-                    <button className="btn btn-secondary" style={{marginLeft: "20px"}}
-                            onClick={() => navigate(`/service/list`)}>Quay lại
+                        <i className="bi bi-plus-circle"></i>
                     </button>
                 </div>
             </div>
-            {/* Modal xác nhận xóa */}
+
             <Modal show={showDeleteModal} onHide={closeDeleteModal}>
                 <Modal.Header closeButton>
                     <Modal.Title>Xác nhận xóa</Modal.Title>
                 </Modal.Header>
-                <Modal.Body>Bạn có chắc chắn muốn xóa mặt bằng
-                    <span className="text-danger"> {groundToDelete?.groundName}</span> này không?</Modal.Body>
+                <Modal.Body>
+                    Bạn có chắc chắn muốn xóa mặt bằng
+                    <span className="text-danger fw-bold"> {groundToDelete?.groundName}</span> này không?
+                </Modal.Body>
                 <Modal.Footer>
                     <Button variant="secondary" onClick={closeDeleteModal}>
                         Hủy
@@ -173,9 +171,11 @@ const ServiceDetail = () => {
                     </Button>
                 </Modal.Footer>
             </Modal>
+
             <Footer/>
         </>
     );
+
 };
 
 export default ServiceDetail;

@@ -34,7 +34,7 @@ function ContractPdfButton({contractId}) {
     return (
         <button className="btn btn-success" onClick={downloadPdf} disabled={isDownload}>
             {isDownload ? "Đang tải xuống" : "Tải xuống PDF"}
-        < /button>
+        </button>
     );
 }
 
