@@ -64,8 +64,8 @@ export const AddEditGround = () => {
 
     const handleSave = async (values) => {
         try {
-            const floor = floors.find(floor => floor.id == values.floorId);
-            const groundCategory = groundCategories.find(groundCate => groundCate.id == values.groundCategoryId);
+            const floor = floors?.find(floor => floor.id == values.floorId);
+            const groundCategory = groundCategories?.find(groundCate => groundCate.id == values.groundCategoryId);
 
             const data = {
                 ...values,
@@ -144,7 +144,7 @@ export const AddEditGround = () => {
                                 id="floorId"
                                 name="floorId"
                                 className="form-select form-select-lg">
-                                {floors.map(floor => (
+                                {floors?.map(floor => (
                                     <option key={floor.id} value={floor.id}>
                                         {floor.name}
                                     </option>
@@ -175,7 +175,7 @@ export const AddEditGround = () => {
                                 id="groundCategoryId"
                                 name="groundCategoryId"
                                 className="form-select form-select-lg">
-                                {groundCategories.map(ground => (
+                                {groundCategories?.map(ground => (
                                     <option key={ground.id} value={ground.id}>
                                         {ground.name}
                                     </option>

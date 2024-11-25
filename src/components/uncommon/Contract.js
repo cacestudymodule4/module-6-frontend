@@ -219,7 +219,7 @@ function Contract() {
                 </Formik>
                 <Formik
                     initialValues={{
-                        selectedFilter: "Có hiệu lực",
+                        selectedFilter: " ",
                     }}
                     innerRef={formikRef}
                     onSubmit={handleFilter}>
@@ -228,8 +228,9 @@ function Contract() {
                             <Form.Group className="mb-3">
                                 <Field as="select" name="selectedFilter" style={{borderRadius: "5px"}}
                                        className="custom-date-input "
-
                                 >
+                                    <option value=" ">Chọn tình trạng
+                                    </option>
                                     <option value="Có hiệu lực">Có hiệu lực
                                     </option>
                                     <option value="Hết hiệu lực">Hết hiệu lực
