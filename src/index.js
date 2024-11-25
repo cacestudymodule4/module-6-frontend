@@ -18,7 +18,6 @@ import Salary from "./components/uncommon/Salary";
 import Chart8Component from "./components/uncommon/Report";
 import CustomerList from "./components/uncommon/CustomerList";
 import AddCustomer from "./components/uncommon/AddCustomer";
-import EditContract from "./components/uncommon/EditContract";
 import ServiceList from "./components/uncommon/ServiceList";
 import AddStaff from "./components/uncommon/AddStaff";
 import EditStaff from "./components/uncommon/EditStaff";
@@ -67,7 +66,6 @@ root.render(
                 <Route path="/contract/add" element={<AddContract/>}/>
                 <Route path="/contract/list" element={<Contract/>}/>
                 <Route path="/contract/detail/:id" element={<ContractDetail/>}/>
-                <Route path="/contract/edit/:id" element={<EditContract/>}/>
                 <Route path="/user/detail" element={<UserInfo/>}/>
                 <Route path="/salary" element={<Salary/>}/>
                 <Route path="/report" element={<Chart8Component/>}/>

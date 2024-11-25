@@ -7,9 +7,7 @@ import axios from 'axios';
 import {FaSave} from 'react-icons/fa';
 import {NavbarApp} from "../common/Navbar";
 import Footer from "../common/Footer";
-
-const AddCustomer = () => {
-
+const AddCustomer = ({ showNavbarFooter = true,onClose  }) => {
     const navigate = useNavigate();
     const token = localStorage.getItem('jwtToken');
     const getDefaultBirthday = () => {
@@ -56,7 +54,11 @@ const AddCustomer = () => {
                 });
                 if (response.status === 200) {
                     toast.success('Khách hàng đã được thêm thành công!');
-                    navigate('/customer/list');
+                    if(!showNavbarFooter) {
+                        console.log("ok con dê")
+                        onClose();
+                    }else{navigate('/customer/list');}
+
                 }
             } catch (error) {
                 console.log(error)
@@ -66,15 +68,22 @@ const AddCustomer = () => {
             }
         },
     });
-
+const handleBack =() =>{
+    if (!showNavbarFooter) {
+        onClose()
+    }else{
+        navigate('/customer/list');
+    }
+}
     return (
         <>
-            <NavbarApp/>
+            {showNavbarFooter && <NavbarApp/>}
             <div className="container mt-5" style={{marginBottom: "50px"}}>
                 <h3 className="text-center text-white mb-5 bg-success py-4 rounded"
                     style={{fontSize: '2.25rem'}}>
                     Thêm Mới Khách Hàng
                 </h3>
+
                 <form onSubmit={formik.handleSubmit}>
                     {/* Row 1: Name and Birthday */}
                     <div className="row mb-3">
@@ -238,12 +247,12 @@ const AddCustomer = () => {
                     <button type="submit" className="btn btn-success">
                         <FaSave/> Lưu
                     </button>
-                    <button type="button" className="btn btn-secondary ms-3" onClick={() => navigate('/customer/list')}>
+                    <button type="button" className="btn btn-secondary ms-3" onClick={handleBack}>
                         Quay lại
                     </button>
                 </form>
             </div>
-            <Footer/>
+            {showNavbarFooter && <Footer/>}
         </>
     );
 };
