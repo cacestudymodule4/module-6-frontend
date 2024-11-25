@@ -108,6 +108,62 @@ select option.small-text {
     padding: 5px;
     border: 1px solid #ccc;
 }
+.spinner-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.spinner-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+}
+
+.spinner {
+    border: 6px solid rgba(0, 0, 0, 0.1); /* Viền mờ */
+    border-left-color: #4caf50; /* Màu viền chính */
+    border-radius: 50%; /* Hình tròn */
+    width: 60px; /* Kích thước spinner */
+    height: 60px;
+    animation: spin 1s linear infinite, glow 1.5s infinite alternate; /* Hiệu ứng xoay và phát sáng */
+    box-shadow: 0 0 15px #4caf50; /* Tạo ánh sáng xung quanh */
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg); /* Xoay liên tục */
+    }
+}
+
+@keyframes glow {
+    from {
+        box-shadow: 0 0 10px #4caf50;
+    }
+    to {
+        box-shadow: 0 0 25px #4caf50; /* Hiệu ứng phát sáng */
+    }
+}
+
+.spinner-text {
+    margin-top: 15px;
+    font-size: 1.2rem;
+    font-weight: bold;
+    color: #333; /* Màu chữ tối để dễ nhìn */
+    text-align: center;
+}
+
+.modal-loading {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    padding: 30px;
+}
+
 
 
 

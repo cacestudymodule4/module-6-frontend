@@ -5,12 +5,10 @@ import axios from "axios";
 import {toast} from "react-toastify";
 import * as Yup from "yup";
 import {useNavigate} from "react-router-dom";
-import Footer from "../common/Footer";
 import {NavbarApp} from "../common/Navbar";
 import '../../assets/css/Contract.css';
 import {FaRedo, FaSearch} from "react-icons/fa";
 import AddCustomer from "./AddCustomer";
-import {Ground} from "./Ground/Ground";
 import distinctFloors from "react-modal/lib/helpers/classList";
 
 function AddContract() {
@@ -24,12 +22,14 @@ function AddContract() {
     const [startDay, setStartDay] = useState('');
     const [endDay, setEndDay] = useState('');
     const [showMoadlCusAdd, setShowMoadlCusAdd] = useState(false);
+    const [showModalLoading, setShowModalLoading] = useState(false);
     const [term, setTerm] = useState('');
     const [showCusModal, setShowCusModal] = useState(false);
     const [showGroundModal, setShowGroundModal] = useState(false);
     const [floor, setFloor] = useState('');
     const [totalPrice, setTotalPrice] = useState(0);
     const [checkDay, setCheckDay] = useState('1000-01-01');
+
     const token = localStorage.getItem("jwtToken");
 
     async function getFloor() {
@@ -67,24 +67,24 @@ function AddContract() {
 
     const getDistinctFloors = () => {
         const distinctFloorsSet = new Set();
-
         ground.forEach(groundItem => {
             if (groundItem.floor !== null) {
                 distinctFloorsSet.add(groundItem.floor);
             }
         });
-
         setFloor(Array.from(distinctFloorsSet));
     }
 
     useEffect(() => {
+        const currentDay = new Date().toISOString().split('T')[0];
+        setStartDay(currentDay);
         if (!token) navigate("/login")
-        // getFloor();
+        getFloor();
         getCustomer();
         getGround();
     }, []);
     const handleAddContract = async (value, {resetForm}) => {
-        console.log("adding contract");
+        setShowModalLoading(true)
         try {
             const data = {
                 ground: groundSelected,
@@ -131,10 +131,7 @@ function AddContract() {
         setStartDay(startDate);
         const calculatedEndDate = calculateEndDate(startDate, term);
         setEndDay(calculatedEndDate);
-        console.log(ground)
-        console.log(floor)
     };
-
     const initialValues = {
         totalPrice: totalPrice * 0.01,
         term: term,
@@ -145,7 +142,7 @@ function AddContract() {
         deposit: totalPrice ? totalPrice * 0.1 : '',
         content: ''
     };
-    
+
     const checkDayDate = new Date(checkDay);
     const validationSchema = Yup.object().shape({
 
@@ -329,6 +326,7 @@ function AddContract() {
                                                         setShowGroundModal(true);
                                                         setGroundSearch(ground);
                                                         getDistinctFloors()
+                                                        console.log(floor)
                                                     }}>
                                                 Chọn mặt bằng <span className="text-danger">*</span>
                                             </Button> </Form.Label>
@@ -603,6 +601,14 @@ function AddContract() {
                 </Modal.Footer>
             </Modal>
             {/*===========modal mặt bằng====================*/}
+            <Modal show={showModalLoading}>
+                <Modal.Body className={"modal-loading"}>
+                    <div className="spinner-container">
+                        <div className="spinner"></div>
+                        <p style={{fontWeight: "bold", marginTop: "10px"}}>Đang xử lý, vui lòng chờ...</p>
+                    </div>
+                </Modal.Body>
+            </Modal>
             <Modal show={showGroundModal} className={"modal-contract-custom"}>
                 <Modal.Header closeButton onClick={() => setShowGroundModal(false)}>
                     <Modal.Title>Xác Nhận</Modal.Title>
@@ -619,11 +625,11 @@ function AddContract() {
                             {({resetForm}) => (
                                 <FormikForm className="mb-3 custom-search mr-5">
                                     <Form.Group className="mb-3" controlId="formSearch">
-                                        <Form.Label className="small-label">Tìm theo tên</Form.Label>
+                                        <Form.Label className="small-label">Tìm theo mã mặt bằng</Form.Label>
                                         <Field
                                             as={Form.Control}
                                             type="text"
-                                            placeholder="Nhập tên mặt bằng"
+                                            placeholder="Nhập mã mặt bằng"
                                             name="searchGround"
                                         />
 
@@ -702,18 +708,18 @@ function AddContract() {
                             </Table>}
                     </div>
                 </Modal.Body>
+
                 <Modal.Footer>
                     <Button variant="secondary" onClick={() => setShowGroundModal(false)}>
                         Hủy
                     </Button>
                 </Modal.Footer>
             </Modal>
-            <Modal show={showMoadlCusAdd} onHide={handleClose}  style={{padding:'5%'}}>
-                <Modal.Body  style={{padding:'5%'}} className={"custom-modal-add-cus p-4"} >
-                    <AddCustomer  showNavbarFooter={false} onClose={reloadCustomerList}/>
+            <Modal show={showMoadlCusAdd} onHide={handleClose} style={{padding: '5%'}}>
+                <Modal.Body style={{padding: '5%'}} className={"custom-modal-add-cus p-4"}>
+                    <AddCustomer showNavbarFooter={false} onClose={reloadCustomerList}/>
                 </Modal.Body>
             </Modal>
-            <Footer/>
         </>
     );
 }

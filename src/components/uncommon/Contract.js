@@ -246,15 +246,14 @@ function Contract() {
                         </FormikForm>
                     )}
                 </Formik>
-                {userRole !== "ADMIN" && (
-                    <Button
-                        variant="success"
-                        className="mb-2"
-                        onClick={handleAddContract}
-                    >
-                        Thêm mới
-                    </Button>
-                )}
+                <Button
+                    variant="success"
+                    className="mb-2"
+                    onClick={handleAddContract}
+                >
+                    Thêm mới
+                </Button>
+
                 <Button variant="secondary" style={{borderRadius: "50%"}} className={"mb-2 ms-2 "}
                         onClick={handleReload}>
                     <FaRedo/>

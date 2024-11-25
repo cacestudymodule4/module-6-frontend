@@ -226,7 +226,7 @@ export const Ground = () => {
                                         <td>{ground.groundCategory.name}</td>
                                         <td>{ground.area}m<sup>2</sup></td>
                                         <td>{ground.status ? "Đã thuê" : "Chưa thuê"}</td>
-                                        <td>{ground.price}</td>
+                                        <td>{ground.price} VND</td>
                                         <td className="text-center">
                                             <Button variant="warning" type="submit"
                                                 onClick={() => navigate(`/ground/edit/${ground.id}`, { state: { ground } })}

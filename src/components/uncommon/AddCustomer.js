@@ -55,7 +55,6 @@ const AddCustomer = ({ showNavbarFooter = true,onClose  }) => {
                 if (response.status === 200) {
                     toast.success('Khách hàng đã được thêm thành công!');
                     if(!showNavbarFooter) {
-                        console.log("ok con dê")
                         onClose();
                     }else{navigate('/customer/list');}
 
