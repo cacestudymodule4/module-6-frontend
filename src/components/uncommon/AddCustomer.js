@@ -7,7 +7,10 @@ import axios from 'axios';
 import {FaSave} from 'react-icons/fa';
 import {NavbarApp} from "../common/Navbar";
 import Footer from "../common/Footer";
-const AddCustomer = ({ showNavbarFooter = true,onClose  }) => {
+
+const AddCustomer = ({showNavbarFooter = true, onClose}) => {
+
+    const [customerToRestore, setCustomerToRestore] = useState(null);
     const navigate = useNavigate();
     const token = localStorage.getItem('jwtToken');
     const getDefaultBirthday = () => {
@@ -41,6 +44,7 @@ const AddCustomer = ({ showNavbarFooter = true,onClose  }) => {
                 .matches(/^[0-9]{9,12}$/, "CMND phải chứa 9-12 chữ số"),
             address: Yup.string().required('Địa chỉ là bắt buộc'),
             phone: Yup.string().required('Số điện thoại là bắt buộc')
+                .matches(/^(03|05|07|08|09)/, 'Số điện thoại phải bắt đầu bằng 03, 05, 07, 08 hoặc 09')
                 .matches(/^[0-9]{10}$/, "Số điện thoại phải chứa 10 chữ số"),
             email: Yup.string().email('Email không hợp lệ').required('Email là bắt buộc'),
             company: Yup.string().required('Tên công ty là bắt buộc'),
@@ -54,26 +58,57 @@ const AddCustomer = ({ showNavbarFooter = true,onClose  }) => {
                 });
                 if (response.status === 200) {
                     toast.success('Khách hàng đã được thêm thành công!');
-                    if(!showNavbarFooter) {
+                    localStorage.setItem("newCustomer", JSON.stringify(response.data));
+                    if (!showNavbarFooter) {
                         onClose();
-                    }else{navigate('/customer/list');}
-
+                    } else {
+                        navigate('/customer/list');
+                    }
                 }
             } catch (error) {
-                console.log(error)
                 if (error.response) {
-                    toast.error(error.response.data);
+                    const errorMessage = error.response.data;
+                    console.log("lỗi", errorMessage)
+                    if (errorMessage === "a") {
+                        setCustomerToRestore(values);
+                    } else {
+                        toast.error(errorMessage);
+                    }
                 }
             }
         },
     });
-const handleBack =() =>{
-    if (!showNavbarFooter) {
-        onClose()
-    }else{
-        navigate('/customer/list');
+    const handleRestore = async () => {
+            try {
+                const response = await axios.post("http://localhost:8080/api/customers/restore", customerToRestore, {
+                    headers: {Authorization: `Bearer ${localStorage.getItem("jwtToken")}`},
+                });
+                if (response.status === 200) {
+                    toast.success('Khách hàng đã được thêm thành công!');
+                    if (!showNavbarFooter) {
+                        onClose();
+                    } else {
+                        toast.success("Khách hàng đã được khôi phục thành công!");
+                        localStorage.setItem("newCustomer", JSON.stringify(response.data));
+                        navigate("/customer/list");
+                    }
+
+                }
+            } catch (error) {
+                if (error.response) {
+                    toast.error(error.response.data);
+                }
+            }
+        }
+    ;
+
+    const handleBack = () => {
+        if (!showNavbarFooter) {
+            onClose()
+        } else {
+            navigate('/customer/list');
+        }
     }
-}
     return (
         <>
             {showNavbarFooter && <NavbarApp/>}
@@ -98,7 +133,7 @@ const handleBack =() =>{
                                 onBlur={formik.handleBlur}
                                 value={formik.values.name}
                             />
-                            {formik.touched.name && formik.errors.name && (
+                            {formik.submitCount > 0 && formik.errors.name && (
                                 <div className="text-danger">{formik.errors.name}</div>
                             )}
                         </div>
@@ -114,7 +149,7 @@ const handleBack =() =>{
                                 onBlur={formik.handleBlur}
                                 value={formik.values.birthday || getDefaultBirthday()}
                             />
-                            {formik.touched.birthday && formik.errors.birthday && (
+                            {formik.submitCount > 0 && formik.errors.birthday && (
                                 <div className="text-danger">{formik.errors.birthday}</div>
                             )}
                         </div>
@@ -134,7 +169,7 @@ const handleBack =() =>{
                                 onBlur={formik.handleBlur}
                                 value={formik.values.identification}
                             />
-                            {formik.touched.identification && formik.errors.identification && (
+                            {formik.submitCount > 0 && formik.errors.identification && (
                                 <div className="text-danger">{formik.errors.identification}</div>
                             )}
                         </div>
@@ -150,7 +185,7 @@ const handleBack =() =>{
                                 onBlur={formik.handleBlur}
                                 value={formik.values.address}
                             />
-                            {formik.touched.address && formik.errors.address && (
+                            {formik.submitCount > 0 && formik.errors.address && (
                                 <div className="text-danger">{formik.errors.address}</div>
                             )}
                         </div>
@@ -170,7 +205,7 @@ const handleBack =() =>{
                                 onBlur={formik.handleBlur}
                                 value={formik.values.phone}
                             />
-                            {formik.touched.phone && formik.errors.phone && (
+                            {formik.submitCount > 0 && formik.errors.phone && (
                                 <div className="text-danger">{formik.errors.phone}</div>
                             )}
                         </div>
@@ -186,7 +221,7 @@ const handleBack =() =>{
                                 onBlur={formik.handleBlur}
                                 value={formik.values.email}
                             />
-                            {formik.touched.email && formik.errors.email && (
+                            {formik.submitCount > 0 && formik.errors.email && (
                                 <div className="text-danger">{formik.errors.email}</div>
                             )}
                         </div>
@@ -206,7 +241,7 @@ const handleBack =() =>{
                                 onBlur={formik.handleBlur}
                                 value={formik.values.company}
                             />
-                            {formik.touched.company && formik.errors.company && (
+                            {formik.submitCount > 0 && formik.errors.company && (
                                 <div className="text-danger">{formik.errors.company}</div>
                             )}
                         </div>
@@ -237,7 +272,7 @@ const handleBack =() =>{
                                     <label htmlFor="female">Nữ</label>
                                 </div>
                             </div>
-                            {formik.touched.gender && formik.errors.gender && (
+                            {formik.submitCount > 0 && formik.errors.gender && (
                                 <div className="text-danger">{formik.errors.gender}</div>
                             )}
                         </div>
@@ -250,6 +285,33 @@ const handleBack =() =>{
                         Quay lại
                     </button>
                 </form>
+                {customerToRestore && (
+                    <div className="mt-4 alert alert-warning">
+                        <h5>Khách hàng đã tồn tại nhưng đang bị vô hiệu hóa</h5>
+                        <ul>
+                            <li><strong>Tên:</strong> {customerToRestore.name}</li>
+                            <li><strong>CMND:</strong> {customerToRestore.identification}</li>
+                            <li><strong>Địa chỉ:</strong> {customerToRestore.address}</li>
+                            <li><strong>Điện thoại:</strong> {customerToRestore.phone}</li>
+                            <li><strong>Email:</strong> {customerToRestore.email}</li>
+                            <li><strong>Công ty:</strong> {customerToRestore.company}</li>
+                            <li><strong>Giới tính:</strong> {customerToRestore.gender === "true" ? "Nam" : "Nữ"}
+                            </li>
+                        </ul>
+                        <div className="mt-3">
+                            <button className="btn btn-primary me-2" onClick={handleRestore}>
+                                Đồng ý khôi phục
+                            </button>
+                            <button
+                                className="btn btn-secondary"
+                                onClick={() => setCustomerToRestore(null)}
+                            >
+                                Hủy bỏ
+                            </button>
+                        </div>
+                    </div>
+                )}
+
             </div>
             {showNavbarFooter && <Footer/>}
         </>
