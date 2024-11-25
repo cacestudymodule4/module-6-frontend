@@ -30,7 +30,7 @@ export const Floor = () => {
                     , {
                         headers: { Authorization: `Bearer ${localStorage.getItem('jwtToken')}` }
                     });
-                setFloor(response.data.content);
+                setFloor(response.data.content || []);
                 setTotalPages(response.data.totalPages);
             } catch (err) {
                 console.log(err);

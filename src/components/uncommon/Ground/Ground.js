@@ -37,7 +37,7 @@ export const Ground = () => {
                     , {
                         headers: { Authorization: `Bearer ${localStorage.getItem('jwtToken')}` }
                     });
-                setGrounds(response.data.content);
+                setGrounds(response.data.content || []);
                 setTotalPages(response.data.totalPages);
             } catch (err) {
                 console.log(err);
@@ -226,7 +226,7 @@ export const Ground = () => {
                                         <td>{ground.groundCategory.name}</td>
                                         <td>{ground.area}m<sup>2</sup></td>
                                         <td>{ground.status ? "Đã thuê" : "Chưa thuê"}</td>
-                                        <td>{ground.price}</td>
+                                        <td>{new Intl.NumberFormat('vi-VN').format(ground.price)} VNĐ</td>
                                         <td className="text-center">
                                             <Button variant="warning" type="submit"
                                                 onClick={() => navigate(`/ground/edit/${ground.id}`, { state: { ground } })}
