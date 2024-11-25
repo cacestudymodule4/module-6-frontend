@@ -1,16 +1,17 @@
 import React, {useEffect, useState} from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap-icons/font/bootstrap-icons.css';
-import ApexCharts from 'apexcharts';
 import axios from "axios";
 import {Link, useNavigate} from "react-router-dom";
 import {NavbarApp} from "../common/Navbar";
 import Footer from "../common/Footer";
+import {toast} from "react-toastify";
+import ChartComponent from "./ChartComponent";
 
 const Chart8Component = () => {
-    const [chart, setChart] = useState();
     const [revenue, setRevenue] = useState();
     const token = localStorage.getItem('jwtToken');
+    const role = localStorage.getItem('userRole');
     const navigate = useNavigate();
     const [reportRequest, setReportRequest] = useState({startDate: "", endDate: ""});
     const totalRevenue = () => {
@@ -18,6 +19,10 @@ const Chart8Component = () => {
     }
     useEffect(() => {
         if (!token) navigate("/login");
+        if (role !== "ADMIN") {
+            navigate("/home");
+            toast.error("Bạn không có quyền thực hiên chức năng này")
+        }
         const fetchData = async () => {
             try {
                 const resp = await axios.post('http://localhost:8080/api/report', reportRequest, {
@@ -25,41 +30,11 @@ const Chart8Component = () => {
                 });
                 const map = resp.data;
                 setRevenue(map);
-                const chartOptions = {
-                    series: [{
-                        name: 'revenue',
-                        data: Object.values(map)
-                    }],
-                    chart: {
-                        type: 'bar',
-                        height: 41 * Object.keys(map).length,
-                        toolbar: {
-                            show: true
-                        }
-                    },
-                    xaxis: {
-                        categories: Object.keys(map)
-                    },
-                    colors: ['#28a745'],
-                    plotOptions: {
-                        bar: {
-                            borderRadius: 4,
-                            horizontal: false
-                        }
-                    }
-                };
-                if (chart) chart.destroy();
-                const newChart = new ApexCharts(document.querySelector("#bsb-chart-8"), chartOptions);
-                newChart.render();
-                setChart(newChart);
             } catch (error) {
                 console.error('Thất bại khi lấy dữ liệu:', error);
             }
         };
         fetchData();
-        return () => {
-            if (chart) chart.destroy();
-        };
     }, [reportRequest]);
     const handleChange = (e) => {
         const {name, value} = e.target;
@@ -103,47 +78,48 @@ const Chart8Component = () => {
                         </div>
                     </div>
                     <div className="row justify-content-center mt-3">
-                        <div className="col-12 col-lg-3 mb-3 mb-lg-0">
-                            <table className="table table-hover table-bordered border-success my-1"
-                                   style={{fontSize: '1.05rem'}}>
-                                <thead className="table-success">
-                                <tr>
-                                    <th>#</th>
-                                    <th>Mặt bằng</th>
-                                    <th>Doanh thu</th>
-                                </tr>
-                                </thead>
-                                <tbody>
-                                {revenue ? (
-                                    <>
+                        {revenue && Object.keys(revenue).length > 0 ? (
+                            <>
+                                <div className="col-12 col-lg-3 mb-3 mb-lg-0">
+                                    <table className="table table-hover table-bordered border-success my-1"
+                                           style={{fontSize: '1.05rem'}}>
+                                        <thead className="table-success">
+                                        <tr>
+                                            <th>#</th>
+                                            <th>Mặt bằng</th>
+                                            <th>Doanh thu</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
                                         {Object.entries(revenue).map(([key, value], index) => (
                                             <tr key={index}>
                                                 <td>{index + 1}</td>
                                                 <td>{key}</td>
-                                                <td>{value} VND</td>
+                                                <td>{new Intl.NumberFormat('vi-VN', {
+                                                    style: 'decimal',
+                                                    currency: 'VND',
+                                                }).format(value)} VND
+                                                </td>
                                             </tr>
                                         ))}
                                         <tr>
                                             <td colSpan={2}><strong>Tổng doanh thu</strong></td>
-                                            <td><strong>{totalRevenue()} VND</strong></td>
+                                            <td><strong>{new Intl.NumberFormat('vi-VN', {
+                                                style: 'decimal',
+                                                currency: 'VND',
+                                            }).format(totalRevenue())} VND</strong></td>
                                         </tr>
-                                    </>
-                                ) : (
-                                    <tr>
-                                        <td colSpan={3}>Đang tải...</td>
-                                    </tr>
-                                )}
-                                </tbody>
-                            </table>
-                        </div>
-                        <div className="col-12 col-lg-9">
-                            <div className="card widget-card border-light shadow-sm">
-                                <div className="card-body p-4">
-                                    <h5 className="card-title widget-card-title mb-2">Doanh Thu</h5>
-                                    <div id="bsb-chart-8" className="mt-2"></div>
+                                        </tbody>
+                                    </table>
                                 </div>
+                                <ChartComponent data={revenue}></ChartComponent>
+                            </>
+                        ) : (
+                            <div className="col-12">
+                                <p className="text-center">Không có dữ liệu để hiển thị.</p>
                             </div>
-                        </div>
+                        )}
+
                     </div>
                     <div className={"d-flex justify-content-center mt-4"}>
                         <Link className={"btn btn-secondary"} to="/home">

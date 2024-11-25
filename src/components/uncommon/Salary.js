@@ -6,33 +6,25 @@ import axios from "axios";
 import Footer from "../common/Footer";
 import {NavbarApp} from "../common/Navbar";
 import {Link, useNavigate} from "react-router-dom";
+import {toast} from "react-toastify";
+import * as XLSX from 'xlsx';
 
 const totalSalary = (data) => {
     return data.reduce((sum, {salary}) => sum + salary, 0);
 }
-const exportToCSV = async (filename) => {
-    const resp = await axios.get("http://localhost:8080/api/salary-csv", {
-        headers: {Authorization: `Bearer ${localStorage.getItem('jwtToken')}`},
-    });
-    const data = resp.data;
-    const csvRows = [];
-    const headers = Object.keys(data[0]);
-    csvRows.push(headers.join(','));
-    data.forEach(row => {
-        const values = headers.map(header => `"${row[header]}"`);
-        csvRows.push(values.join(',') + " VND");
-    });
-    csvRows.push(`Tổng,,,"${totalSalary(data)} VND"`);
-    const csvString = csvRows.join('\n');
-    const blob = new Blob([csvString], {type: 'text/csv'});
-    const url = window.URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.setAttribute('hidden', '');
-    a.setAttribute('href', url);
-    a.setAttribute('download', `${filename}.csv`);
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
+const handleExportToExcel = async (filename) => {
+    try {
+        const resp = await axios.get("http://localhost:8080/api/salary-csv", {
+            headers: {Authorization: `Bearer ${localStorage.getItem('jwtToken')}`},
+        });
+        const data = resp.data;
+        const ws = XLSX.utils.json_to_sheet(data);
+        const wb = XLSX.utils.book_new();
+        XLSX.utils.book_append_sheet(wb, ws, 'Sheet1');
+        XLSX.writeFile(wb, filename + '.xlsx');
+    } catch (error) {
+        toast.error(error.response.data);
+    }
 }
 export const formatDate = () => {
     const now = new Date();
@@ -42,6 +34,7 @@ export const formatDate = () => {
 }
 const Salary = () => {
     const token = localStorage.getItem('jwtToken');
+    const role = localStorage.getItem("userRole");
     const navigate = useNavigate();
     const [salary, setSalary] = useState([]);
     const [page, setPage] = useState(1);
@@ -70,6 +63,10 @@ const Salary = () => {
     }
     useEffect(() => {
         if (!token) navigate("/login");
+        if (role !== "ADMIN") {
+            navigate("/home");
+            toast.error("Bạn không có quyền thực hiện hành động này");
+        }
         const fetchData = async () => {
             try {
                 const resp = await axios.get("http://localhost:8080/api/salary", {
@@ -165,12 +162,18 @@ const Salary = () => {
                                                             <td className="salary-td">{index + 1 + (page - 1) * 5}</td>
                                                             <td className="salary-td">{value.name}</td>
                                                             <td className="salary-td">{value.position}</td>
-                                                            <td className="text-end">{value.salary} VND</td>
+                                                            <td className="text-end">{new Intl.NumberFormat('vi-VN', {
+                                                                style: 'decimal',
+                                                                currency: 'VND',
+                                                            }).format(value.salary)} VND</td>
                                                         </tr>
                                                     ))}
                                                     <tr>
                                                         <td colSpan={3} className="text-center">Tổng</td>
-                                                        <td className="text-center">{total} VND</td>
+                                                        <td className="text-center">{new Intl.NumberFormat('vi-VN', {
+                                                            style: 'decimal',
+                                                            currency: 'VND',
+                                                        }).format(total)} VND</td>
                                                     </tr>
                                                 </>
                                             ) : (
@@ -207,10 +210,10 @@ const Salary = () => {
                                     </div>
                                     <div className="d-flex justify-content-center justify-content-lg-end mb-3">
                                         <button className="btn btn-success" onClick={() =>
-                                            exportToCSV(`salary_report_` + formatDate())
+                                            handleExportToExcel(`salary_report_` + formatDate())
                                         }>
                                             <i className="bi bi-file-earmark-spreadsheet me-2"></i>
-                                            Tải xuống CSV
+                                            Tải xuống Excel
                                         </button>
                                     </div>
                                     <div className="justify-content-center align-items-center mt-3">

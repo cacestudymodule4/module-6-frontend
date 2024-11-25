@@ -110,7 +110,7 @@ const UserInfo = () => {
                                                 <input
                                                     type="text"
                                                     className="form-control"
-                                                    value={userInfo?.birthday || ''}
+                                                    value={new Date(userInfo?.birthday).toLocaleDateString("vi-VN") || ''}
                                                     disabled
                                                 />
                                                 <label>Sinh nhật</label>

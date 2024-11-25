@@ -2,6 +2,7 @@ import React from 'react';
 import {Navbar, Nav, NavDropdown, Container, Offcanvas} from 'react-bootstrap';
 import "bootstrap/dist/css/bootstrap.min.css";
 import {useNavigate} from "react-router-dom";
+
 export const NavbarApp = () => {
     const userRole = localStorage.getItem("userRole");
     const navigate = useNavigate();
@@ -40,12 +41,15 @@ export const NavbarApp = () => {
                                     title="Lựa chọn"
                                     id={`offcanvasNavbarDropdown-expand-${expand}`}
                                 >
-                                    <NavDropdown.Item href="/salary">
-                                        Bảng lương
-                                    </NavDropdown.Item>
-                                    <NavDropdown.Item href="/report">
-                                        Doanh thu
-                                    </NavDropdown.Item>
+                                    {userRole === "ADMIN" ?
+                                        <>
+                                            <NavDropdown.Item href="/salary">
+                                                Bảng lương
+                                            </NavDropdown.Item>
+                                            <NavDropdown.Item href="/report">
+                                                Doanh thu
+                                            </NavDropdown.Item>
+                                        </> : ""}
                                     <NavDropdown.Item href="/facilities/list">
                                         Trang thiết bị
                                     </NavDropdown.Item>
