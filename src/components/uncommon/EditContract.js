@@ -4,109 +4,94 @@ import {Formik, Field, Form as FormikForm, ErrorMessage} from "formik";
 import axios from "axios";
 import {toast} from "react-toastify";
 import * as Yup from "yup";
-import {useNavigate} from "react-router-dom";
+import {useNavigate, useParams} from "react-router-dom";
 import Footer from "../common/Footer";
 import {NavbarApp} from "../common/Navbar";
 import '../../assets/css/Contract.css';
-import {FaRedo, FaSearch} from "react-icons/fa";
-import AddCustomer from "./AddCustomer";
-import {Ground} from "./Ground/Ground";
-import distinctFloors from "react-modal/lib/helpers/classList";
+import {FaSearch} from "react-icons/fa";
 
 function AddContract() {
     const navigate = useNavigate();
-    const [ground, setGround] = useState([]);
+    const {id} = useParams();
+    const [contractEdit, setContractEdit] = useState({});
+    const [staff, setStaff] = useState([]);
     const [customer, setCustomer] = useState([]);
-    const [groundSearch, setGroundSearch] = useState(null);
     const [customerSelected, setCustomerSelected] = useState(null);
-    const [groundSelected, setGroundSelected] = useState(null);
-    const [priceGround, setPriceGround] = useState('');
+    const [staffSelected, setStaffSelected] = useState(null);
     const [startDay, setStartDay] = useState('');
     const [endDay, setEndDay] = useState('');
-    const [showMoadlCusAdd, setShowMoadlCusAdd] = useState(false);
     const [term, setTerm] = useState('');
     const [showCusModal, setShowCusModal] = useState(false);
-    const [showGroundModal, setShowGroundModal] = useState(false);
-    const [floor, setFloor] = useState('');
-    const [totalPrice, setTotalPrice] = useState(0);
+    const [showStaffModal, setShowStaffModal] = useState(false);
     const [checkDay, setCheckDay] = useState('1000-01-01');
     const token = localStorage.getItem("jwtToken");
 
-    async function getFloor() {
-        try {
-            const response = await axios.get("http://localhost:8080/api/floor/get-list", {
-                headers: {Authorization: `Bearer ${localStorage.getItem('jwtToken')}`}
-            })
-            setFloor(response.data);
-        } catch (error) {
-            console.log(error);
-        }
-    }
-
-    async function getCustomer() {
-        try {
-            const response = await axios.get("http://localhost:8080/api/customers/list-add", {
-                headers: {Authorization: `Bearer ${localStorage.getItem('jwtToken')}`}
-            })
-            setCustomer(response.data);
-        } catch (error) {
-            console.log(error);
-        }
-    }
-
-    async function getGround() {
-        try {
-            const response = await axios.get("http://localhost:8080/api/contract/list-rent", {
-                headers: {Authorization: `Bearer ${localStorage.getItem('jwtToken')}`}
-            })
-            setGround(response.data);
-        } catch (error) {
-            console.log(error);
-        }
-    }
-
-    const getDistinctFloors = () => {
-        const distinctFloorsSet = new Set();
-
-        ground.forEach(groundItem => {
-            if (groundItem.floor !== null) {
-                distinctFloorsSet.add(groundItem.floor);
-            }
-        });
-
-        setFloor(Array.from(distinctFloorsSet));
-    }
-
     useEffect(() => {
         if (!token) navigate("/login")
-        // getFloor();
+
+        async function getStaff() {
+            try {
+                const response = await axios.get("http://localhost:8080/api/staff/list-add", {
+                    headers: {Authorization: `Bearer ${localStorage.getItem('jwtToken')}`}
+                })
+                setStaff(response.data);
+            } catch (error) {
+                console.log(error);
+            }
+        }
+
+        async function getContract() {
+            try {
+                const response = await axios.get(`http://localhost:8080/api/contract/findContract/${id}`
+                    , {
+                        headers: {Authorization: `Bearer ${localStorage.getItem('jwtToken')}`}
+                    });
+                setContractEdit(response.data);
+                setStartDay(response.data.startDate);
+                setTerm(response.data.term);
+            } catch (err) {
+                console.log(err);
+            }
+        }
+
+        async function getCustomer() {
+            try {
+                const response = await axios.get("http://localhost:8080/api/customers/list-add", {
+                    headers: {Authorization: `Bearer ${localStorage.getItem('jwtToken')}`}
+                })
+                setCustomer(response.data);
+            } catch (error) {
+                console.log(error);
+            }
+        }
+
+
+        getContract();
         getCustomer();
-        getGround();
+        getStaff();
     }, []);
-    const handleAddContract = async (value, {resetForm}) => {
-        console.log("adding contract");
+    const handleSaveContract = async (value) => {
         try {
             const data = {
-                ground: groundSelected,
-                customer: customerSelected,
-                totalPrice: totalPrice,
+                id: contractEdit.id,
+                staff: value.staffEdit,
+                customer: value.customerEdit,
                 term: value.term,
-                startDate: startDay,
-                endDate: endDay,
-                price: priceGround,
-                deposit: value.deposit,
+                startDate: value.startDay,
+                endDate: value.endDay,
                 description: value.content,
             }
-            const res = await axios.post(`http://localhost:8080/api/contract/add`, data, {
+            console.log(contractEdit.ground.status)
+            const res = await axios.put(`http://localhost:8080/api/contract/save`, data, {
                     headers: {Authorization: `Bearer ${localStorage.getItem('jwtToken')}`},
                 },
             )
             if (res.status === 200) {
-                toast.success("Thêm mới thành công");
+                toast.success("Chỉnh sửa thành công");
                 navigate('/contract/list')
             }
         } catch (error) {
-            toast.error("Thêm thất bại");
+            toast.error("Chỉnh sửa thất bại");
             console.log(error);
         }
     }
@@ -117,46 +102,55 @@ function AddContract() {
         return start.toISOString().split('T')[0];  // Định dạng lại thành "YYYY-MM-DD"
     };
 
-    const handleTermChange = (event) => {
+    const handleTermChange = (event, setFieldValue) => {
         const termValue = event.target.value;
         setTerm(termValue);
-        const price = priceGround * termValue;
-        setTotalPrice(price)
-        const calculatedEndDate = calculateEndDate(startDay, termValue);
-        setEndDay(calculatedEndDate);
+        setFieldValue("term", termValue);
+        if (startDay) {
+            const calculatedEndDate = calculateEndDate(startDay, termValue);
+            setEndDay(calculatedEndDate);
+        }
     };
+    const checkGround = async () => {
+        try {
+            const res = await axios.get(`http://localhost:8080/api/contract/checkDay?status=${contractEdit.ground.status}`,
+                {headers: {Authorization: `Bearer ${localStorage.getItem('jwtToken')}`},})
+            const checkDay = res.data;
+            setCheckDay(checkDay)
+            console.log(checkDay)
+
+        } catch (err) {
+            console.log(err);
+        }
+    }
 
     const handleStartDayChange = (event) => {
         const startDate = event.target.value;
         setStartDay(startDate);
-        const calculatedEndDate = calculateEndDate(startDate, term);
-        setEndDay(calculatedEndDate);
-        console.log(ground)
-        console.log(floor)
-    };
 
-    const initialValues = {
-        totalPrice: totalPrice * 0.01,
-        term: term,
-        customer: customerSelected ? customerSelected.name : "",
-        ground: groundSelected ? groundSelected.groundCode : "",
-        startDay: startDay,
-        endDay: '',
-        deposit: totalPrice ? totalPrice * 0.1 : '',
-        content: ''
+        if (term) {
+            const calculatedEndDate = calculateEndDate(startDate, term);  // Tính toán endDate
+            setEndDay(calculatedEndDate);  // Cập nhật endDay
+        }
+        checkGround();
     };
-    
+    const initialValues = {
+        customerEdit: customerSelected || contractEdit.customer,
+        staffEdit: staffSelected || contractEdit.staff,
+        term: term || contractEdit?.term,
+        customer: customerSelected?.name || contractEdit?.customer?.name,
+        staff: staffSelected?.name || contractEdit?.staff?.name,
+        startDay: startDay || contractEdit?.startDate,
+        endDay: endDay || contractEdit?.endDate,
+        content: contractEdit?.description,
+    };
     const checkDayDate = new Date(checkDay);
     const validationSchema = Yup.object().shape({
-
         content: Yup.string()
             .min(5, "Tối thiểu 5 ký tự")
             .max(300, "Tối đa 300 ký tự")
             .required('Không được trống'),
-        deposit: Yup.number()
-            .min(totalPrice * 0.1, "Tiền cọc phải lớn hơn hoặc bằng 10% tổng tiền")
-            .required('Không được trống'),
-        ground: Yup.string()
+        staff: Yup.string()
             .required("Không được trống"),
         customer: Yup.string()
             .required("không được trống"),
@@ -181,13 +175,14 @@ function AddContract() {
                         }
                     } else if (checkDay > today) {
                         if (startDate < checkDay) {
-                            return this.createError({message: `Mặt bằng đang được thuê,ngày bắt đầu phải sau ngày ${checkDayDate.toLocaleDateString()}`});
+                            return this.createError({message: `Ngày bắt đầu phải sau ngày ${checkDayDate.toLocaleDateString()}`});
                         }
                     }
 
                     return true;
                 }
             )
+
     });
     // =================Tìm trong modal===============//
     const handleSearchCus = async (value) => {
@@ -202,54 +197,39 @@ function AddContract() {
             console.log(err);
         }
     }
-    const handleSearchModal = (value) => {
-        const listSearch = ground.filter((item) =>
-            item.groundCode.toLowerCase().includes(value.searchGround.toLowerCase()) &&
-            item.area.toString().includes(value.searchAcreage.toString()) &&
-            item.floor.name.includes(value.positionFloor)
-        );
-        setGroundSearch(listSearch);
-    }
-    const checkGround = async (ground) => {
-        setPriceGround(ground.price);
-        setGroundSelected(ground);
-        setTotalPrice(term * ground.price);
-        setShowGroundModal(false);
+
+
+    const handleSearchStaff = async (value) => {
+
         try {
-            const res = await axios.get(`http://localhost:8080/api/contract/checkDay?status=${ground.status}&groundCode=${ground.groundCode}`,
-                {headers: {Authorization: `Bearer ${localStorage.getItem('jwtToken')}`},})
-            const checkDay = res.data;
-            setCheckDay(checkDay)
-        } catch (err) {
+            const res = await axios.get(`http://localhost:8080/api/staff/findStaff?searchStaff=${value.searchStaff}`, {
+                    headers: {Authorization: `Bearer ${localStorage.getItem('jwtToken')}`},
+                },
+            )
+            setStaff(res.data);
+        } catch
+            (err) {
             console.log(err);
         }
     }
-    const handleClose = () => {
-        setShowMoadlCusAdd(false);
-        setShowCusModal(true)
-    };
-    const reloadCustomerList = () => {
-        getCustomer()
-        setShowMoadlCusAdd(false);
-        setShowCusModal(true);
-    };
     return (
         <>
             <NavbarApp/>
-            <div className="container my-5 p-4">
-                <h3 className="text-center text-white mb-5 py-3 bg-success rounded"
+            <div className="container my-5 rounded p-4">
+                <h2 className="text-center text-white mb-5 py-3 bg-success rounded"
                     style={{fontSize: '2.15rem'}}>
-                    Thêm mới hợp đồng
-                </h3>
-
+                    Chỉnh sửa hợp đồng
+                </h2>
                 <Formik
                     initialValues={initialValues}
-                    onSubmit={handleAddContract}
+                    onSubmit={(values) => {
+                        handleSaveContract(values)
+                    }}
                     enableReinitialize
                     validationSchema={validationSchema}
                     validateOnBlur={true}
                 >
-                    {({values, setFieldValue}) => (
+                    {({setFieldValue, values}) => (
                         <FormikForm>
                             <Row>
                                 <Col md={3}>
@@ -257,14 +237,20 @@ function AddContract() {
                                         <Form.Label>
                                             <Button variant={"success"} style={{marginRight: "30px"}}
                                                     onClick={() => setShowCusModal(true)}>
-                                                Chọn khách hàng <span className="text-danger">*</span>
-                                            </Button></Form.Label>
+                                                Chon khách hàng
+                                            </Button> </Form.Label>
                                         <Field
                                             as={Form.Control}
                                             type="text"
                                             name={"customer"}
-                                            className="form-control custom-date-input readonly-input input-info "
-                                            value={customerSelected ? customerSelected.name : ""}
+                                            className="form-control custom-date-input readonly-input "
+                                            value={
+                                                customerSelected
+                                                    ? customerSelected.name
+                                                    : contractEdit && contractEdit.customer
+                                                        ? contractEdit.customer.name
+                                                        : ""
+                                            }
                                             readOnly
                                         />
                                         <ErrorMessage
@@ -283,7 +269,13 @@ function AddContract() {
                                             as={Form.Control}
                                             type="text"
                                             className="form-control custom-date-input readonly-input input-info "
-                                            value={customerSelected ? customerSelected.phone : ""}
+                                            value={
+                                                customerSelected
+                                                    ? customerSelected.phone
+                                                    : contractEdit && contractEdit.customer
+                                                        ? contractEdit.customer.phone
+                                                        : ""
+                                            }
                                             readOnly
                                         />
                                     </Form.Group>
@@ -298,7 +290,13 @@ function AddContract() {
                                             type="text"
                                             className="form-control custom-date-input readonly-input input-info "
                                             name={"emailCus"}
-                                            value={customerSelected ? customerSelected.email : ""}
+                                            value={
+                                                customerSelected
+                                                    ? customerSelected.email
+                                                    : contractEdit && contractEdit.customer
+                                                        ? contractEdit.customer.email
+                                                        : ""
+                                            }
                                             readOnly
                                         />
                                     </Form.Group>
@@ -313,34 +311,42 @@ function AddContract() {
                                             type="text"
                                             className="form-control custom-date-input readonly-input input-info "
                                             name={"adrCus"}
-                                            value={customerSelected ? customerSelected.address : ""}
+                                            value={
+                                                customerSelected
+                                                    ? customerSelected.address
+                                                    : contractEdit && contractEdit.customer
+                                                        ? contractEdit.customer.address
+                                                        : ""
+                                            }
                                             readOnly
                                         />
                                     </Form.Group>
                                 </Col>
                             </Row>
-                            {/*========================== chọn mat bằng ============================*/}
+                            {/*  --------------chọn nhân viên----------------------*/}
                             <Row>
                                 <Col md={3}>
                                     <Form.Group className="mb-3">
                                         <Form.Label>
                                             <Button variant={"success"} style={{marginRight: "30px"}}
-                                                    onClick={() => {
-                                                        setShowGroundModal(true);
-                                                        setGroundSearch(ground);
-                                                        getDistinctFloors()
-                                                    }}>
-                                                Chọn mặt bằng <span className="text-danger">*</span>
+                                                    onClick={() => setShowStaffModal(true)}>
+                                                Chon nhân viên
                                             </Button> </Form.Label>
                                         <Field
                                             type="text"
-                                            name={"ground"}
-                                            className="form-control custom-date-input readonly-input input-info "
-                                            value={groundSelected ? groundSelected.groundCode : ""}
+                                            name={"staff"}
+                                            className="form-control custom-date-input readonly-input "
+                                            value={
+                                                staffSelected
+                                                    ? staffSelected.name
+                                                    : contractEdit && contractEdit.staff
+                                                        ? contractEdit.staff.name
+                                                        : ""
+                                            }
                                             readOnly
                                         />
                                         <ErrorMessage
-                                            name="ground"
+                                            name="staff"
                                             component="div"
                                             className="error-message text-danger message-error"
                                         />
@@ -350,62 +356,73 @@ function AddContract() {
                                 <Col md={3}>
                                     <Form.Group className="mb-3">
                                         <Form.Label className={"add-label"}>
-                                            Diện tích </Form.Label>
+                                            Số điện thoại
+                                        </Form.Label>
                                         <Field
-                                            as={Form.Control}
                                             type="text"
                                             className="form-control custom-date-input readonly-input input-info "
-                                            value={groundSelected ? groundSelected.area + " m²" : ""}
+                                            value={
+                                                staffSelected
+                                                    ? staffSelected.phone
+                                                    : contractEdit && contractEdit.staff
+                                                        ? contractEdit.staff.phone
+                                                        : ""
+                                            }
                                             readOnly
                                         />
-
                                     </Form.Group>
                                 </Col>
                                 <Col md={3}>
                                     <Form.Group className="mb-3">
                                         <Form.Label className={"add-label"}>
-                                            Vị trí
+                                            Email
+                                        </Form.Label>
+                                        <Field
+                                            type="text"
+                                            className="form-control custom-date-input readonly-input input-info "
+                                            value={
+                                                staffSelected
+                                                    ? staffSelected.email
+                                                    : contractEdit && contractEdit.staff
+                                                        ? contractEdit.staff.email
+                                                        : ""
+                                            }
+                                            readOnly
+                                        />
+                                    </Form.Group>
+                                </Col>
+                                <Col md={3}>
+                                    <Form.Group className="mb-3">
+                                        <Form.Label className={"add-label"}>
+                                            Địa chỉ
                                         </Form.Label>
                                         <Field
                                             as={Form.Control}
                                             type="text"
                                             className="form-control custom-date-input readonly-input input-info "
-                                            value={groundSelected ? groundSelected.floor.name : ""}
+                                            value={
+                                                staffSelected
+                                                    ? staffSelected.address
+                                                    : contractEdit && contractEdit.staff
+                                                        ? contractEdit.staff.address
+                                                        : ""
+                                            }
                                             readOnly
                                         />
-
-                                    </Form.Group>
-                                </Col>
-                                <Col md={3}>
-                                    <Form.Group className="mb-3">
-                                        <Form.Label className={"add-label"}>
-                                            Giá thuê theo tháng </Form.Label>
-                                        <Field
-                                            as={Form.Control}
-                                            type="text"
-                                            className="form-control custom-date-input readonly-input input-info"
-                                            value={groundSelected ? groundSelected.price + " VNĐ" : ""}
-
-                                            readOnly
-                                        />
-
                                     </Form.Group>
                                 </Col>
                             </Row>
                             <Row>
                                 <Col md={3}>
                                     <Form.Group className="mb-3">
-                                        <Form.Label>Nhập kỳ hạng (tháng)<span
-                                            className="text-danger">*</span></Form.Label>
+                                        <Form.Label>Nhập kỳ hạng (tháng)</Form.Label>
                                         <Field
                                             as={Form.Control}
                                             type="number"
                                             name="term"
                                             className="custom-date-input"
-                                            value={term}
-                                            onChange={(e) => {
-                                                handleTermChange(e);
-                                            }}
+                                            value={values.term}
+                                            onChange={(e) => handleTermChange(e, setFieldValue)}
                                         />
                                         <ErrorMessage
                                             name="term"
@@ -416,24 +433,20 @@ function AddContract() {
                                 </Col>
                                 <Col md={3}>
                                     <Form.Group className="mb-3">
-                                        <Form.Label>Chọn ngày bắt đầu thuê <span
-                                            className="text-danger">*</span></Form.Label>
+                                        <Form.Label>Chọn ngày bắt đầu thuê</Form.Label>
                                         <Field
                                             as={Form.Control}
                                             type="date"
                                             name="startDay"
-                                            value={startDay}
                                             className={"custom-date-input"}
-                                            onChange={(e) => {
-                                                handleStartDayChange(e);
-                                            }}
+                                            value={startDay || contractEdit?.startDate || ""}
+                                            onChange={handleStartDayChange}
                                         />
                                         <ErrorMessage
                                             name="startDay"
                                             component="div"
                                             className="error-message text-danger message-error"
                                         />
-
                                     </Form.Group>
                                 </Col>
                                 <Col md={3}>
@@ -443,8 +456,7 @@ function AddContract() {
                                             as={Form.Control}
                                             type="date"
                                             name="endDay"
-                                            value={endDay}
-                                            className={"custom-date-input input-info readonly-input"}
+                                            className="form-control custom-date-input readonly-input input-info "
                                             readOnly
                                         />
                                         <ErrorMessage
@@ -454,47 +466,18 @@ function AddContract() {
                                         />
                                     </Form.Group>
                                 </Col>
-                                <Col md={3}>
-                                    <Form.Group className="mb-3">
-                                        <Form.Label>Tổng tiền</Form.Label>
-                                        <Field
-                                            as={Form.Control}
-                                            type="text"
-                                            className={"custom-date-input input-info"}
-                                            value={totalPrice + " VNĐ"}
-                                            readOnly
-                                        />
-                                    </Form.Group>
-                                </Col>
                             </Row>
-                            <Row>
-                                <Col md={3}>
-                                    <Form.Group className="mb-3">
-                                        <Form.Label>Tiền cọc (VNĐ)</Form.Label>
-                                        <Field
-                                            as={Form.Control}
-                                            type="number"
-                                            className={"custom-date-input"}
-                                            name="deposit"
-                                        />
-                                        <ErrorMessage
-                                            name="deposit"
-                                            component="div"
-                                            className="error-message text-danger message-error"
-                                        />
-                                    </Form.Group>
-                                </Col>
-                            </Row>
+
                             <Row>
                                 <Col md={12}>
                                     <Form.Group className="mb-3">
                                         <Form.Label className="fw-bold">
-                                            Nội dung <span className="text-danger">*</span>
+                                            Nội dung <span className="text-danger"></span>
                                         </Form.Label>
                                         <Field
                                             as="textarea"
                                             rows={4}
-                                            placeholder="Nhập nội dung hợp đồng (ví dụ: điều khoản, nghĩa vụ...)"
+                                            placeholder="Nhập nội dung hợp đồng"
                                             name="content"
                                             className="form-control"
                                         />
@@ -513,7 +496,7 @@ function AddContract() {
                                     Quay lại
                                 </Button>
                                 <Button variant="success" type="submit" className="btn-lg">
-                                    Thêm hợp đồng
+                                    Lưu
                                     <i className="bi bi-plus-circle" style={{marginLeft: '8px'}}></i>
                                 </Button>
                             </div>
@@ -521,18 +504,85 @@ function AddContract() {
                     )}
                 </Formik>
             </div>
+            {/*===========modal nhân viên====================*/}
+            <Modal show={showStaffModal} className={"modal-contract-custom"}>
+                <Modal.Header closeButton onClick={() => setShowStaffModal(false)}>
+                    <Modal.Title>Xác Nhận</Modal.Title>
 
+                </Modal.Header>
+                <Modal.Body>
+                    <div className={"search-fixed"}>
+                        <Formik initialValues={{searchStaff: ''}}
+                                onSubmit={handleSearchStaff}>
+                            {() => (
+                                <FormikForm className="mb-3 custom-search ">
+                                    <Form.Group className="mb-3" controlId="formSearch">
+                                        <Form.Label className="small-label">Tìm theo tên nhân viên</Form.Label>
+                                        <Field
+                                            as={Form.Control}
+                                            type="text"
+                                            placeholder="Nhập tên nhân viên"
+                                            name="searchStaff"
+                                        />
+                                    </Form.Group>
+                                    <Button style={{marginRight: "68%"}} variant="secondary" type="submit"
+                                            className={"search-contract-btn "}>
+                                        <FaSearch></FaSearch>
+                                    </Button>
+                                </FormikForm>
+                            )}
+                        </Formik>
+                    </div>
+                    <div className="modal-content-scroll">
+                        {staff.length === 0 ? (<h1 className={"text-center mt-5"}>Danh sách trống </h1>) :
+                            <Table striped bordered hover>
+                                <thead className={"custom-table text-white text-center"}>
+                                <tr>
+                                    <th>Tên nhân viên</th>
+                                    <th>Số điện thoại</th>
+                                    <th>Email</th>
+                                    <th colSpan="3" className="text-center">Hành động</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                {staff.map((staff, index) => (
+                                    <tr key={staff.id}>
+                                        <td className="text-center">{staff.name}</td>
+                                        <td className="text-center">{staff.phone}</td>
+                                        <td className="text-center">{staff.email}</td>
+                                        <td className="text-center">
+                                            <Button variant="info" type="button"
+                                                    onClick={() => {
+                                                        setStaffSelected(staff);
+                                                        setShowStaffModal(false);
+                                                    }}
+                                            >
+                                                Chọn
+                                            </Button>
+                                        </td>
+                                    </tr>
+                                ))}
+                                </tbody>
+                            </Table>}
+
+                    </div>
+
+                </Modal.Body>
+                <Modal.Footer>
+                    <Button variant="secondary" onClick={() => setShowStaffModal(false)}>
+                        Hủy
+                    </Button>
+                </Modal.Footer>
+            </Modal>
             {/*============modal khách hàng=================*/}
             <Modal show={showCusModal} className={"modal-contract-custom"}>
                 <Modal.Header closeButton onClick={() => setShowCusModal(false)}>
                     <Modal.Title>Xác Nhận</Modal.Title>
+
                 </Modal.Header>
                 <Modal.Body>
                     <div className={"search-fixed"}>
-                        <Formik initialValues={{
-                            searchCus: '',
-                            searchAcreage: ''
-                        }}
+                        <Formik initialValues={{searchCus: ''}}
                                 onSubmit={(value) => handleSearchCus(value)}>
                             {() => (
                                 <FormikForm className="mb-3 custom-search ">
@@ -545,22 +595,13 @@ function AddContract() {
                                             name="searchCus"
                                         />
                                     </Form.Group>
-                                    <Button style={{position: "absolute", right: "68%"}} variant="secondary"
-                                            type="submit"
+                                    <Button style={{marginRight: "68%"}} variant="secondary" type="submit"
                                             className={"search-contract-btn "}>
                                         <FaSearch></FaSearch>
                                     </Button>
-                                    <Button variant="success"
-                                            style={{marginRight: "56%", marginTop: "10px", fontSize: "small"}}
-                                            onClick={() => {
-                                                setShowMoadlCusAdd(true);
-                                                setShowCusModal(false)
-                                            }}>
-                                        Đăng ký</Button>
                                 </FormikForm>
                             )}
                         </Formik>
-
                     </div>
                     <div className="modal-content-scroll">
                         {customer.length === 0 ? (<h1 className={"text-center mt-5"}>Danh sách trống </h1>) :
@@ -601,117 +642,6 @@ function AddContract() {
                         Hủy
                     </Button>
                 </Modal.Footer>
-            </Modal>
-            {/*===========modal mặt bằng====================*/}
-            <Modal show={showGroundModal} className={"modal-contract-custom"}>
-                <Modal.Header closeButton onClick={() => setShowGroundModal(false)}>
-                    <Modal.Title>Xác Nhận</Modal.Title>
-
-                </Modal.Header>
-                <Modal.Body>
-                    <div className={"search-fixed"}>
-                        <Formik initialValues={{
-                            searchGround: '',
-                            searchAcreage: '',
-                            positionFloor: ''
-                        }}
-                                onSubmit={handleSearchModal}>
-                            {({resetForm}) => (
-                                <FormikForm className="mb-3 custom-search mr-5">
-                                    <Form.Group className="mb-3" controlId="formSearch">
-                                        <Form.Label className="small-label">Tìm theo tên</Form.Label>
-                                        <Field
-                                            as={Form.Control}
-                                            type="text"
-                                            placeholder="Nhập tên mặt bằng"
-                                            name="searchGround"
-                                        />
-
-                                    </Form.Group>
-                                    <Form.Group className="mb-3" controlId="formSearch">
-                                        <Form.Label className="small-label">Tìm theo diện tích</Form.Label>
-                                        <Field
-                                            as={Form.Control}
-                                            type="number"
-                                            placeholder="Nhập diện tích"
-                                            name="searchAcreage"
-                                        />
-
-                                    </Form.Group>
-                                    <Field as="select" name="positionFloor"
-                                           className="custom-date-input custom-select "
-                                           style={{width: '20%', marginTop: "10px"}}
-                                    >
-                                        <Form.Label className="small-label">Tìm theo diện tích</Form.Label>
-                                        <option value=""
-                                                className={"text-center"}
-                                        > Chọn vị trí
-                                        </option>
-                                        {floor?.map((floor) => (
-                                            <option key={floor.id} value={floor.name} className={"text-center"}>
-                                                {floor.name}
-                                            </option>
-                                        ))}
-                                    </Field>
-                                    <Button style={{marginRight: "5%"}} variant="secondary" type="submit"
-                                            className={"search-contract-btn "}>
-                                        <FaSearch></FaSearch>
-                                    </Button>
-                                    <Button variant="secondary" style={{borderRadius: "50%", marginTop: "7px"}}
-                                            type={"button"}
-                                            onClick={() => {
-                                                setGroundSearch(ground);
-                                                resetForm()
-                                            }
-                                            }> <FaRedo/></Button>
-                                </FormikForm>
-                            )}
-                        </Formik>
-                    </div>
-                    <div className="modal-content-scroll">
-                        {groundSearch?.length === 0 ? (<h1 className={"text-center mt-5"}>Danh sách trống </h1>) :
-                            <Table striped bordered hover>
-                                <thead className={"custom-table text-white text-center"}>
-                                <tr>
-                                    <th>Mã mặt bằng</th>
-                                    <th>Diện tích</th>
-                                    <th>Vị trí</th>
-                                    <th>Giá thuê (tháng)</th>
-                                    <th colSpan="3" className="text-center">Hành động</th>
-                                </tr>
-                                </thead>
-                                <tbody>
-                                {groundSearch?.map((ground, index) => (
-                                    <tr key={ground.id}>
-                                        <td className="text-center">{ground.groundCode}</td>
-                                        <td className="text-center">{ground.area} m²</td>
-                                        <td className="text-center">{ground.floor.name}</td>
-                                        <td className="text-center">{ground.price} VNĐ</td>
-                                        <td className="text-center">
-                                            <Button variant="info" type="button"
-                                                    onClick={() => {
-                                                        checkGround(ground)
-                                                    }}
-                                            >
-                                                Chọn
-                                            </Button>
-                                        </td>
-                                    </tr>
-                                ))}
-                                </tbody>
-                            </Table>}
-                    </div>
-                </Modal.Body>
-                <Modal.Footer>
-                    <Button variant="secondary" onClick={() => setShowGroundModal(false)}>
-                        Hủy
-                    </Button>
-                </Modal.Footer>
-            </Modal>
-            <Modal show={showMoadlCusAdd} onHide={handleClose}>
-                <Modal.Body className={"custom-modal-add-cus"}>
-                    <AddCustomer showNavbarFooter={false} onClose={reloadCustomerList}/>
-                </Modal.Body>
             </Modal>
             <Footer/>
         </>

@@ -66,8 +66,7 @@ function Contract() {
             };
 
             const response = await axios.get("http://localhost:8080/api/contract/search", {
-                headers: {Authorization: `Bearer ${localStorage.getItem('jwtToken')}`},
-                params: data,
+                headers: {Authorization: `Bearer ${localStorage.getItem('jwtToken')}`}, params: data,
             });
             setFilteredContract(response.data.content);
             setTotalPages(response.data.totalPages);
@@ -95,7 +94,7 @@ function Contract() {
                     : `http://localhost:8080/api/contract/list-page`, {
                     headers: {Authorization: `Bearer ${localStorage.getItem('jwtToken')}`}, params,
                 });
-                console.log(res)
+
                 setFilteredContract(res.data.content);
             } catch (error) {
                 toast.error("Có gì đó sai sai!");
@@ -129,10 +128,8 @@ function Contract() {
                 selectedFilter: value.selectedFilter,
             }
             const resp = await axios.get(`http://localhost:8080/api/contract/filter`, {
-                    headers: {Authorization: `Bearer ${localStorage.getItem('jwtToken')}`},
-                    params: data
-                },
-            )
+                headers: {Authorization: `Bearer ${localStorage.getItem('jwtToken')}`}, params: data
+            },)
             if (resp.status === 200) {
                 setFilteredContract(resp.data.content);
                 setTotalPages(resp.data.totalPages);
@@ -141,6 +138,7 @@ function Contract() {
             console.log(err)
         }
     }
+
     const handleDeleteClick = (contract) => {
         setContractToDelete(contract);
         setShowDeleteModal(true);

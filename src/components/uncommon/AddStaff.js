@@ -75,7 +75,7 @@ const AddStaff = () => {
 
         position: Yup.string()
             .required("Xin hãy chọn vị trí")
-            .oneOf(["Nhân viên", "Sales", "ck", "IT"], "Vị trí không hợp lệ"),
+            .oneOf(["Quản lý", "Nhân viên", "Nhân sự", "IT"], "Vị trí không hợp lệ"),
     });
 
     const addEmployee = async (values) => {
@@ -200,6 +200,7 @@ const AddStaff = () => {
                                     <option value="Nhân viên">Nhân viên</option>
                                     <option value="Nhân sự">Nhân sự</option>
                                     <option value="IT">IT</option>
+                                    <option value="Sales">Sales</option>
                                 </Field>
                                 <ErrorMessage name="position" component="div" className="text-danger small"/>
                             </div>
@@ -220,7 +221,7 @@ const AddStaff = () => {
                             className="btn btn-outline-success btn-lg me-2"
                             onClick={() => navigate("/staff/list")}>
                             <i className="bi bi-arrow-left-circle me-2"></i>
-                            Trở lại
+                            Quay lại
                         </button>
 
                         <button type="submit" className="btn btn-outline-success btn-lg">

@@ -78,8 +78,12 @@ const handleBack =() =>{
     return (
         <>
             {showNavbarFooter && <NavbarApp/>}
-            <div className="container mt-5" style={{marginBottom: '50px'}}>
-                <h2 className="text-center mb-5 bg-success text-white py-4">Thêm Mới Khách Hàng</h2>
+            <div className="container mt-5" style={{marginBottom: "50px"}}>
+                <h3 className="text-center text-white mb-5 bg-success py-4 rounded"
+                    style={{fontSize: '2.25rem'}}>
+                    Thêm Mới Khách Hàng
+                </h3>
+
                 <form onSubmit={formik.handleSubmit}>
                     {/* Row 1: Name and Birthday */}
                     <div className="row mb-3">
