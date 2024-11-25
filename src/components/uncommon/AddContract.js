@@ -708,9 +708,9 @@ function AddContract() {
                     </Button>
                 </Modal.Footer>
             </Modal>
-            <Modal show={showMoadlCusAdd} onHide={handleClose}>
-                <Modal.Body className={"custom-modal-add-cus"}>
-                    <AddCustomer showNavbarFooter={false} onClose={reloadCustomerList}/>
+            <Modal show={showMoadlCusAdd} onHide={handleClose}  style={{padding:'5%'}}>
+                <Modal.Body  style={{padding:'5%'}} className={"custom-modal-add-cus p-4"} >
+                    <AddCustomer  showNavbarFooter={false} onClose={reloadCustomerList}/>
                 </Modal.Body>
             </Modal>
             <Footer/>
