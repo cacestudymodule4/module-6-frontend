@@ -11,11 +11,10 @@ import {toast} from "react-toastify";
 import moment from "moment/moment";
 import Pagination from "react-bootstrap/Pagination";
 
-
 function CustomerList() {
     const token = localStorage.getItem('jwtToken');
     const navigate = useNavigate();
-    const [customers, setCustomers] = useState([]);
+    const [customer, setCustomer] = useState([]);
     const [filteredCustomers, setFilteredCustomers] = useState([]);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [customerToDelete, setCustomerToDelete] = useState(null);
@@ -26,21 +25,21 @@ function CustomerList() {
     const [page, setPage] = useState(1);
     const formatPhoneNumber = (phoneNumber) => {
         const cleaned = ('' + phoneNumber).replace(/\D/g, '');
-        const match = cleaned.match(/^(\d{3})(\d{3})(\d{4})$/);
-        return match ? `${match[1]}.${match[2]}.${match[3]}` : phoneNumber;
+        const match = cleaned.match(/^(\d{4})(\d{3})(\d{3})$/);
+        return match ? `${match[1]} ${match[2]} ${match[3]}` : phoneNumber;
     };
     const formatIdentification = (identification) => {
         const cleaned = ('' + identification).replace(/\D/g, '');
-        const match = cleaned.match(/^(\d{3})(\d{3})(\d{3,4})$/);
-        return match ? `${match[1]}.${match[2]}.${match[3]}` : identification;
+        const match = cleaned.match(/^(\d{3,4})(\d{3,4})(\d{3,4})$/);
+        return match ? `${match[1]} ${match[2]} ${match[3]}` : identification;
     };
     const displayGender = (gender) => {
         return gender ? "Nam" : "Nữ";
     };
 
     const fetchCustomers = async () => {
-        console.log("hello")
         try {
+            const newCustomer = JSON.parse(localStorage.getItem("newCustomer"));
             const response = await axios.get('http://localhost:8080/api/customers/list', {
                 params: {
                     page: page - 1,
@@ -48,9 +47,13 @@ function CustomerList() {
                 },
                 headers: {Authorization: `Bearer ${localStorage.getItem('jwtToken')}`}
             });
-            console.log("Dữ liệu khách hàng:", response.data);
-            setCustomers(response.data.content);
-            setFilteredCustomers(response.data.content);
+            let customerList = response.data.content;
+            if (newCustomer) {
+                customerList = [newCustomer, ...customerList];
+                localStorage.removeItem("newCustomer");
+            }
+            setCustomer(customerList);
+            setFilteredCustomers(customerList);
             setTotalPages(response.data.totalPages);
         } catch (error) {
             console.error('Có lỗi khi lấy danh sách khách hàng:', error);
@@ -65,6 +68,7 @@ function CustomerList() {
             fetchCustomers(page);
         }
     }, [page]);
+
 
     const handleNavigateToAddCustomer = () => {
         navigate('/customer/add');
@@ -84,7 +88,7 @@ function CustomerList() {
             if (filteredCustomers.length === 1 && page > 1) {
                 setPage(page - 1);
             } else {
-                fetchCustomers(page - 1, { name: searchName, identification: searchIdentification });
+                fetchCustomers(page - 1, {name: searchName, identification: searchIdentification});
             }
         } catch (error) {
             console.error('Có lỗi khi xóa khách hàng:', error);
@@ -176,6 +180,7 @@ function CustomerList() {
                             <th>Số điện thoại</th>
                             <th>Email</th>
                             <th>Công ty</th>
+                            <th>Trạng thái</th>
                             <th colSpan={2}>Hành Động</th>
                         </tr>
                         </thead>
@@ -183,7 +188,7 @@ function CustomerList() {
                         {filteredCustomers.length > 0 ? (
                             filteredCustomers
                                 .map((customer, index) => (
-                                    <tr key={customer.id}>
+                                    <tr key={customer.id} className={customer.isNew ? "customer-highlight" : ""}>
                                         <td>{(page - 1) * pageSize + index + 1}</td>
                                         <td>{customer.name}</td>
                                         <td>{moment(customer.birthday).format("DD-MM-YYYY")}</td>
@@ -193,6 +198,13 @@ function CustomerList() {
                                         <td>{formatPhoneNumber(customer.phone)}</td>
                                         <td>{customer.email}</td>
                                         <td>{customer.company}</td>
+                                        <td>
+                                            {customer.isDisabled ? (
+                                                <span style={{color: "red"}}>Đã vô hiệu hóa</span>
+                                            ) : (
+                                                <span style={{color: "green"}}>Đang hoạt động</span>
+                                            )}
+                                        </td>
                                         <td>
                                             <button
                                                 className="btn btn-warning"
