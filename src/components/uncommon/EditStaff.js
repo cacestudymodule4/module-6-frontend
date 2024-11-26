@@ -14,6 +14,8 @@ const EditStaff = () => {
     const navigate = useNavigate();
     const [staffData, setStaffData] = useState(null);
     const userRole = localStorage.getItem("userRole");
+    const [positions, setPositions] = useState([]);
+
 
     useEffect(() => {
         if (!token) navigate("/login");
@@ -29,6 +31,18 @@ const EditStaff = () => {
                 console.log(response)
             })
             .catch((error) => toast.error("Lỗi khi tải thông tin nhân viên"));
+        const fetchPositions = async () => {
+            try {
+                const response = await axios.get('http://localhost:8080/api/positions', {
+                    headers: {Authorization: `Bearer ${token}`}
+                });
+                setPositions(response.data);
+            } catch (error) {
+                console.error('Lỗi khi lấy dữ liệu Position:', error);
+                toast.error('Không thể tải danh sách bộ phận.');
+            }
+        };
+        fetchPositions();
     }, [id]);
 
     const validationSchema = Yup.object({
@@ -40,17 +54,17 @@ const EditStaff = () => {
             .matches(/^(09|08)[0-9]{8}$/, "Số điện thoại không hợp lệ")
             .required("Số điện thoại không được để trống"),
         address: Yup.string().required("Địa chỉ không được để trống"),
-        position: Yup.string().required("Vị trí không được để trống"),
+        positionId: Yup.string().required("Vị trí không được để trống"),
         salary: Yup.number().required("Lương không được để trống"),
         birthday: Yup.date().required("Ngày sinh không được để trống"),
         startDate: Yup.date().required("Ngày làm việc không được để trống"),
     });
 
     const handleSubmit = async (values) => {
-        console.log(values)
+        console.log("Dữ liệu gửi đi: ", values);
         try {
             const response = await axios.put(`http://localhost:8080/api/staff/edit/${id}`, values, {
-                headers: {Authorization: `Bearer ${localStorage.getItem('jwtToken')}`}
+                headers: {Authorization: `Bearer ${localStorage.getItem('jwtToken')}`},
             });
             toast.success("Cập nhật nhân viên thành công!");
             navigate("/staff/list");
@@ -69,19 +83,22 @@ const EditStaff = () => {
                     Chỉnh sửa nhân viên
                 </h3>
                 <Formik
+                    enableReinitialize
                     initialValues={{
                         name: staffData?.name || '',
                         birthday: staffData?.birthday || '',
                         address: staffData?.address || '',
+                        gender: staffData?.gender || true,
                         phone: staffData?.phone || '',
                         email: staffData?.email || '',
                         identification: staffData?.identification || '',
-                        position: staffData?.position || '',
+                        positionId: staffData?.position?.id || '',
                         salary: staffData?.salary || '',
                         startDate: staffData?.startDate || '',
                     }}
                     validationSchema={validationSchema}
                     onSubmit={handleSubmit}>
+
 
                     <FormikForm>
                         <div className="row">
@@ -139,15 +156,26 @@ const EditStaff = () => {
                                     <ErrorMessage name="salary" component="div" className="text-danger small"/>
                                 </div>
 
-                                <div className="mb-3">
-                                    <label className="form-label" style={{fontSize: '1.1rem'}}>Bộ phận</label>
-                                    <Field as="select" name="position" className="form-control form-control-lg">
-                                        <option value="Manager">Quản lý</option>
-                                        <option value="Staff">Nhân viên</option>
-                                        <option value="HR">Nhân sự</option>
-                                        <option value="IT">IT</option>
+                                <div className="mb-2">
+                                    <label className="form-label" style={{fontSize: "1.1rem"}}>Bộ phận</label>
+                                    <Field as="select" name="positionId" className="form-control form-control-lg">
+                                        <option value="">Chọn bộ phận</option>
+                                        {positions.length > 0 &&
+                                            positions.map((position) => (
+                                                <option key={position.id} value={position.id}>
+                                                    {position.name}
+                                                </option>
+                                            ))}
                                     </Field>
-                                    <ErrorMessage name="position" component="div" className="text-danger small"/>
+                                    <ErrorMessage name="positionId" component="div" className="text-danger small"/>
+                                </div>
+
+                                <div className="mb-3">
+                                    <label className="form-label" style={{fontSize: '1.1rem'}}>Giới tính</label>
+                                    <Field as="select" name="gender" className="form-select form-select-lg">
+                                        <option value={true}>Nam</option>
+                                        <option value={false}>Nữ</option>
+                                    </Field>
                                 </div>
                             </div>
                         </div>
