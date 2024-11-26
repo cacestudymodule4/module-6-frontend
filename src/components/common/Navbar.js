@@ -42,12 +42,15 @@ export const NavbarApp = () => {
                                     title="Lựa chọn"
                                     id={`offcanvasNavbarDropdown-expand-${expand}`}
                                 >
-                                    <NavDropdown.Item href="/salary">
-                                        Bảng lương
-                                    </NavDropdown.Item>
-                                    <NavDropdown.Item href="/report">
-                                        Doanh thu
-                                    </NavDropdown.Item>
+                                    {userRole === "ADMIN" ?
+                                        <>
+                                            <NavDropdown.Item href="/salary">
+                                                Bảng lương
+                                            </NavDropdown.Item>
+                                            <NavDropdown.Item href="/report">
+                                                Doanh thu
+                                            </NavDropdown.Item>
+                                        </> : ""}
                                     <NavDropdown.Item href="/facilities/list">
                                         Trang thiết bị
                                     </NavDropdown.Item>

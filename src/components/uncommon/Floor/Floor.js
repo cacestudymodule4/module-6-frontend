@@ -1,12 +1,12 @@
-import React, {useState, useEffect, useRef} from "react";
+import React, { useState, useEffect, useRef } from "react";
 import axios from "axios";
-import {useNavigate} from "react-router-dom";
-import {FaRedo, FaSearch} from 'react-icons/fa';
-import {Table, Modal, Button} from 'react-bootstrap';
+import { useNavigate } from "react-router-dom";
+import { FaRedo, FaSearch } from 'react-icons/fa';
+import { Table, Modal, Button } from 'react-bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import {toast} from "react-toastify";
-import {Formik, Field, Form} from "formik";
-import {NavbarApp} from "../../common/Navbar";
+import { toast } from "react-toastify";
+import { Formik, Field, Form } from "formik";
+import { NavbarApp } from "../../common/Navbar";
 import Footer from "../../common/Footer";
 import Pagination from 'react-bootstrap/Pagination';
 
@@ -19,30 +19,41 @@ export const Floor = () => {
     const [currentFloor, setCurrentFloor] = useState({});
     const [shouldRefresh, setShouldRefresh] = useState(false);
     const [searchParams, setSearchParams] = useState({});
+    const [floorCategories, setFloorCategories] = useState([]);
 
     const formikRef = useRef(null);
-
-    const initialValues = {
-        name: '',
-        area: '',
-        typeOfFloor: ''
-    };
 
     useEffect(() => {
         async function getFloors() {
             try {
                 const response = await axios.get("http://localhost:8080/api/floor/list"
                     , {
-                        headers: {Authorization: `Bearer ${localStorage.getItem('jwtToken')}`}
+                        headers: { Authorization: `Bearer ${localStorage.getItem('jwtToken')}` }
                     });
-                setFloor(response.data.content);
+                setFloor(response.data.content || []);
                 setTotalPages(response.data.totalPages);
             } catch (err) {
                 console.log(err);
             }
         }
 
+        const getFloorCategories = async () => {
+            try {
+                const res = await axios.get(`http://localhost:8080/api/floor-category/list`,
+                    {
+                        headers: { Authorization: `Bearer ${localStorage.getItem('jwtToken')}` }
+                    }
+                );
+                setFloorCategories(res.data);
+
+            } catch (error) {
+                console.log(error);
+
+            }
+        }
+
         getFloors();
+        getFloorCategories();
     }, [shouldRefresh]);
 
     const handleReload = () => {
@@ -59,8 +70,9 @@ export const Floor = () => {
         try {
             const data = {
                 name: values?.name,
-                area: values?.area,
-                typeOfFloor: values?.typeOfFloor
+                areaFrom: values?.areaFrom,
+                areaTo: values?.areaTo,
+                floorCategoryId: values?.floorCategoryId
             }
             const res = await axios.get(`http://localhost:8080/api/floor/search`, {
                 headers: {
@@ -85,13 +97,13 @@ export const Floor = () => {
         try {
             await axios.delete(`http://localhost:8080/api/floor/delete/${currentFloor.id}`
                 , {
-                    headers: {Authorization: `Bearer ${localStorage.getItem('jwtToken')}`}
+                    headers: { Authorization: `Bearer ${localStorage.getItem('jwtToken')}` }
                 });
             toast.success("Xoá thành công");
             handleReload();
             setShowDeleteModal(false);
         } catch (error) {
-            console.log(error);
+            toast.error(error.response.data);
         }
     }
 
@@ -112,7 +124,7 @@ export const Floor = () => {
                     });
                 } else {
                     res = await axios.get(`http://localhost:8080/api/floor/list?page=${page - 1}`, {
-                        headers: {Authorization: `Bearer ${localStorage.getItem('jwtToken')}`}
+                        headers: { Authorization: `Bearer ${localStorage.getItem('jwtToken')}` }
                     });
                 }
                 setFloor(res.data.content);
@@ -122,15 +134,23 @@ export const Floor = () => {
         }
     };
 
+    const initialValues = {
+        name: '',
+        areaFrom: '',
+        areaTo: '',
+        floorCategoryId: floorCategories[0]?.id || ''
+    };
+
     return (
         <>
-            <NavbarApp/>
-            <div className="container my-5 rounded mx-auto p-4" style={{minHeight: '45vh'}}>
-                <h3 className="text-center mb-5 bg-success rounded text-white py-3" style={{fontSize: '2.25rem'}}>
+            <NavbarApp />
+            <div className="my-5 rounded mx-auto p-4" style={{ minHeight: '45vh' }}>
+                <h3 className="text-center mb-5 bg-success rounded text-white py-3" style={{ fontSize: '2.25rem' }}>
                     Danh sách tầng</h3>
                 <Formik
                     innerRef={formikRef}
                     initialValues={initialValues}
+                    enableReinitialize
                     onSubmit={(value) => handleSearch(value)}
                 >
                     <Form className="mb-3 custom-search">
@@ -145,24 +165,38 @@ export const Floor = () => {
                             />
                         </div>
                         <div className="mb-3">
-                            <label htmlFor="area" className="form-label">Tìm kiếm theo diện tích</label>
-                            <Field
-                                as={Form.Control}
-                                type="text"
-                                placeholder="Nhập diện tích"
-                                name="area"
-                                className="form-control"
-                            />
+                            <label htmlFor="area" className="form-label">Tìm kiếm theo diện tích trong khoảng</label>
+                            <div className="d-flex">
+                                <Field
+                                    as={Form.Control}
+                                    type="text"
+                                    placeholder="Từ"
+                                    name="areaFrom"
+                                    className="form-control"
+                                />
+                                <span className="mt-2 ms-3 me-3">-</span>
+                                <Field
+                                    as={Form.Control}
+                                    type="text"
+                                    placeholder="Đến"
+                                    name="areaTo"
+                                    className="form-control"
+                                />
+                            </div>
                         </div>
                         <div className="mb-3">
-                            <label htmlFor="typeOfFloor" className="form-label">Tìm kiếm theo loại tầng</label>
+                            <label htmlFor="floorId" className="form-label" style={{ fontSize: '1.2rem' }}>Chọn loại tầng:</label>
                             <Field
-                                as={Form.Control}
-                                type="text"
-                                placeholder="Nhập loại tầng"
-                                name="typeOfFloor"
-                                className="form-control"
-                            />
+                                as="select"
+                                id="floorCategoryId"
+                                name="floorCategoryId"
+                                className="form-select form-control">
+                                {floorCategories.map(element => (
+                                    <option key={element.id} value={element.id}>
+                                        {element.name}
+                                    </option>
+                                ))}
+                            </Field>
                         </div>
                         <Button variant="secondary" type="submit" className="mt-3">
                             <FaSearch></FaSearch>
@@ -170,13 +204,13 @@ export const Floor = () => {
                     </Form>
                 </Formik>
                 <Button variant="success" className="mb-4"
-                        style={{fontSize: '1.1rem', padding: '0.75rem 2rem', marginTop: '1rem', marginRight: '10px'}}
-                        onClick={() => navigate('/floor/add')}>
-                    <i className="bi bi-plus-circle" style={{marginRight: '8px'}}></i>Thêm mới</Button>
+                    style={{ fontSize: '1.1rem', padding: '0.75rem 2rem', marginTop: '1rem', marginRight: '10px' }}
+                    onClick={() => navigate('/floor/add')}>
+                    <i className="bi bi-plus-circle" style={{ marginRight: '8px' }}></i>Thêm mới</Button>
 
                 <Button variant="secondary" className="mb-4"
-                        style={{fontSize: '1.1rem', padding: '0.75rem 2rem', marginTop: '1rem'}} onClick={handleReload}>
-                    <FaRedo/>
+                    style={{ fontSize: '1.1rem', padding: '0.75rem 2rem', marginTop: '1rem' }} onClick={handleReload}>
+                    <FaRedo />
                 </Button>
                 {floors.length === 0
                     ? (<h1 className={"text-center mt-5"}>Danh sách trống </h1>)
@@ -184,43 +218,43 @@ export const Floor = () => {
                     <>
                         <Table striped bordered hover>
                             <thead className={"custom-table text-white text-center table-success"}>
-                            <tr>
-                                <th>Mã tầng lầu</th>
-                                <th>Tên tầng</th>
-                                <th>Diện tích</th>
-                                <th>Sức chứa</th>
-                                <th>Loại tầng</th>
-                                <th colSpan="3" className="text-center">Hành động</th>
-                            </tr>
+                                <tr>
+                                    <th>Mã tầng lầu</th>
+                                    <th>Tên tầng</th>
+                                    <th>Diện tích</th>
+                                    <th>Sức chứa</th>
+                                    <th>Loại tầng</th>
+                                    <th colSpan="3" className="text-center">Hành động</th>
+                                </tr>
                             </thead>
                             <tbody>
-                            {floors.map((floor, index) => (
-                                <tr key={floor.id} className="text-center">
-                                    <td>{floor.floorCode}</td>
-                                    <td>{floor.name}</td>
-                                    <td>{floor.area}m<sup>2</sup></td>
-                                    <td>{floor.capacity}</td>
-                                    <td>{floor.typeOfFloor}</td>
-                                    <td className="text-center">
-                                        <Button
-                                            variant="warning"
-                                            type="button"
-                                            onClick={() => navigate(`/floor/edit/${floor.id}`, {state: {floor}})}
-                                        >
-                                            <i className="bi bi-pencil me-2"></i>Sửa
-                                        </Button>
-                                    </td>
-                                    <td className="text-center">
-                                        <Button
-                                            variant="danger"
-                                            type="button"
-                                            onClick={() => handleShowModalDelete(floor)}
-                                        >
-                                            <i className="bi bi-trash me-2"></i>Xóa
-                                        </Button>
-                                    </td>
-                                </tr>
-                            ))}
+                                {floors.map((floor, index) => (
+                                    <tr key={floor.id} className="text-center">
+                                        <td>{floor.floorCode}</td>
+                                        <td>{floor.name}</td>
+                                        <td>{floor.area}m<sup>2</sup></td>
+                                        <td>{floor.capacity} người</td>
+                                        <td>{floor.floorCategory.name}</td>
+                                        <td className="text-center">
+                                            <Button
+                                                variant="warning"
+                                                type="button"
+                                                onClick={() => navigate(`/floor/edit/${floor.id}`, { state: { floor } })}
+                                            >
+                                                <i className="bi bi-pencil me-2"></i>Sửa
+                                            </Button>
+                                        </td>
+                                        <td className="text-center">
+                                            <Button
+                                                variant="danger"
+                                                type="button"
+                                                onClick={() => handleShowModalDelete(floor)}
+                                            >
+                                                <i className="bi bi-trash me-2"></i>Xóa
+                                            </Button>
+                                        </td>
+                                    </tr>
+                                ))}
                             </tbody>
                         </Table>
                         <div className="d-flex justify-content-center ">
@@ -266,7 +300,7 @@ export const Floor = () => {
                 </Modal>
             </div>
 
-            <Footer/>
+            <Footer />
         </>
     );
 }

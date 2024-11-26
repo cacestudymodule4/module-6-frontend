@@ -6,33 +6,25 @@ import axios from "axios";
 import Footer from "../common/Footer";
 import {NavbarApp} from "../common/Navbar";
 import {Link, useNavigate} from "react-router-dom";
+import {toast} from "react-toastify";
+import * as XLSX from 'xlsx';
 
 const totalSalary = (data) => {
     return data.reduce((sum, {salary}) => sum + salary, 0);
 }
-const exportToCSV = async (filename) => {
-    const resp = await axios.get("http://localhost:8080/api/salary-csv", {
-        headers: {Authorization: `Bearer ${localStorage.getItem('jwtToken')}`},
-    });
-    const data = resp.data;
-    const csvRows = [];
-    const headers = Object.keys(data[0]);
-    csvRows.push(headers.join(','));
-    data.forEach(row => {
-        const values = headers.map(header => `"${row[header]}"`);
-        csvRows.push(values.join(',') + " VND");
-    });
-    csvRows.push(`Tổng,,,"${totalSalary(data)} VND"`);
-    const csvString = csvRows.join('\n');
-    const blob = new Blob([csvString], {type: 'text/csv'});
-    const url = window.URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.setAttribute('hidden', '');
-    a.setAttribute('href', url);
-    a.setAttribute('download', `${filename}.csv`);
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
+const handleExportToExcel = async (filename) => {
+    try {
+        const resp = await axios.get("http://localhost:8080/api/salary-csv", {
+            headers: {Authorization: `Bearer ${localStorage.getItem('jwtToken')}`},
+        });
+        const data = resp.data;
+        const ws = XLSX.utils.json_to_sheet(data);
+        const wb = XLSX.utils.book_new();
+        XLSX.utils.book_append_sheet(wb, ws, 'Sheet1');
+        XLSX.writeFile(wb, filename + '.xlsx');
+    } catch (error) {
+        toast.error(error.response.data);
+    }
 }
 export const formatDate = () => {
     const now = new Date();
@@ -42,8 +34,9 @@ export const formatDate = () => {
 }
 const Salary = () => {
     const token = localStorage.getItem('jwtToken');
+    const role = localStorage.getItem("userRole");
     const navigate = useNavigate();
-    const [salary, setSalary] = useState([]);
+    const [salary, setSalary] = useState(null);
     const [page, setPage] = useState(1);
     const [totalPages, setTotalPages] = useState(0);
     const [sort, setSort] = useState("id");
@@ -51,6 +44,8 @@ const Salary = () => {
     const [q, setQ] = useState("");
     const [size, setSize] = useState(5);
     const [total, setTotal] = useState(null);
+    const [positions, setPositions] = useState(null);
+    const [positionName, setPositionName] = useState("");
     const sum = async () => {
         try {
             const resp = await axios.get("http://localhost:8080/api/salary", {
@@ -60,7 +55,8 @@ const Salary = () => {
                     sortDir: sortDir,
                     page: 0,
                     q: q,
-                    size: 999
+                    size: 999,
+                    positionName: positionName
                 }
             });
             setTotal(totalSalary(resp.data.content));
@@ -68,29 +64,45 @@ const Salary = () => {
             console.error("Lỗi khi lấy dữ liệu: " + error);
         }
     }
+    const fetchDataSalary = async () => {
+        try {
+            const resp = await axios.get("http://localhost:8080/api/salary", {
+                headers: {Authorization: `Bearer ${localStorage.getItem('jwtToken')}`},
+                params: {
+                    sort: sort,
+                    sortDir: sortDir,
+                    page: page - 1,
+                    q: q,
+                    size: size,
+                    positionName: positionName
+                }
+            });
+            setSalary(resp.data.content);
+            setTotalPages(resp.data.totalPages);
+        } catch (error) {
+            console.error("Lỗi khi lấy dữ liệu: " + error);
+        }
+    }
+    const fetchDataPosition = async () => {
+        try {
+            const resp = await axios.get("http://localhost:8080/api/positions", {
+                headers: {Authorization: `Bearer ${localStorage.getItem('jwtToken')}`}
+            });
+            setPositions(resp.data);
+        } catch (error) {
+            console.error("Lỗi khi lấy dữ liệu: " + error);
+        }
+    }
     useEffect(() => {
         if (!token) navigate("/login");
-        const fetchData = async () => {
-            try {
-                const resp = await axios.get("http://localhost:8080/api/salary", {
-                    headers: {Authorization: `Bearer ${localStorage.getItem('jwtToken')}`},
-                    params: {
-                        sort: sort,
-                        sortDir: sortDir,
-                        page: page - 1,
-                        q: q,
-                        size: size
-                    }
-                });
-                setSalary(resp.data.content);
-                setTotalPages(resp.data.totalPages);
-            } catch (error) {
-                console.error("Lỗi khi lấy dữ liệu: " + error);
-            }
-        };
+        if (role !== "ADMIN") {
+            navigate("/home");
+            toast.error("Bạn không có quyền thực hiện hành động này");
+        }
         if (!total) sum();
-        fetchData();
-    }, [page, sort, sortDir, q, size, total]);
+        fetchDataSalary();
+        fetchDataPosition();
+    }, [page, sort, sortDir, q, size, total, positionName]);
     const handlePreviousPage = () => {
         if (page > 1) setPage(page - 1);
     }
@@ -113,6 +125,9 @@ const Salary = () => {
         setPage(1);
         setSize(size);
     }
+    const handleSelector = (event) => {
+        setPositionName(event.target.value);
+    }
     return (
         <><NavbarApp/>
             <section className="py-3 py-md-5">
@@ -126,14 +141,26 @@ const Salary = () => {
                             </div>
                             <div className="row mb-3">
                                 <div className="col-12">
-                                    <div className="d-flex mb-3">
-                                        <input
-                                            type="text"
-                                            className="form-control"
-                                            placeholder="Tìm kiếm theo tên, vị trí, số điện thoại..."
-                                            value={q}
-                                            onChange={handleSearch}
-                                        />
+                                    <div className="row d-flex mb-3">
+                                        <div className="col-12 col-lg-6">
+                                            <input
+                                                type="text"
+                                                className="form-control"
+                                                placeholder="Tìm kiếm theo tên, vị trí, mã nhân viên..."
+                                                value={q}
+                                                onChange={handleSearch}
+                                            />
+                                        </div>
+                                        <div className="col-12 col-lg-6">
+                                            <select onChange={handleSelector} className={"form-select"}>
+                                                <option value="">Chọn vị trí</option>
+                                                {positions?.map((position) => (
+                                                    <option key={position.id} value={position.name}>
+                                                        {position.name}
+                                                    </option>
+                                                ))}
+                                            </select>
+                                        </div>
                                     </div>
                                     <div className="table-responsive salary-table-responsive">
                                         <table className="table table-hover table-bordered border-success salary-table"
@@ -142,6 +169,10 @@ const Salary = () => {
                                             <tr className="salary-tr">
                                                 <th scope="col" className="text-uppercase salary-th"
                                                     onClick={() => handleSort("id")} style={{cursor: 'pointer'}}>#
+                                                </th>
+                                                <th scope="col" className="text-uppercase salary-th"
+                                                    onClick={() => handleSort("codeStaff")}
+                                                    style={{cursor: 'pointer'}}>Mã nhân viên
                                                 </th>
                                                 <th scope="col" className="text-uppercase salary-th"
                                                     onClick={() => handleSort("name")} style={{cursor: 'pointer'}}>Họ và
@@ -158,24 +189,33 @@ const Salary = () => {
                                             </tr>
                                             </thead>
                                             <tbody className="table-group-divider">
-                                            {salary.length > 0 ? (
+                                            {salary?.length > 0 ? (
                                                 <>
-                                                    {salary.map((value, index) => (
+                                                {salary.map((value, index) => (
                                                         <tr className="salary-tr" key={index}>
                                                             <td className="salary-td">{index + 1 + (page - 1) * 5}</td>
+                                                            <td className="salary-td">{value.codeStaff}</td>
                                                             <td className="salary-td">{value.name}</td>
-                                                            <td className="salary-td">{value.position}</td>
-                                                            <td className="text-end">{value.salary} VND</td>
+                                                            <td className="salary-td">{value.position.name}</td>
+                                                            <td className="text-end">{new Intl.NumberFormat('vi-VN', {
+                                                                style: 'decimal',
+                                                                currency: 'VND',
+                                                            }).format(value.salary)} VND
+                                                            </td>
                                                         </tr>
                                                     ))}
                                                     <tr>
                                                         <td colSpan={3} className="text-center">Tổng</td>
-                                                        <td className="text-center">{total} VND</td>
+                                                        <td className="text-center">{new Intl.NumberFormat('vi-VN', {
+                                                            style: 'decimal',
+                                                            currency: 'VND',
+                                                        }).format(total)} VND
+                                                        </td>
                                                     </tr>
                                                 </>
                                             ) : (
                                                 <tr>
-                                                    <td colSpan={4}>Đang tải...</td>
+                                                    <td colSpan={4}>Không có dữ liệu</td>
                                                 </tr>
                                             )}
                                             </tbody>
@@ -207,10 +247,10 @@ const Salary = () => {
                                     </div>
                                     <div className="d-flex justify-content-center justify-content-lg-end mb-3">
                                         <button className="btn btn-success" onClick={() =>
-                                            exportToCSV(`salary_report_` + formatDate())
+                                            handleExportToExcel(`salary_report_` + formatDate())
                                         }>
                                             <i className="bi bi-file-earmark-spreadsheet me-2"></i>
-                                            Tải xuống CSV
+                                            Tải xuống Excel
                                         </button>
                                     </div>
                                     <div className="justify-content-center align-items-center mt-3">
