@@ -1,1 +1,1 @@
-# module_6_front_end
+# module-6-front-end
